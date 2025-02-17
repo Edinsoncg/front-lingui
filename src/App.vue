@@ -1,26 +1,31 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+//import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
+    <img
+      alt="Lingui logo"
+      class="logo"
+      src="@/assets/logo-lingui-academy.png"
+      width="300"
+      height="120"
+    />
+    <!-- Este es un comentario en HTML <div class="wrapper">
       <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/contact">Contact</RouterLink>
-        <RouterLink to="/products">Products</RouterLink>
-        <RouterLink to="/login">Login</RouterLink>
-      </nav>
-    </div>
+    </div>-->
   </header>
 
   <RouterView />
+
+  <nav>
+    <RouterLink to="/">Home</RouterLink>
+    <RouterLink to="/about">About</RouterLink>
+    <RouterLink to="/login">Login</RouterLink>
+    <RouterLink to="/sign">Sign</RouterLink>
+    <RouterLink to="/restore">Restore</RouterLink>
+  </nav>
 </template>
 
 <style scoped>
@@ -30,7 +35,8 @@ header {
 }
 
 .logo {
-  display: block;
+  display: flex;
+  place-items: center;
   margin: 0 auto 2rem;
 }
 
@@ -59,7 +65,7 @@ nav a:first-of-type {
   border: 0;
 }
 
-@media (min-width: 1024px) {
+/*@media (min-width: 1024px) {
   header {
     display: flex;
     place-items: center;
@@ -67,7 +73,7 @@ nav a:first-of-type {
   }
 
   .logo {
-    margin: 0 2rem 0 0;
+    margin: 0 auto 2rem;
   }
 
   header .wrapper {
@@ -77,12 +83,12 @@ nav a:first-of-type {
   }
 
   nav {
-    text-align: left;
+    text-align: center;
     margin-left: -1rem;
     font-size: 1rem;
 
     padding: 1rem 0;
     margin-top: 1rem;
   }
-}
+}*/
 </style>
