@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 //import HelloWorld from './components/HelloWorld.vue'
+import FooterComponent from './components/FooterComponent.vue'
 </script>
 
 <template>
@@ -26,6 +27,8 @@ import { RouterLink, RouterView } from 'vue-router'
     <RouterLink to="/sign">Sign</RouterLink>
     <RouterLink to="/restore">Restore</RouterLink>
   </nav>
+
+  <FooterComponent />
 </template>
 
 <style scoped>

@@ -23,7 +23,13 @@
 
         <button type="submit">LOGIN</button>
 
-        <p><a href="#">Forgot Password?</a></p>
+        <p>
+          <Router-link to="/restore">Forgot Password?</Router-link>
+        </p>
+
+        <p>
+          <Router-link to="/sign">Sign up now</Router-link>
+        </p>
       </form>
     </div>
   </div>

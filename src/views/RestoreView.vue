@@ -8,6 +8,9 @@
         <input type="text" id="emailOrNumber" name="emailOrNumber" required placeholder="Email or mobile number" />
 
         <button type="submit">SEARCH</button>
+
+        <p><RouterLink to="/login">Do you remember your password?</RouterLink></p>
+
       </form>
     </div>
   </div>

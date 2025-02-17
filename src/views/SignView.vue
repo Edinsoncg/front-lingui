@@ -130,6 +130,10 @@
         <input type="password" id="password" name="password" required placeholder="Password" />
 
         <button type="submit">SIGN UP</button>
+
+        <p>
+          <Router-link to="/login">Already have an account?</Router-link>
+        </p>
       </form>
     </div>
   </div>
