@@ -1,5 +1,6 @@
 <template>
   <footer class="footer">
+
     <div class="footer-links">
       <a href="#">Terms</a>
       <a href="#">Privacy</a>
@@ -7,6 +8,7 @@
       <a href="#">Manage cookies</a>
       <a href="#">Lingüi site</a>
     </div>
+
     <p>&copy; 2025 Lingüi Academy. All rights reserved.</p>
   </footer>
 </template>

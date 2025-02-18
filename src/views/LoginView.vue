@@ -4,22 +4,10 @@
     <div class="container-two">
       <form action="#" method="POST">
         <label for="username">USERNAME</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          required
-          placeholder="Insert your username, email or number..."
-        />
+        <input type="text" id="username" name="username" required placeholder="Insert your username or email"/>
 
         <label for="password">PASSWORD</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          required
-          placeholder="Insert your password..."
-        />
+        <input type="password" id="password" name="password" required placeholder="Insert your password"/>
 
         <button type="submit">LOGIN</button>
 
@@ -49,7 +37,7 @@ h1 {
 
 .container-two {
   background: linear-gradient(to right, #9ebbfe, #daaffb);
-  padding: 40px;
+  padding: 2rem;
   border-radius: 30px;
   width: 300px;
   text-align: center;
@@ -69,8 +57,8 @@ label {
 }
 
 input {
-  background-color: #d396ff;
-  margin-bottom: 15px;
+  background-color: rgba(255, 255, 255, 0.3);;
+  margin-bottom: 1rem;
   padding: 10px;
   border: none;
   border-radius: 4px;
@@ -78,7 +66,7 @@ input {
 }
 
 ::placeholder {
-  font-size: 11px;
+  font-size: 14px;
 }
 
 button {
@@ -90,7 +78,7 @@ button {
   cursor: pointer;
   width: 150px;
   display: block;
-  margin: 10px auto;
+  margin: 15px auto;
 }
 
 button:hover {
@@ -99,7 +87,7 @@ button:hover {
 
 p {
   font-size: 14px;
-  margin-top: 20px;
+  margin-top: 15px;
   text-decoration: underline purple;
 }
 </style>
