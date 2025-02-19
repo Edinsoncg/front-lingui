@@ -1,14 +1,29 @@
+<script setup lang="ts">
+  import FlagsComponent from './FlagsComponent.vue';
+  import LogoComponent from './LogoComponent.vue';
+</script>
+
 <template>
-  <img src="@/assets/logo-lingui-academy.png" alt="Lingui logo" class="logo">
+<header>
+  <LogoComponent imageUrl="logo-lingui-academy.png"/>
+  <div class="flags">
+    <FlagsComponent imageUrl="reino-unido.png" />
+    <FlagsComponent imageUrl="francia.png" />
+    <FlagsComponent imageUrl="italia.png" />
+    <FlagsComponent imageUrl="alemania.png" />
+    <FlagsComponent imageUrl="brasil.png" />
+  </div>
+</header>
 </template>
 
 <style scoped>
-.logo {
-  width: 300px;
-  height: 150px;
-  display: flex;
-  place-items: center;
-  margin: 0 auto 2rem;
+header {
+  margin: 0 auto;
   padding: 1.5rem;
+}
+
+.flags{
+  display: flex;
+  justify-content: space-between;
 }
 </style>
