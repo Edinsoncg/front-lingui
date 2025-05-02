@@ -5,12 +5,12 @@
       <form class="grid" action="#" method="post">
         <div class="container-three">
           <label for="Firstname">FIRST NAME</label>
-          <input type="text" id="firsname" name="firstname" required placeholder="First name"/>
+          <input type="text" id="firsname" name="firstname" required placeholder="First name" />
         </div>
 
         <div class="container-three">
           <label for="Lasttname">LAST NAME</label>
-          <input type="text" id="lastname" name="lastname" required placeholder="Last name"/>
+          <input type="text" id="lastname" name="lastname" required placeholder="Last name" />
         </div>
 
         <div class="birthday">
@@ -123,7 +123,7 @@
 
         <div class="container-three">
           <label for="Email">EMAIL</label>
-          <input type="email" id="email" name="email" required placeholder="Email"/>
+          <input type="email" id="email" name="email" required placeholder="Email" />
         </div>
 
         <div class="container-three">
@@ -133,12 +133,12 @@
 
         <div class="container-three">
           <label for="Password">PASSWORD</label>
-          <input type="password" id="password" name="password" required placeholder="Password"/>
+          <input type="password" id="password" name="password" required placeholder="Password" />
         </div>
 
         <div class="container-three">
           <label for="Confirm-password">CONFIRM PASSWORD</label>
-          <input type="password" id="confirm-password" name="password" required placeholder="Confirm Password"/>
+          <input type="password" id="confirm-password" name="password" required placeholder="Confirm Password" />
         </div>
 
         <div class="form-footer">

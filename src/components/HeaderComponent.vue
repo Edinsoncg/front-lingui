@@ -5,7 +5,7 @@
 
 <template>
 <header>
-  <LogoComponent imageUrl="logo-lingui-academy.png"/>
+  <LogoComponent />
   <div class="flags">
     <FlagsComponent imageUrl="reino-unido.png" />
     <FlagsComponent imageUrl="francia.png" />

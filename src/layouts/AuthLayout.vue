@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import AuthLayout from './layouts/AuthLayout.vue'
-import WireframeLayout from './layouts/WireframeLayout.vue'
-
-const route = useRoute()
-const layouts = { AuthLayout, WireframeLayout }
-const layout = computed(() => layouts[route.meta.layout] || AuthLayout)
+  import { RouterView } from 'vue-router'
+  import FooterComponent from '@/components/FooterComponent.vue'
+  import HeaderComponent from '@/components/HeaderComponent.vue';
 </script>
 
 <template>
-  <component :is="layout">
-    <router-view />
-  </component>
+  <div class="app-container">
+    <HeaderComponent />
+
+    <section class="main-content">
+      <RouterView />
+    </section>
+
+    <FooterComponent />
+  </div>
 </template>
 
 <style scoped>

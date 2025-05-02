@@ -1,12 +1,5 @@
-<script setup lang="ts">
-  const props = defineProps<{
-    imageUrl: string
-  }>()
-  const imageSrc = new URL(`../assets/${props.imageUrl}`, import.meta.url).href
-</script>
-
 <template>
-  <img :src="imageSrc" alt="Lingui logo" class="logo" />
+  <img src="@/assets/logo-lingui-academy.png" alt="Lingui logo" class="logo">
 </template>
 
 <style scoped>

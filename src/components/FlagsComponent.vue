@@ -6,12 +6,14 @@
 </script>
 
 <template>
-  <img :src="imageSrc" alt="Flags Image" class="flags-image" />
+  <img :src="imageSrc" alt="Imagen de banderas" class="flags-image" />
 </template>
 
 <style scoped>
-  .flags-image {
-    width: 35px;
-    height: 35px;
-  }
+
+.flags-image {
+  width: 35px;
+  height: 35px;
+}
+
 </style>

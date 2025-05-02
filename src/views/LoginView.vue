@@ -1,13 +1,30 @@
+<script setup lang="ts">
+import { authSetStore } from '@/stores/AuthStore'
+import { ref } from 'vue'
+
+const authStore = authSetStore()
+const email = ref('')
+const password = ref('')
+
+const handlerLogin = () => {
+  if (!email.value || !password.value) {
+    alert('Todos los campos son obligatorios')
+  } else {
+    authStore.login({email: email.value, password: password.value})
+  }
+}
+</script>
+
 <template>
   <div class="container">
     <h1>Sign in to Güi</h1>
     <div class="container-two">
-      <form action="#" method="POST">
-        <label for="username">USERNAME</label>
-        <input type="text" id="username" name="username" required placeholder="Insert your username or email"/>
+      <form method="POST" @submit.prevent="handlerLogin">
+        <label for="email">EMAIL</label>
+        <input type="text" v-model="email" id="email" name="email" required placeholder="Insert your email"/>
 
         <label for="password">PASSWORD</label>
-        <input type="password" id="password" name="password" required placeholder="Insert your password"/>
+        <input type="password" v-model="password" id="password" name="password" required placeholder="Insert your password"/>
 
         <button type="submit">LOGIN</button>
 
@@ -36,7 +53,7 @@ h1 {
 }
 
 .container-two {
-  background: linear-gradient(to right, #9ebbfe, #daaffb);
+  background: linear-gradient(to right , #9ebbfe, #cc9bf1);
   padding: 2rem;
   border-radius: 30px;
   width: 300px;
