@@ -1,4 +1,5 @@
 <script lang="ts">
+import { authSetStore } from '@/stores/authStore'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -9,11 +10,6 @@ const isDropdownVisible = ref(false)
 
 const toggleDropdown = () => {
   isDropdownVisible.value = !isDropdownVisible.value
-}
-
-const logout = () => {
-  console.log('Cerrando sesión...')
-  router.push('/login')
 }
 
 const goToProfile = () => {
@@ -38,7 +34,7 @@ const userImage = ref('https://secrecyjewels.es/blog/wp-content/uploads/2022/10/
       <ul>
         <li @click="goToProfile">My Profile</li>
         <li @click="goToSettings">Settings</li>
-        <li @click="logout">Log Out</li>
+        <li @click="handlerLogOut">Log Out</li>
       </ul>
     </div>
   </div>
@@ -56,9 +52,9 @@ const goToSettings = () => {
   router.push('/settings')
 }
 
-const logout = () => {
-  console.log('Cerrando sesión...')
-  router.push('/login')
+const authStore = authSetStore()
+const handlerLogOut = () => {
+  authStore.logout()
 }
 </script>
 
