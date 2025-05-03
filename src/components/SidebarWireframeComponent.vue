@@ -26,7 +26,7 @@
         </li>
         <li>
           <div class="icon-container">
-            <router-link to="/support">Support</router-link>
+            <router-link to="/support-material">Support Material</router-link>
           </div>
         </li>
         <li>

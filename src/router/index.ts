@@ -3,6 +3,7 @@ import SignView from '@/views/SignView.vue'
 import RestoreView from '@/views/RestoreView.vue'
 import LoginView from '@/views/LoginView.vue'
 import DashboardView from '@/views/DashboardView.vue'
+import SupportMaterialView from '@/views/SupportMaterialView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +36,13 @@ const router = createRouter({
       component: DashboardView,
       meta: {layout: 'WireframeLayout'}
     },
+    {
+      path: '/support-material',
+      name: 'support-material',
+      component: SupportMaterialView,
+      meta: {layout: 'WireframeLayout'}
+    },
+
   ],
 })
 
