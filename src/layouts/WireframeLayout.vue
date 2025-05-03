@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import SidebarWireframeComponent from '@/components/SidebarWireframeComponent.vue';
-import HeaderWireframeComponent from '../components/HeaderWireframeComponent.vue';
+import SidebarWireframeComponent from '@/components/wireframe/SidebarWireframeComponent.vue';
+import HeaderWireframeComponent from '@/components/wireframe/HeaderWireframeComponent.vue';
 </script>
 
 <template>

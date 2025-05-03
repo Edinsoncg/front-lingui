@@ -31,7 +31,7 @@
       <tbody>
         <tr v-for="item in filteredMaterials" :key="item.id">
           <td>{{ item.name }}</td>
-          <td>{{ item.levelId }}</td>
+          <td>{{ item.level.name }}</td>
           <td>{{ item.description }}</td>
           <td><a :href="item.link" target="_blank">{{ item.link }}</a></td>
           <td class="options">
@@ -48,12 +48,18 @@
 import { ref, computed, onMounted } from 'vue'
 import SupportMaterialService from '@/services/SupportMaterialService'
 
+interface level {
+  id: number
+  name: string
+}
+
 interface Material {
   id: number
   name: string
   levelId: number
   description: string
   link: string
+  level: level
 }
 
 const materials = ref<Material[]>([])
@@ -148,7 +154,7 @@ onMounted(loadMaterials)
   position: absolute;
   right: 0.5rem;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-100%);
   cursor: pointer;
 }
 
