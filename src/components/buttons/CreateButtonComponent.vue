@@ -1,29 +1,18 @@
-<script setup lang="ts">
-
-import { defineComponent } from 'vue';
-
-</script>
+//src/components/buttons/CreateButtonComponent.vue
 
 <template>
-  <button>
-    <Router-link to="/">CREATE</Router-link>
-  </button>
+  <v-btn color="primary" @click="emit('open', { mode: 'create', resource })">
+    Crear {{ label }}
+  </v-btn>
 </template>
 
-<style scoped>
-  button {
-    padding: 10px;
-    background-color: #632093;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    width: 150px;
-    display: block;
-    margin: 15px auto;
-  }
+<script setup lang="ts">
+const props = defineProps<{
+  resource: string
+  label?: string
+}>()
 
-  button:hover {
-    background-color: #7e21c0;
-  }
-</style>
+const emit = defineEmits<{
+  (e: 'open', payload: { mode: 'create'; resource: string }): void
+}>()
+</script>

@@ -1,224 +1,109 @@
 <template>
-  <div class="materials-container">
-    <div class="toolbar">
-      <button @click="showForm = !showForm" class="btn-create">Crear</button>
-      <div class="search-box">
-        <input v-model="search" placeholder="Search" class="input-search"/>
-        <span class="icon-search">🔍</span>
-      </div>
-    </div>
+  <div class="pa-4">
+    <!-- Botón reutilizable para crear -->
+    <CreateButtonComponent
+      resource="material"
+      label="Material"
+      @open="openCreateModal"
+    />
 
-    <transition name="fade">
-      <form v-if="showForm" @submit.prevent="createMaterial" class="material-form">
-        <input v-model="form.name" placeholder="Nombre" class="form-input" />
-        <input v-model.number="form.levelId" type="number" placeholder="Nivel" class="form-input" />
-        <input v-model="form.link" placeholder="Link" class="form-input" />
-        <textarea v-model="form.description" placeholder="Descripción" class="form-textarea"></textarea>
-        <button type="submit" class="form-button">Guardar</button>
-      </form>
-    </transition>
+    <!-- Tabla paginada con búsqueda -->
+    <v-data-table-server
+      v-model:items-per-page="itemsPerPage"
+      :headers="headers"
+      :items="serverItems"
+      :items-length="totalItems"
+      :loading="loading"
+      item-value="id"
+      @update:options="loadItems"
+    >
+      <template #top>
+        <v-text-field
+          v-model="searchName"
+          label="Buscar por nombre"
+          class="ma-2"
+          clearable
+          hide-details
+        />
+      </template>
 
-    <table class="materials-table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Nivel</th>
-          <th>Descripción</th>
-          <th>Link</th>
-          <th>Opciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in filteredMaterials" :key="item.id">
-          <td>{{ item.name }}</td>
-          <td>{{ item.level.name }}</td>
-          <td>{{ item.description }}</td>
-          <td><a :href="item.link" target="_blank">{{ item.link }}</a></td>
-          <td class="options">
-            <span @click="editMaterial(item)" class="icon">⚙️</span>
-            <span @click="deleteMaterial(item.id)" class="icon">❌</span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <template #item.level="{ item }">
+        {{ item.level?.name }}
+      </template>
+
+      <template #item.link="{ item }">
+        <a :href="item.link" target="_blank">{{ item.link }}</a>
+      </template>
+    </v-data-table-server>
+
+    <!-- Modal para crear material -->
+    <v-dialog v-model="showCreateModal" max-width="600px" persistent>
+      <v-card>
+        <v-card-title>Crear Material</v-card-title>
+        <v-card-text>
+          <CreateSupportMaterialView @saved="onSaved" @cancel="closeCreateModal" />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import SupportMaterialService from '@/services/SupportMaterialService'
+import CreateSupportMaterialView from '@/views/crud_support_material/CreateSupportMaterialView.vue'
+import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
 
-interface level {
-  id: number
-  name: string
+const itemsPerPage = ref(5)
+const headers = ref([
+  { title: 'Nombre', key: 'name' },
+  { title: 'Nivel', key: 'level.name' },
+  { title: 'Descripción', key: 'description' },
+  { title: 'Link', key: 'link' }
+])
+
+const serverItems = ref([])
+const totalItems = ref(0)
+const loading = ref(false)
+
+const searchName = ref('')
+const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
+
+// Modal
+const showCreateModal = ref(false)
+function openCreateModal() {
+  showCreateModal.value = true
+}
+function closeCreateModal() {
+  showCreateModal.value = false
+}
+function onSaved() {
+  closeCreateModal()
+  loadItems(lastOptions.value)
 }
 
-interface Material {
-  id: number
-  name: string
-  levelId: number
-  description: string
-  link: string
-  level: level
-}
-
-const materials = ref<Material[]>([])
-const form = ref({ name: '', levelId: 1, description: '', link: '' })
-const showForm = ref(false)
-const search = ref('')
-
-const loadMaterials = async () => {
+// Cargar items desde el servicio con filtros
+async function loadItems(options: any) {
+  loading.value = true
+  lastOptions.value = options
   try {
-    materials.value = await SupportMaterialService.getAll()
+    const { items, total } = await SupportMaterialService.getPaginated({
+      page: options.page,
+      itemsPerPage: options.itemsPerPage,
+      sortBy: options.sortBy ?? [],
+      search: { name: searchName.value }
+    })
+    serverItems.value = items
+    totalItems.value = total
   } catch (error) {
     console.error('Error al cargar materiales:', error)
+  } finally {
+    loading.value = false
   }
 }
 
-const filteredMaterials = computed(() => {
-  if (!search.value) return materials.value
-  return materials.value.filter(item =>
-    item.name.toLowerCase().includes(search.value.toLowerCase())
-  )
+// Buscar por nombre
+watch(searchName, () => {
+  loadItems({ ...lastOptions.value, page: 1 })
 })
-
-const createMaterial = async () => {
-  try {
-    await SupportMaterialService.create({
-      name: form.value.name,
-      level_id: form.value.levelId,
-      description: form.value.description,
-      link: form.value.link,
-    })
-    form.value = { name: '', levelId: 1, description: '', link: '' }
-    showForm.value = false
-    await loadMaterials()
-  } catch (error) {
-    console.error('Error al crear:', error)
-  }
-}
-
-const editMaterial = (item: Material) => {
-  form.value = { ...item }
-  form.value = { name: item.name, levelId: item.levelId, description: item.description, link: item.link }
-  showForm.value = true
-}
-
-const deleteMaterial = async (id: number) => {
-  try {
-    await SupportMaterialService.delete(id)
-    await loadMaterials()
-  } catch (error) {
-    console.error('Error al eliminar:', error)
-  }
-}
-
-onMounted(loadMaterials)
 </script>
-
-<style scoped>
-.materials-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1rem;
-  font-family: Arial, sans-serif;
-  background: #f9f0ff;
-}
-
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.btn-create {
-  background: #d8b4fe;
-  border: none;
-  padding: 0.5rem 1.5rem;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.search-box {
-  position: relative;
-}
-
-.input-search {
-  padding: 0.5rem 2rem 0.5rem 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-}
-
-.icon-search {
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-100%);
-  cursor: pointer;
-}
-
-.material-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  background: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-}
-
-.form-input,
-.form-textarea {
-  flex: 1 1 45%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.form-textarea {
-  flex: 1 1 100%;
-  min-height: 60px;
-}
-
-.form-button {
-  align-self: flex-end;
-  padding: 0.5rem 1rem;
-  border: none;
-  background-color: #d8b4fe;
-  color: #000;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.materials-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.materials-table th,
-.materials-table td {
-  border: 1px solid #e5e7eb;
-  padding: 0.75rem;
-  text-align: left;
-}
-
-.materials-table th {
-  background: #c4b5fd;
-  color: #fff;
-  text-transform: uppercase;
-}
-
-.options .icon {
-  margin-right: 0.5rem;
-  cursor: pointer;
-}
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
-</style>
