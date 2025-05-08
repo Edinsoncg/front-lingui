@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import LogoComponent from './LogoComponent.vue';
-import TopFooterComponent from './TopFooterComponent.vue';
-import UserComponent from './UserComponent.vue';
+import LogoComponent from '../LogoComponent.vue';
+import TopFooterComponent from '../TopFooterComponent.vue';
+import UserComponent from '../UserComponent.vue';
 </script>
 
 <template>
   <header class="header">
-    <logo-component class="logo" />
+    <LogoComponent class="logo" />
     <TopFooterComponent />
     <UserComponent />
   </header>

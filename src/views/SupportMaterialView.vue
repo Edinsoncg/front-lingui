@@ -1,106 +1,114 @@
 <template>
-  <div class="support-material-view">
-    <h1>Gestión de Material de Soporte</h1>
+  <div class="pa-4">
+    <!-- Botón reutilizable para crear -->
+    <CreateButtonComponent
+      resource="material"
+      label="Material"
+      @open="openCreateModal"
+    />
 
-    <!-- Crear -->
-    <div class="create-section">
-      <h2>Crear Material</h2>
-      <input type="text" v-model="newMaterial.name" placeholder="Nombre del material" />
-      <input type="text" v-model="newMaterial.description" placeholder="Descripción" />
-      <button @click="createMaterial">Crear</button>
-    </div>
+    <!-- Tabla paginada con búsqueda -->
+    <v-data-table-server
+      v-model:items-per-page="itemsPerPage"
+      :headers="headers"
+      :items="serverItems"
+      :items-length="totalItems"
+      :loading="loading"
+      item-value="id"
+      @update:options="loadItems"
+    >
+    <template v-slot:tfoot>
+      <tr>
+        <td>
+        <v-text-field
+          v-model="searchName"
+          class="ma-2"
+          density="compact"
+          placeholder="Buscar por nombre"
+          hide-details
+          color="purple"
+        />
+      </td>
+    </tr>
+      </template>
 
-    <!-- Actualizar -->
-    <div class="update-section">
-      <h2>Actualizar Material</h2>
-      <input type="text" v-model="updateMaterial.id" placeholder="ID del material" />
-      <input type="text" v-model="updateMaterial.name" placeholder="Nuevo nombre" />
-      <input type="text" v-model="updateMaterial.description" placeholder="Nueva descripción" />
-      <button @click="updateMaterialById">Actualizar</button>
-    </div>
+      <template #item.level="{ item }">
+        {{ item.level?.name }}
+      </template>
 
-    <!-- Eliminar -->
-    <div class="delete-section">
-      <h2>Eliminar Material</h2>
-      <input type="text" v-model="deleteMaterialId" placeholder="ID del material" />
-      <button @click="deleteMaterial">Eliminar</button>
-    </div>
+      <template #item.link="{ item }">
+        <a :href="item.link" target="_blank">{{ item.link }}</a>
+      </template>
+    </v-data-table-server>
 
-    <!-- Obtener con filtro -->
-    <div class="filter-section">
-      <h2>Buscar Material</h2>
-      <input type="text" v-model="searchQuery" placeholder="Buscar por nombre" />
-      <button @click="fetchMaterials">Buscar</button>
-    </div>
-
-    <!-- Resultados -->
-    <div class="results-section">
-      <h2>Resultados</h2>
-      <ul>
-        <li v-for="material in filteredMaterials" :key="material.id">
-          {{ material.name }} - {{ material.description }}
-        </li>
-      </ul>
-    </div>
+    <!-- Modal para crear material -->
+    <v-dialog v-model="showCreateModal" max-width="600px" persistent>
+      <v-card>
+        <v-card-title>Crear Material</v-card-title>
+        <v-card-text>
+          <CreateSupportMaterialView @saved="onSaved" @cancel="closeCreateModal" />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  data() {
-    return {
-      newMaterial: {
-        name: '',
-        description: ''
-      },
-      updateMaterial: {
-        id: '',
-        name: '',
-        description: ''
-      },
-      deleteMaterialId: '',
-      searchQuery: '',
-      materials: []
-    };
-  },
-  computed: {
-    filteredMaterials() {
-      return this.materials.filter(material =>
-        material.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    }
-  },
-  methods: {
-    createMaterial() {
-      // Lógica para crear material
-      console.log('Crear material:', this.newMaterial);
-    },
-    updateMaterialById() {
-      // Lógica para actualizar material
-      console.log('Actualizar material:', this.updateMaterial);
-    },
-    deleteMaterial() {
-      // Lógica para eliminar material
-      console.log('Eliminar material con ID:', this.deleteMaterialId);
-    },
-    fetchMaterials() {
-      // Lógica para obtener materiales
-      console.log('Buscar materiales con filtro:', this.searchQuery);
-    }
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import SupportMaterialService from '@/services/SupportMaterialService'
+import CreateSupportMaterialView from '@/views/crud_support_material/CreateSupportMaterialView.vue'
+import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
+
+const itemsPerPage = ref(5)
+const headers = ref([
+  { title: 'Nombre', key: 'name' },
+  { title: 'Nivel', key: 'level.name' },
+  { title: 'Descripción', key: 'description' },
+  { title: 'Link', key: 'link' }
+])
+
+const serverItems = ref([])
+const totalItems = ref(0)
+const loading = ref(false)
+
+const searchName = ref('')
+const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
+
+// Modal
+const showCreateModal = ref(false)
+function openCreateModal() {
+  showCreateModal.value = true
+}
+function closeCreateModal() {
+  showCreateModal.value = false
+}
+function onSaved() {
+  closeCreateModal()
+  loadItems(lastOptions.value)
+}
+
+// Cargar items desde el servicio con filtros
+async function loadItems(options: any) {
+  loading.value = true
+  lastOptions.value = options
+  try {
+    const { items, total } = await SupportMaterialService.getPaginated({
+      page: options.page,
+      itemsPerPage: options.itemsPerPage,
+      sortBy: options.sortBy ?? [],
+      search: { name: searchName.value }
+    })
+    serverItems.value = items
+    totalItems.value = total
+  } catch (error) {
+    console.error('Error al cargar materiales:', error)
+  } finally {
+    loading.value = false
   }
-};
+}
+
+// Buscar por nombre
+watch(searchName, () => {
+  loadItems({ ...lastOptions.value, page: 1 })
+})
 </script>
-
-<style scoped>
-.support-material-view {
-  padding: 20px;
-}
-.create-section,
-.update-section,
-.delete-section,
-.filter-section,
-.results-section {
-  margin-bottom: 20px;
-}
-</style>
-
