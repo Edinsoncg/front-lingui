@@ -17,14 +17,19 @@
       item-value="id"
       @update:options="loadItems"
     >
-      <template #top>
+    <template v-slot:tfoot>
+      <tr>
+        <td>
         <v-text-field
           v-model="searchName"
-          label="Buscar por nombre"
           class="ma-2"
-          clearable
+          density="compact"
+          placeholder="Buscar por nombre"
           hide-details
+          color="purple"
         />
+      </td>
+    </tr>
       </template>
 
       <template #item.level="{ item }">

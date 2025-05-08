@@ -1,4 +1,4 @@
-const URL = 'https://localhost:3333/levels'
+const URL = 'http://localhost:3333/levels'
 
 export default class LevelService {
   static async getAll() {
@@ -7,7 +7,7 @@ export default class LevelService {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        "Authorization": `Bearer ${token}`,
       },
     })
     if (!response.ok) throw new Error('Error while loading levels')

@@ -48,6 +48,7 @@ const loading = ref(false)
 onMounted(async () => {
   try {
     levels.value = await LevelService.getAll()
+    console.log('NIVELES CARGADOS', levels.value)
   } catch (error) {
     console.error('Error while loading levels:', error)
   }
