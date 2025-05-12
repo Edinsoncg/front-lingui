@@ -56,7 +56,6 @@ const headers = ref([
   { title: 'Nivel', key: 'level.name' },
   { title: 'Descripción', key: 'description' },
   { title: 'Link', key: 'link' }
-  { title: 'Acciones', key: ''}
 ])
 
 const serverItems = ref([])

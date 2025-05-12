@@ -61,7 +61,7 @@ const currentComponent = computed(() => {
       `/src/views/crud_${props.resource}/${props.mode}-${props.resource}-view.vue`
     ))
   } catch (error) {
-    console.error('❌ Error importando el componente dinámico:', path, error)
+    console.error('Error importando el componente dinámico:', path, error)
     return null
   }
 })
