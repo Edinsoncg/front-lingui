@@ -1,3 +1,5 @@
+//src/views/crud_material/create-material-view.vue
+
 <template>
   <div>
     <v-text-field label="Nombre" v-model="form.name" />

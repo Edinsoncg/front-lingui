@@ -1,3 +1,5 @@
+//src/components/ModalComponent.vue
+
 <template>
   <v-dialog v-model="dialog" max-width="700" persistent>
     <v-card>
@@ -23,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, onMounted } from 'vue'
+import { computed, ref, watch, onMounted, defineAsyncComponent } from 'vue'
 import SupportMaterialService from '@/services/SupportMaterialService'
 
 const props = defineProps<{
@@ -48,9 +50,22 @@ const resourceNameCapitalized = computed(() =>
   props.resource.charAt(0).toUpperCase() + props.resource.slice(1)
 )
 
-const currentComponent = computed(() =>
-  `${props.resource}-${props.mode}-view`
-)
+const currentComponent = computed(() => {
+  const folder = `crud_${props.resource}`
+  const fileName = `${props.mode}-${props.resource}-view.vue`
+  const path = `@/views/${folder}/${fileName}`
+
+  try {
+    const filePath = `/src/views/crud_${props.resource}/${props.mode}-${props.resource}-view.vue`
+    return defineAsyncComponent(() => import(/* @vite-ignore */
+      `/src/views/crud_${props.resource}/${props.mode}-${props.resource}-view.vue`
+    ))
+  } catch (error) {
+    console.error('❌ Error importando el componente dinámico:', path, error)
+    return null
+  }
+})
+
 
 const shouldRender = computed(() =>
   props.mode === 'create' || (props.id && fetchedData.value)

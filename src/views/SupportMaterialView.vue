@@ -1,10 +1,12 @@
+//src/views/SupportMaterialView.vue
+
 <template>
   <div class="pa-4">
     <!-- Botón reutilizable para crear -->
     <CreateButtonComponent
       resource="material"
       label="Material"
-      @open="openCreateModal"
+      @saved="onSaved"
     />
 
     <!-- Tabla paginada con búsqueda -->
@@ -40,23 +42,12 @@
         <a :href="item.link" target="_blank">{{ item.link }}</a>
       </template>
     </v-data-table-server>
-
-    <!-- Modal para crear material -->
-    <v-dialog v-model="showCreateModal" max-width="600px" persistent>
-      <v-card>
-        <v-card-title>Crear Material</v-card-title>
-        <v-card-text>
-          <CreateSupportMaterialView @saved="onSaved" @cancel="closeCreateModal" />
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import SupportMaterialService from '@/services/SupportMaterialService'
-import CreateSupportMaterialView from '@/views/crud_support_material/CreateSupportMaterialView.vue'
 import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
 
 const itemsPerPage = ref(5)
@@ -65,25 +56,16 @@ const headers = ref([
   { title: 'Nivel', key: 'level.name' },
   { title: 'Descripción', key: 'description' },
   { title: 'Link', key: 'link' }
+  { title: 'Acciones', key: ''}
 ])
 
 const serverItems = ref([])
 const totalItems = ref(0)
 const loading = ref(false)
-
 const searchName = ref('')
 const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
 
-// Modal
-const showCreateModal = ref(false)
-function openCreateModal() {
-  showCreateModal.value = true
-}
-function closeCreateModal() {
-  showCreateModal.value = false
-}
 function onSaved() {
-  closeCreateModal()
   loadItems(lastOptions.value)
 }
 
@@ -101,7 +83,7 @@ async function loadItems(options: any) {
     serverItems.value = items
     totalItems.value = total
   } catch (error) {
-    console.error('Error al cargar materiales:', error)
+    console.error('An error has ocurred while loading the materials', error)
   } finally {
     loading.value = false
   }
