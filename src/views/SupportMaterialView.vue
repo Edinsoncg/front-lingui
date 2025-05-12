@@ -6,8 +6,18 @@
     <CreateButtonComponent
       resource="material"
       label="Material"
-      @saved="onSaved"
+      @open="openCreateForm"
     />
+
+    <transition name="fade">
+      <component
+        v-if="showForm"
+        :is="MaterialForm"
+        mode="create"
+        @saved="onSaved"
+        @cancel="showForm = false"
+    />
+    </transition>
 
     <!-- Tabla paginada con búsqueda -->
     <v-data-table-server
@@ -46,9 +56,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, defineAsyncComponent, } from 'vue'
 import SupportMaterialService from '@/services/SupportMaterialService'
 import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
+
+// FORMULARIO
+const showForm = ref(false)
+
+function openCreateForm(){
+  showForm.value = true
+}
+
+const MaterialForm = defineAsyncComponent(() =>
+  import('@/views/crud_material/create-material-view.vue')
+)
+
+
+//TABLA
 
 const itemsPerPage = ref(5)
 const headers = ref([
@@ -65,6 +89,7 @@ const searchName = ref('')
 const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
 
 function onSaved() {
+  showForm.value = false
   loadItems(lastOptions.value)
 }
 
