@@ -2,7 +2,9 @@
 
 <template>
   <div>
+    <form>
     <v-text-field label="Nombre" v-model="form.name" />
+
     <v-select
       v-model="form.level_id"
       :items="levels"
@@ -10,10 +12,25 @@
       item-value="id"
       label="Nivel"
     />
+
     <v-text-field label="Link" v-model="form.link" />
     <v-textarea label="Descripción" v-model="form.description" />
-    <v-btn color="primary" @click="submit" :loading="loading">Guardar</v-btn>
+
+    <v-btn color="primary" @click="confirmDialog = true" :loading="loading">
+      Guardar
+    </v-btn>
+
     <v-btn @click="$emit('cancel')">Cancelar</v-btn>
+
+    <!-- Modal de confirmación -->
+    <ConfirmDialog
+      v-model="confirmDialog"
+      title="¿Confirmar guardado?"
+      message="¿Deseas guardar este material?"
+      @confirm="submit"
+      @cancel="confirmDialog = false"
+    />
+    </form>
   </div>
 </template>
 
@@ -21,8 +38,8 @@
 import { ref, onMounted } from 'vue'
 import LevelService from '@/services/LevelService'
 import SupportMaterialService from '@/services/SupportMaterialService'
+import ConfirmDialog from '@/components/ModalComponent.vue'
 
-// ✅ Interfaz para tipar el formulario
 interface SupportMaterialForm {
   name: string
   level_id: number | undefined
@@ -46,6 +63,7 @@ const form = ref<SupportMaterialForm>({
 
 const levels = ref<Level[]>([])
 const loading = ref(false)
+const confirmDialog = ref(false)
 
 onMounted(async () => {
   try {
@@ -57,24 +75,21 @@ onMounted(async () => {
 })
 
 async function submit() {
+  confirmDialog.value = false
+
   if (!form.value.name?.trim()) {
-    alert('The name is required')
+    alert('El nombre es obligatorio')
     return
   }
 
   if (form.value.level_id === undefined) {
-    alert('The level is required')
+    alert('El nivel es obligatorio')
     return
   }
 
   loading.value = true
   try {
-    await SupportMaterialService.create({
-      name: form.value.name,
-      level_id: form.value.level_id,
-      link: form.value.link,
-      description: form.value.description
-    })
+    await SupportMaterialService.create({ ...form.value, level_id: form.value.level_id as number })
     emit('saved')
 
     form.value = {
@@ -83,11 +98,11 @@ async function submit() {
       link: '',
       description: ''
     }
-
   } catch (e) {
-    console.error('An error has ocurred while creating material:', e)
+    console.error('Error al crear el material:', e)
   } finally {
     loading.value = false
   }
 }
 </script>
+
