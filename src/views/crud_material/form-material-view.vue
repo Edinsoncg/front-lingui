@@ -81,7 +81,13 @@ const confirmDialog = ref(false)
 
 watch(() => props.initialData, (data) => {
   if (props.mode === 'update' && data) {
-    form.value = { ...form.value, ...data, id: data.id }
+    form.value = {
+      id: data.id ?? undefined,
+      name: data.name ?? '',
+      level_id: data.level_id ?? undefined,
+      link: data.link ?? '',
+      description: data.description ?? ''
+    }
   }
 }, { immediate: true })
 
@@ -108,11 +114,17 @@ async function submit() {
   }
 
   loading.value = true
+
   try {
     if (props.mode === 'create') {
     await SupportMaterialService.create({ ...form.value, level_id: form.value.level_id as number })
     } else if (props.mode === 'update' && form.value.id) {
-      await SupportMaterialService.update(form.value.id, { ...form.value, level_id: form.value.level_id as number })
+      await SupportMaterialService.update(form.value.id, {
+    name: form.value.name,
+    level_id: form.value.level_id,
+    link: form.value.link,
+    description: form.value.description
+    })
     }
     emit('saved')
 

@@ -10,14 +10,14 @@
     />
 
     <transition name="fade">
-      <component
-        v-if="showForm"
-        :is="MaterialForm"
-        :mode="formMode"
-        :initialData="editData"
-        @saved="onSaved"
-        @cancel="showForm = false"
-    />
+      <div v-if="showForm">
+        <MaterialForm
+          :mode="formMode"
+          :initialData="editData"
+          @saved="onSaved"
+          @cancel="showForm = false"
+        />
+      </div>
     </transition>
 
     <!-- Tabla paginada con búsqueda -->
@@ -59,7 +59,10 @@
             resource="material"
             label="Material"
             @edit="editItem(item)" />
-          <DeleteButtonComponent @delete="deleteItem(item)" />
+
+          <DeleteButtonComponent
+            :item="item"
+            @deleted="onDeleted" />
         </div>
       </template>
 
@@ -68,11 +71,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineAsyncComponent, } from 'vue'
+import { ref, watch } from 'vue'
 import SupportMaterialService from '@/services/SupportMaterialService'
 import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
 import UpdateButtonComponent from '@/components/buttons/UpdateButtonComponent.vue'
 import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent.vue'
+import MaterialForm from '@/views/crud_material/form-material-view.vue'
+
 
 interface SupportMaterialForm {
   id?: number
@@ -92,10 +97,6 @@ function openCreateForm(){
   editData.value = undefined
   showForm.value = true
 }
-
-const MaterialForm = defineAsyncComponent(() =>
-  import('@/views/crud_material/form-material-view.vue')
-)
 
 
 //TABLA
@@ -128,9 +129,8 @@ function editItem(item: any) {
   showForm.value = true
 }
 
-function deleteItem(item: any) {
-  console.log('Eliminar', item)
-  // Aquí puedes mostrar un modal de confirmación antes de eliminar
+async function onDeleted() {
+  await loadItems(lastOptions.value)
 }
 
 // Cargar items desde el servicio con filtros
