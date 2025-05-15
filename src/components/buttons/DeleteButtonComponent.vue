@@ -1,12 +1,12 @@
+<!-- src/components/buttons/DeleteButtonComponent.vue -->
 <template>
-  <v-icon small color="red" @click="emit('delete', id)">
-    mdi-delete
-  </v-icon>
+  <v-btn icon size="small" color="error" @click="emit('delete')">
+    <v-icon size="small">mdi-delete</v-icon>
+  </v-btn>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ id: number }>()
 const emit = defineEmits<{
-  (e: 'delete', id: number): void
+  (e: 'delete'): void
 }>()
 </script>

@@ -13,7 +13,8 @@
       <component
         v-if="showForm"
         :is="MaterialForm"
-        mode="create"
+        :mode="formMode"
+        :initialData="editData"
         @saved="onSaved"
         @cancel="showForm = false"
     />
@@ -51,6 +52,17 @@
       <template #item.link="{ item }">
         <a :href="item.link" target="_blank">{{ item.link }}</a>
       </template>
+
+      <template #item.actions="{ item }">
+        <div class="d-flex ga-1">
+          <UpdateButtonComponent
+            resource="material"
+            label="Material"
+            @edit="editItem(item)" />
+          <DeleteButtonComponent @delete="deleteItem(item)" />
+        </div>
+      </template>
+
     </v-data-table-server>
   </div>
 </template>
@@ -59,16 +71,30 @@
 import { ref, watch, defineAsyncComponent, } from 'vue'
 import SupportMaterialService from '@/services/SupportMaterialService'
 import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
+import UpdateButtonComponent from '@/components/buttons/UpdateButtonComponent.vue'
+import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent.vue'
+
+interface SupportMaterialForm {
+  id?: number
+  name: string
+  level_id: number | undefined
+  link: string
+  description: string
+}
 
 // FORMULARIO
 const showForm = ref(false)
+const editData = ref<Partial<SupportMaterialForm> | undefined>(undefined)
+const formMode = ref<'create' | 'update'>('create')
 
 function openCreateForm(){
+  formMode.value = 'create'
+  editData.value = undefined
   showForm.value = true
 }
 
 const MaterialForm = defineAsyncComponent(() =>
-  import('@/views/crud_material/create-material-view.vue')
+  import('@/views/crud_material/form-material-view.vue')
 )
 
 
@@ -76,10 +102,12 @@ const MaterialForm = defineAsyncComponent(() =>
 
 const itemsPerPage = ref(5)
 const headers = ref([
+  { title: 'ID', key: 'id' },
   { title: 'Nombre', key: 'name' },
   { title: 'Nivel', key: 'level.name' },
   { title: 'Descripción', key: 'description' },
-  { title: 'Link', key: 'link' }
+  { title: 'Link', key: 'link' },
+  { title: 'Acciones', key: 'actions', sortable: false }
 ])
 
 const serverItems = ref([])
@@ -89,8 +117,20 @@ const searchName = ref('')
 const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
 
 function onSaved() {
+  console.log('Guardado')
   showForm.value = false
   loadItems(lastOptions.value)
+}
+
+function editItem(item: any) {
+  formMode.value = 'update'
+  editData.value = { ...item, level_id: item.level?.id } // asegúrate de extraer el `id`
+  showForm.value = true
+}
+
+function deleteItem(item: any) {
+  console.log('Eliminar', item)
+  // Aquí puedes mostrar un modal de confirmación antes de eliminar
 }
 
 // Cargar items desde el servicio con filtros
