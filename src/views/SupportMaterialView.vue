@@ -9,16 +9,21 @@
       @open="openCreateForm"
     />
 
-    <transition name="fade">
-      <div v-if="showForm">
-        <MaterialForm
-          :mode="formMode"
-          :initialData="editData"
-          @saved="onSaved"
-          @cancel="showForm = false"
-        />
-      </div>
-    </transition>
+<v-slide-y-transition>
+  <div v-if="showForm"
+      ref="formContainer"
+      class="mb-4"
+  >
+    <MaterialForm
+      :mode="formMode"
+      :initialData="editData"
+      @saved="onSaved"
+      @cancel="showForm = false"
+    />
+  </div>
+</v-slide-y-transition>
+
+
 
     <!-- Tabla paginada con búsqueda -->
     <v-data-table-server
@@ -32,18 +37,19 @@
     >
     <template v-slot:tfoot>
       <tr>
+        <td></td>
         <td>
-        <v-text-field
-          v-model="searchName"
-          class="ma-2"
-          density="compact"
-          placeholder="Buscar por nombre"
-          hide-details
-          color="purple"
-        />
-      </td>
-    </tr>
-      </template>
+          <v-text-field
+            v-model="searchName"
+            class="ma-2"
+            density="compact"
+            placeholder="Buscar por nombre"
+            hide-details
+            color="purple"
+          />
+        </td>
+      </tr>
+    </template>
 
       <template #item.level="{ item }">
         {{ item.level?.name }}
@@ -68,10 +74,20 @@
 
     </v-data-table-server>
   </div>
+
+  <v-snackbar
+    v-model="snackbar"
+    :timeout="3000"
+    :color="snackbarColor"
+    location="top right"
+  >
+    {{ snackbarMessage }}
+  </v-snackbar>
+
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import SupportMaterialService from '@/services/SupportMaterialService'
 import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
 import UpdateButtonComponent from '@/components/buttons/UpdateButtonComponent.vue'
@@ -91,6 +107,13 @@ interface SupportMaterialForm {
 const showForm = ref(false)
 const editData = ref<Partial<SupportMaterialForm> | undefined>(undefined)
 const formMode = ref<'create' | 'update'>('create')
+const formContainer = ref<HTMLElement | null>(null)
+const snackbar = ref(false)
+const snackbarMessage = ref('')
+const snackbarColor = ref('success')
+
+
+
 
 function openCreateForm(){
   formMode.value = 'create'
@@ -118,19 +141,34 @@ const searchName = ref('')
 const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
 
 function onSaved() {
-  console.log('Guardado')
+  showSnackbar(
+    formMode.value === 'create'
+      ? 'Material creado correctamente'
+      : 'Material actualizado correctamente',
+    formMode.value === 'create' ? 'success' : 'info'
+  )
+
   showForm.value = false
   loadItems(lastOptions.value)
 }
 
-function editItem(item: any) {
+
+
+async function editItem(item: any) {
   formMode.value = 'update'
   editData.value = { ...item, level_id: item.level?.id } // asegúrate de extraer el `id`
   showForm.value = true
+  await nextTick()
+
+  formContainer.value?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  })
 }
 
 async function onDeleted() {
   await loadItems(lastOptions.value)
+  showSnackbar('Material eliminado correctamente', 'error')
 }
 
 // Cargar items desde el servicio con filtros
@@ -157,4 +195,12 @@ async function loadItems(options: any) {
 watch(searchName, () => {
   loadItems({ ...lastOptions.value, page: 1 })
 })
+
+// Mensajes
+function showSnackbar(message: string, color: string = 'success') {
+  snackbarMessage.value = message
+  snackbarColor.value = color
+  snackbar.value = true
+}
+
 </script>

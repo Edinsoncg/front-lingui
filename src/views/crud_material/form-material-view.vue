@@ -1,4 +1,4 @@
-//src/views/crud_material/create-material-view.vue
+//src/views/crud_material/form-material-view.vue
 
 <template>
   <div>
@@ -117,14 +117,14 @@ async function submit() {
 
   try {
     if (props.mode === 'create') {
-    await SupportMaterialService.create({ ...form.value, level_id: form.value.level_id as number })
+      await SupportMaterialService.create({ ...form.value, level_id: form.value.level_id as number })
     } else if (props.mode === 'update' && form.value.id) {
-      await SupportMaterialService.update(form.value.id, {
-    name: form.value.name,
-    level_id: form.value.level_id,
-    link: form.value.link,
-    description: form.value.description
-    })
+        await SupportMaterialService.update(form.value.id, {
+          name: form.value.name,
+          level_id: form.value.level_id,
+          link: form.value.link,
+          description: form.value.description
+        })
     }
     emit('saved')
 
