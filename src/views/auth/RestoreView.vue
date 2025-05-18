@@ -7,7 +7,7 @@
         <label for="Email">EMAIL OR MOBILE NUMBER</label>
         <input type="text" id="emailOrNumber" name="emailOrNumber" required placeholder="Email or mobile number" />
 
-        <button type="submit">SEND</button>
+        <button type="submit">SEARCH</button>
 
         <p><Router-link to="/login">Do you remember your password?</Router-link></p>
 

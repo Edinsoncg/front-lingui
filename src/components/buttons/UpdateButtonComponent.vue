@@ -1,12 +1,18 @@
+<!-- src/components/buttons/UpdateButtonComponent.vue -->
 <template>
-  <v-icon small color="indigo" @click="emit('open', { mode: 'edit', resource, id })">
-    mdi-pencil
-  </v-icon>
+  <v-btn icon size="small" color="primary" @click="emit('edit')">
+    <v-icon size="small">mdi-pencil</v-icon>
+  </v-btn>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ resource: string; id: number }>()
+
+const props = defineProps<{
+  resource: string
+  label?: string
+}>()
+
 const emit = defineEmits<{
-  (e: 'open', payload: { mode: 'edit'; resource: string; id: number }): void
+  (e: 'edit'): void
 }>()
 </script>

@@ -9,15 +9,21 @@
       @open="openCreateForm"
     />
 
-    <transition name="fade">
-      <component
-        v-if="showForm"
-        :is="MaterialForm"
-        mode="create"
-        @saved="onSaved"
-        @cancel="showForm = false"
+<v-slide-y-transition>
+  <div v-if="showForm"
+      ref="formContainer"
+      class="mb-4"
+  >
+    <MaterialForm
+      :mode="formMode"
+      :initialData="editData"
+      @saved="onSaved"
+      @cancel="showForm = false"
     />
-    </transition>
+  </div>
+</v-slide-y-transition>
+
+
 
     <!-- Tabla paginada con búsqueda -->
     <v-data-table-server
@@ -31,18 +37,19 @@
     >
     <template v-slot:tfoot>
       <tr>
+        <td></td>
         <td>
-        <v-text-field
-          v-model="searchName"
-          class="ma-2"
-          density="compact"
-          placeholder="Buscar por nombre"
-          hide-details
-          color="purple"
-        />
-      </td>
-    </tr>
-      </template>
+          <v-text-field
+            v-model="searchName"
+            class="ma-2"
+            density="compact"
+            placeholder="Buscar por nombre"
+            hide-details
+            color="purple"
+          />
+        </td>
+      </tr>
+    </template>
 
       <template #item.level="{ item }">
         {{ item.level?.name }}
@@ -51,35 +58,80 @@
       <template #item.link="{ item }">
         <a :href="item.link" target="_blank">{{ item.link }}</a>
       </template>
+
+      <template #item.actions="{ item }">
+        <div class="d-flex ga-1">
+          <UpdateButtonComponent
+            resource="material"
+            label="Material"
+            @edit="editItem(item)" />
+
+          <DeleteButtonComponent
+            :item="item"
+            @deleted="onDeleted" />
+        </div>
+      </template>
+
     </v-data-table-server>
   </div>
+
+  <v-snackbar
+    v-model="snackbar"
+    :timeout="3000"
+    :color="snackbarColor"
+    location="top right"
+  >
+    {{ snackbarMessage }}
+  </v-snackbar>
+
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineAsyncComponent, } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import SupportMaterialService from '@/services/SupportMaterialService'
 import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
+import UpdateButtonComponent from '@/components/buttons/UpdateButtonComponent.vue'
+import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent.vue'
+import MaterialForm from '@/views/crud_material/form-material-view.vue'
+
+
+interface SupportMaterialForm {
+  id?: number
+  name: string
+  level_id: number | undefined
+  link: string
+  description: string
+}
 
 // FORMULARIO
 const showForm = ref(false)
+const editData = ref<Partial<SupportMaterialForm> | undefined>(undefined)
+const formMode = ref<'create' | 'update'>('create')
+const formContainer = ref<HTMLElement | null>(null)
+const snackbar = ref(false)
+const snackbarMessage = ref('')
+const snackbarColor = ref('success')
+
+
+
 
 function openCreateForm(){
+  formMode.value = 'create'
+  editData.value = undefined
   showForm.value = true
 }
-
-const MaterialForm = defineAsyncComponent(() =>
-  import('@/views/crud_material/create-material-view.vue')
-)
 
 
 //TABLA
 
 const itemsPerPage = ref(5)
 const headers = ref([
+  { title: 'ID', key: 'id' },
   { title: 'Nombre', key: 'name' },
   { title: 'Nivel', key: 'level.name' },
   { title: 'Descripción', key: 'description' },
-  { title: 'Link', key: 'link' }
+  { title: 'Link', key: 'link' },
+  { title: 'Acciones', key: 'actions', sortable: false }
 ])
 
 const serverItems = ref([])
@@ -89,8 +141,34 @@ const searchName = ref('')
 const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
 
 function onSaved() {
+  showSnackbar(
+    formMode.value === 'create'
+      ? 'Material creado correctamente'
+      : 'Material actualizado correctamente',
+    formMode.value === 'create' ? 'success' : 'info'
+  )
+
   showForm.value = false
   loadItems(lastOptions.value)
+}
+
+
+
+async function editItem(item: any) {
+  formMode.value = 'update'
+  editData.value = { ...item, level_id: item.level?.id } // asegúrate de extraer el `id`
+  showForm.value = true
+  await nextTick()
+
+  formContainer.value?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  })
+}
+
+async function onDeleted() {
+  await loadItems(lastOptions.value)
+  showSnackbar('Material eliminado correctamente', 'error')
 }
 
 // Cargar items desde el servicio con filtros
@@ -117,4 +195,12 @@ async function loadItems(options: any) {
 watch(searchName, () => {
   loadItems({ ...lastOptions.value, page: 1 })
 })
+
+// Mensajes
+function showSnackbar(message: string, color: string = 'success') {
+  snackbarMessage.value = message
+  snackbarColor.value = color
+  snackbar.value = true
+}
+
 </script>
