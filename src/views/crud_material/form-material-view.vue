@@ -38,6 +38,7 @@ import LevelService from '@/services/LevelService'
 import SupportMaterialService from '@/services/SupportMaterialService'
 import ConfirmDialog from '@/components/ModalComponent.vue'
 
+//Interfaces y Tipos
 interface SupportMaterialForm {
   id?: number
   name: string
@@ -45,40 +46,40 @@ interface SupportMaterialForm {
   link: string
   description: string
 }
-
 interface Level {
   id: number
   name: string
 }
 
+//props y emits
 const props = defineProps<{
   mode: 'create' | 'update',
   initialData?: Partial<SupportMaterialForm>
 }>()
+const emit = defineEmits(['saved', 'cancel'])
 
+//Variables Computadas
 const modalTitle = computed(() =>
   props.mode === 'create' ? 'Crear Material' : 'Actualizar Material'
 )
-
 const modalMessage = computed(() =>
   props.mode === 'create'
   ? '¿Está seguro de que desea crear el material?'
   : '¿Está seguro de que desea actualizar el material?'
 )
 
-const emit = defineEmits(['saved', 'cancel'])
-
+//Refs y Estado Reactivo
 const form = ref<SupportMaterialForm>({
   name: '',
   level_id: undefined,
   link: '',
   description: ''
 })
-
 const levels = ref<Level[]>([])
 const loading = ref(false)
 const confirmDialog = ref(false)
 
+//Watcher
 watch(() => props.initialData, (data) => {
   if (props.mode === 'update' && data) {
     form.value = {
@@ -91,6 +92,7 @@ watch(() => props.initialData, (data) => {
   }
 }, { immediate: true })
 
+//Ciclo de Vida
 onMounted(async () => {
   try {
     levels.value = await LevelService.getAll()
@@ -100,6 +102,7 @@ onMounted(async () => {
   }
 })
 
+//Métodos
 async function submit() {
   confirmDialog.value = false
 
@@ -139,8 +142,5 @@ async function submit() {
   } finally {
     loading.value = false
   }
-
-  console.log('Guardando en modo:', props.mode, form.value)
 }
 </script>
-

@@ -12,13 +12,10 @@ import UserComponent from '../UserComponent.vue'
     density="prominent"
   >  <!-- el density da el tamaño de header (prominent > default> comfortable > compact)-->
 
-    <!-- Logo a la izquierda -->
     <LogoComponent class="logo mr-4" />
 
-    <!-- Contenido centrado (si aplica) -->
     <TopFooterComponent class="d-none d-md-flex" />
 
-    <!-- Usuario a la derecha -->
     <v-spacer />
     <UserComponent />
   </v-app-bar>
