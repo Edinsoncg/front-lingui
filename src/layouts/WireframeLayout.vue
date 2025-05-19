@@ -4,42 +4,18 @@ import HeaderWireframeComponent from '@/components/wireframe/HeaderWireframeComp
 </script>
 
 <template>
-  <div class="wireframe-container">
-    <!-- El Header estará encima del Sidebar -->
-    <HeaderWireframeComponent/>
-    <div class="content-wrapper">
-      <!-- El Sidebar estará al lado del router-view -->
-      <SidebarWireframeComponent />
-      <div class="main-content">
-        <div class="content">
+  <v-app>
+    <HeaderWireframeComponent />
+    <SidebarWireframeComponent />
+
+      <!-- Contenido principal -->
+      <v-main>
+        <v-container>
           <router-view />
-        </div>
-      </div>
-    </div>
-  </div>
+        </v-container>
+      </v-main>
+
+  </v-app>
 </template>
 
-<style scoped>
-.wireframe-container {
-  display: flex;
-  flex-direction: column; /* Coloca el header en la parte superior */
-  height: 100vh;
-}
 
-.content-wrapper {
-  display: flex; /* Sidebar y contenido al mismo nivel */
-  flex: 1;
-}
-
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.content {
-  flex: 1;
-  padding: 20px;
-}
-
-</style>

@@ -160,9 +160,7 @@ async function editItem(item: any) {
   showForm.value = true
   await nextTick()
 
-  formContainer.value?.scrollIntoView({
-    behavior: 'smooth',
-    block: 'start',
+  window.scrollTo({ top: 0, behavior: 'smooth'
   })
 }
 
