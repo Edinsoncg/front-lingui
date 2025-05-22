@@ -4,6 +4,7 @@ import RestoreView from '@/views/auth/RestoreView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import SupportMaterialView from '@/views/SupportMaterialView.vue'
+import AgendaView from '@/views/AgendaView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +35,12 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: DashboardView,
+      meta: {layout: 'WireframeLayout'}
+    },
+    {
+      path: '/agenda',
+      name: 'agenda',
+      component: AgendaView,
       meta: {layout: 'WireframeLayout'}
     },
     {
