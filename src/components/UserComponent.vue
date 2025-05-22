@@ -20,11 +20,11 @@ const handlerLogOut = () => authStore.logout()
     transition="scale-transition"
   >
     <template #activator="{ props }">
-      <div style="padding: 15px">
+      <div style="margin: 0 1rem 0 1rem;">
         <v-avatar
           v-bind="props"
           class="cursor-pointer"
-          size="100"
+          size="50"
         >
           <v-img :src="userImage" alt="Avatar" />
         </v-avatar>

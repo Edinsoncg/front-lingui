@@ -16,7 +16,6 @@ const userName = authStore.user?.name || 'Usuario'
 <style scoped>
 .top-footer {
   color: #000000;
-  padding: 1.5rem;
   text-align: center;
   width: 100%;
   display: flex;
@@ -25,7 +24,7 @@ const userName = authStore.user?.name || 'Usuario'
 }
 
 .user-greeting {
-  font-size: 3.1rem;
+  font-size: 2.1rem;
   text-align: center;
   font-family: Roboto, sans-serif;
 }

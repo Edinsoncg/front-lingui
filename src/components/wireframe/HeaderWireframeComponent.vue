@@ -9,7 +9,7 @@ import UserComponent from '../UserComponent.vue'
     app
     flat
     color="deep-purple-lighten-4"
-    density="prominent"
+    density="default"
   >  <!-- el density da el tamaño de header (prominent > default> comfortable > compact)-->
 
     <LogoComponent class="logo mr-4" />
@@ -23,8 +23,8 @@ import UserComponent from '../UserComponent.vue'
 
 <style scoped>
 .logo {
-  height: 125px;
+  height: 3.1rem;
   width: auto;
-  padding: 15px;
+  margin-left: 1rem;
 }
 </style>
