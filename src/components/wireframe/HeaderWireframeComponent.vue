@@ -1,45 +1,30 @@
 <script setup lang="ts">
-import LogoComponent from '../LogoComponent.vue';
-import TopFooterComponent from '../TopFooterComponent.vue';
-import UserComponent from '../UserComponent.vue';
+import LogoComponent from '../LogoComponent.vue'
+import TopFooterComponent from '../TopFooterComponent.vue'
+import UserComponent from '../UserComponent.vue'
 </script>
 
 <template>
-  <header class="header">
-    <LogoComponent class="logo" />
-    <TopFooterComponent />
+  <v-app-bar
+    app
+    flat
+    color="deep-purple-lighten-4"
+    density="prominent"
+  >  <!-- el density da el tamaño de header (prominent > default> comfortable > compact)-->
+
+    <LogoComponent class="logo mr-4" />
+
+    <TopFooterComponent class="d-none d-md-flex" />
+
+    <v-spacer />
     <UserComponent />
-  </header>
+  </v-app-bar>
 </template>
 
-
 <style scoped>
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: black;
-  padding: 1.5rem;
-}
-
 .logo {
-height: 100px;
-width: 250px;
+  height: 125px;
+  width: auto;
+  padding: 15px;
 }
-
-
-button {
-  background: #e74c3c;
-  border: none;
-  padding: 8px 12px;
-  color: black;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-button:hover {
-  background: #c0392b;
-}
-
 </style>

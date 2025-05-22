@@ -9,21 +9,19 @@
       @open="openCreateForm"
     />
 
-<v-slide-y-transition>
-  <div v-if="showForm"
-      ref="formContainer"
-      class="mb-4"
-  >
-    <MaterialForm
-      :mode="formMode"
-      :initialData="editData"
-      @saved="onSaved"
-      @cancel="showForm = false"
-    />
-  </div>
-</v-slide-y-transition>
-
-
+    <v-slide-y-transition>
+      <div v-if="showForm"
+          ref="formContainer"
+          class="mb-4"
+      >
+        <MaterialForm
+          :mode="formMode"
+          :initialData="editData"
+          @saved="onSaved"
+          @cancel="showForm = false"
+        />
+      </div>
+    </v-slide-y-transition>
 
     <!-- Tabla paginada con búsqueda -->
     <v-data-table-server
@@ -94,7 +92,7 @@ import UpdateButtonComponent from '@/components/buttons/UpdateButtonComponent.vu
 import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent.vue'
 import MaterialForm from '@/views/crud_material/form-material-view.vue'
 
-
+//interfaces
 interface SupportMaterialForm {
   id?: number
   name: string
@@ -103,27 +101,18 @@ interface SupportMaterialForm {
   description: string
 }
 
-// FORMULARIO
+//Estado del  FORMULARIO
 const showForm = ref(false)
 const editData = ref<Partial<SupportMaterialForm> | undefined>(undefined)
 const formMode = ref<'create' | 'update'>('create')
 const formContainer = ref<HTMLElement | null>(null)
+
+//Snackbar
 const snackbar = ref(false)
 const snackbarMessage = ref('')
 const snackbarColor = ref('success')
 
-
-
-
-function openCreateForm(){
-  formMode.value = 'create'
-  editData.value = undefined
-  showForm.value = true
-}
-
-
-//TABLA
-
+//Esta de la TABLA
 const itemsPerPage = ref(5)
 const headers = ref([
   { title: 'ID', key: 'id' },
@@ -140,6 +129,23 @@ const loading = ref(false)
 const searchName = ref('')
 const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
 
+//Funciones del formulario
+function openCreateForm(){
+  formMode.value = 'create'
+  editData.value = undefined
+  showForm.value = true
+}
+
+async function editItem(item: any) {
+  formMode.value = 'update'
+  editData.value = { ...item, level_id: item.level?.id } // asegúrate de extraer el `id`
+  showForm.value = true
+  await nextTick()
+
+  window.scrollTo({ top: 0, behavior: 'smooth'
+  })
+}
+
 function onSaved() {
   showSnackbar(
     formMode.value === 'create'
@@ -152,26 +158,13 @@ function onSaved() {
   loadItems(lastOptions.value)
 }
 
-
-
-async function editItem(item: any) {
-  formMode.value = 'update'
-  editData.value = { ...item, level_id: item.level?.id } // asegúrate de extraer el `id`
-  showForm.value = true
-  await nextTick()
-
-  formContainer.value?.scrollIntoView({
-    behavior: 'smooth',
-    block: 'start',
-  })
-}
-
+//Funciones de la Tabla
 async function onDeleted() {
   await loadItems(lastOptions.value)
   showSnackbar('Material eliminado correctamente', 'error')
 }
 
-// Cargar items desde el servicio con filtros
+  // Cargar items desde el servicio con filtros
 async function loadItems(options: any) {
   loading.value = true
   lastOptions.value = options
@@ -191,12 +184,12 @@ async function loadItems(options: any) {
   }
 }
 
-// Buscar por nombre
+// Watcher
 watch(searchName, () => {
   loadItems({ ...lastOptions.value, page: 1 })
 })
 
-// Mensajes
+// Funciones de Snackbar: Mensajes
 function showSnackbar(message: string, color: string = 'success') {
   snackbarMessage.value = message
   snackbarColor.value = color

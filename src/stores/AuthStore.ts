@@ -1,6 +1,6 @@
 import router from '@/router';
 import { defineStore } from 'pinia';
-import AuthService from '@/services/authService';
+import AuthService from '@/services/AuthService';
 
 export const authSetStore = defineStore( 'auth', {
   state: () => ({
@@ -17,9 +17,12 @@ export const authSetStore = defineStore( 'auth', {
       if (login.errors?.[0]) {
         alert(login.errors[0].message)
       } else {
-        const token = login.token
+        const token = login.token.token
+        const user = login.user
 
         this.token = token
+        this.user = user
+        localStorage.setItem('user', JSON.stringify(user))
 
         localStorage.setItem('token', token)
 
