@@ -5,6 +5,7 @@ import LoginView from '@/views/auth/LoginView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import SupportMaterialView from '@/views/SupportMaterialView.vue'
 import AgendaView from '@/views/AgendaView.vue'
+import SettingUserView from '@/views/SettingUserView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +48,12 @@ const router = createRouter({
       path: '/support-material',
       name: 'support-material',
       component: SupportMaterialView,
+      meta: {layout: 'WireframeLayout'}
+    },
+        {
+      path: '/setting/user',
+      name: 'setting-user',
+      component: SettingUserView,
       meta: {layout: 'WireframeLayout'}
     },
 

@@ -14,13 +14,13 @@
 
       <v-card-actions class="d-flex flex-column align-start pa-4">
         <v-btn color="green" variant="flat" block @click="emitAction('create')">
-          Crear reserva
+          Crear clase
         </v-btn>
         <v-btn color="blue" variant="flat" block @click="emitAction('view')">
-          Ver reserva
+          Ver clase
         </v-btn>
         <v-btn color="red" variant="flat" block @click="emitAction('delete')">
-          Eliminar reserva
+          Eliminar clase
         </v-btn>
       </v-card-actions>
 

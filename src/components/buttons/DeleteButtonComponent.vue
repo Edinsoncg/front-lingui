@@ -1,4 +1,3 @@
-<!-- src/components/buttons/DeleteButtonComponent.vue -->
 <template>
   <div>
     <v-btn icon size="small" color="error" @click="openDialog">
@@ -7,8 +6,8 @@
 
     <ConfirmDialog
       v-model="showDialog"
-      title="¿Eliminar material?"
-      :message="`¿Estás seguro de que deseas eliminar el material '${item.name}'?`"
+      :title="`¿Eliminar ${resource}?`"
+      :message="`¿Estás seguro de que deseas eliminar este ${resource}?`"
       @confirm="confirmDelete"
       @cancel="showDialog = false"
     />
@@ -18,17 +17,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ConfirmDialog from '@/components/ModalComponent.vue'
-import SupportMaterialService from '@/services/SupportMaterialService'
 
 const props = defineProps<{
-  item: {
-    id: number
-    name: string
-  }
+  item: { id: number }
+  resource: string
 }>()
 
 const emit = defineEmits<{
-  (e: 'deleted'): void
+  (e: 'confirm-delete', item: { id: number }): void
 }>()
 
 const showDialog = ref(false)
@@ -37,14 +33,8 @@ function openDialog() {
   showDialog.value = true
 }
 
-async function confirmDelete() {
-  try {
-    await SupportMaterialService.delete(props.item.id)
-    emit('deleted')
-  } catch (error) {
-    console.error('Error al eliminar material:', error)
-  } finally {
-    showDialog.value = false
-  }
+function confirmDelete() {
+  emit('confirm-delete', props.item)
+  showDialog.value = false
 }
 </script>

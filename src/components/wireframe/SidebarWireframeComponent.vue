@@ -129,7 +129,7 @@
         {
           title: 'Usuarios',
           icon: 'mdi-account-cog-outline',
-          to: '/configuracion/usuarios',
+          to: '/setting/user',
         },
         {
           title: 'Permisos',
