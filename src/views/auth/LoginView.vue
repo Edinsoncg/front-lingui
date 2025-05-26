@@ -1,111 +1,66 @@
+<!-- src/views/auth/LoginView.vue -->
 <script setup lang="ts">
-
-import { authSetStore } from '@/stores/authStore'
+import { authSetStore } from '@/stores/AuthStore'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const authStore = authSetStore()
 const email = ref('')
 const password = ref('')
+const visible = ref(false)
 
 const handlerLogin = () => {
   if (!email.value || !password.value) {
     alert('Todos los campos son obligatorios')
   } else {
-    authStore.login({email: email.value, password: password.value})
+    authStore.login({ email: email.value, password: password.value })
   }
 }
 </script>
 
 <template>
-  <div class="container">
-    <h1>Sign in to Güi</h1>
-    <div class="container-two">
-      <form method="POST" @submit.prevent="handlerLogin">
-        <label for="email">EMAIL</label>
-        <input type="text" v-model="email" id="email" name="email" required placeholder="Insert your email"/>
+  <div class="d-flex align-center justify-center" style="min-height: 100">
+    <v-card class="pa-10" w-100 width="400" elevation="12" rounded="lg">
 
-        <label for="password">PASSWORD</label>
-        <input type="password" v-model="password" id="password" name="password" required placeholder="Insert your password"/>
+      <h2 class="text-center mb-6 font-weight-bold">Log in to Güi</h2>
 
-        <button type="submit">LOGIN</button>
+      <form @submit.prevent="handlerLogin">
+        <v-text-field
+          v-model="email"
+          label="Email"
+          placeholder="Insert your email"
+          prepend-inner-icon="mdi-email-outline"
+          variant="outlined"
+          density="compact"
+          class="mb-4"
+        />
 
-        <p>
-          <Router-link to="/restore">Forgot Password?</Router-link>
-        </p>
+        <v-text-field
+          v-model="password"
+          :type="visible ? 'text' : 'password'"
+          label="Password"
+          placeholder="Insert your password"
+          prepend-inner-icon="mdi-lock-outline"
+          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+          @click:append-inner="visible = !visible"
+          variant="outlined"
+          density="compact"
+          class="mb-2"
+        />
 
-        <p>
-          <Router-link to="/sign">Sign up now</Router-link>
-        </p>
+          <v-card-text class="text-medium-emphasis text-caption">
+            Warning: After 3 consecutive failed login attempts, you account will be temporarily locked for three hours. If you must login now, you can also click "Forgot login password?" below to reset the login password.
+          </v-card-text>
+
+        <v-btn type="submit" color="purple" block size="large" class="mb-2">
+          Login
+        </v-btn>
+
+        <div class="text-center mt-4">
+          <Router-link to="/restore" class="text-blue text-caption">Forgot Password?</Router-link>
+        </div>
       </form>
-    </div>
+    </v-card>
   </div>
 </template>
-
-<style>
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-h1 {
-  font-size: 35px;
-  font-weight: bold;
-  color: #000000;
-}
-
-.container-two {
-  background: linear-gradient(to right , #9ebbfe, #cc9bf1);
-  padding: 2rem;
-  border-radius: 30px;
-  width: 300px;
-  text-align: center;
-  margin-top: 15px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  margin-bottom: 5px;
-  text-align: left;
-  font-weight: bold;
-  color: #052e73;
-}
-
-input {
-  background-color: rgba(255, 255, 255, 0.3);;
-  margin-bottom: 1rem;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-::placeholder {
-  font-size: 14px;
-}
-
-button {
-  padding: 10px;
-  background-color: #632093;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  width: 150px;
-  display: block;
-  margin: 15px auto;
-}
-
-button:hover {
-  background-color: #7e21c0;
-}
-
-p {
-  font-size: 14px;
-  margin-top: 15px;
-  text-decoration: underline purple;
-}
-</style>
