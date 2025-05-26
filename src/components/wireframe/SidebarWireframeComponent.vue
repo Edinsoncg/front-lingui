@@ -82,7 +82,7 @@
         {
           title: 'Académico',
           icon: 'mdi-school-outline',
-          to: '/seguimiento/academico',
+          to: '/progress/academic',
         },
         {
           title: 'Contrato',
