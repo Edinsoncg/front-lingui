@@ -6,6 +6,7 @@ import DashboardView from '@/views/DashboardView.vue'
 import SupportMaterialView from '@/views/SupportMaterialView.vue'
 import AgendaView from '@/views/AgendaView.vue'
 import SettingUserView from '@/views/SettingUserView.vue'
+import FollowAcademyView from '@/views/FollowAcademyView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,6 +43,12 @@ const router = createRouter({
       path: '/agenda',
       name: 'agenda',
       component: AgendaView,
+      meta: {layout: 'WireframeLayout'}
+    },
+    {
+      path: '/progress/academic',
+      name: 'progress-academic',
+      component: FollowAcademyView,
       meta: {layout: 'WireframeLayout'}
     },
     {
