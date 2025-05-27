@@ -18,7 +18,7 @@
     <v-row justify="center" v-if="student">
       <v-col cols="12" md="8">
         <v-card class="pa-6" elevation="4">
-          <h2 class="text-h5 font-weight-bold mb-6">TU PROGRESO</h2>
+          <h2 class="text-h5 font-weight-bold mb-6">PROGRESO</h2>
 
           <v-row class="mb-4">
             <v-col cols="12" md="4">
