@@ -59,25 +59,59 @@
                 readonly
                 outlined
               />
+              <v-progress-linear
+                :model-value="progress.date_percent || 0"
+                color="cyan"
+                height="25"
+                class="mt-2"
+              >
+                <template v-slot:default="{ value }">
+                  <strong>{{ Math.ceil(value) }}%</strong>
+                </template>
+              </v-progress-linear>
             </v-col>
           </v-row>
 
-          <v-row class="mb-2">
-            <v-col cols="12" md="6">
+          <v-row class="mb-4">
+            <v-col cols="12" md="6" class="d-flex align-center">
               <v-text-field
                 :model-value="`${progress.weekly_hours_completed || 0}h / ${progress.weekly_sessions_completed || 0} sesiones`"
                 label="Horas semanales"
                 readonly
                 outlined
+                class="flex-grow-1"
               />
+              <v-progress-linear
+                :model-value="weeklyProgress"
+                color="cyan"
+                height="25"
+                class="ml-4"
+                style="width: 150px"
+              >
+                <template v-slot:default="{ value }">
+                  <strong>{{ Math.ceil(value) }}%</strong>
+                </template>
+              </v-progress-linear>
             </v-col>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="6" class="d-flex align-center">
               <v-text-field
                 :model-value="`${progress.monthly_hours_completed || 0}h / ${progress.monthly_sessions_completed || 0} sesiones`"
                 label="Horas mensuales"
                 readonly
                 outlined
+                class="flex-grow-1"
               />
+              <v-progress-linear
+                :model-value="monthlyProgress"
+                color="cyan"
+                height="25"
+                class="ml-4"
+                style="width: 150px"
+              >
+                <template v-slot:default="{ value }">
+                  <strong>{{ Math.ceil(value) }}%</strong>
+                </template>
+              </v-progress-linear>
             </v-col>
           </v-row>
 
@@ -109,7 +143,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import ContractProgressService from '@/services/ContractProgressService'
 import StatusService from '@/services/StatusService'
 import ContractService from '@/services/ContractService'
@@ -168,7 +202,7 @@ const saveChanges = async () => {
   isSaving.value = true
   try {
     await ContractProgressService.update(form.value)
-    fetchProgress() // recarga
+    fetchProgress()
     showSnackbar('Datos actualizados correctamente')
   } catch (error) {
     console.error('Error al guardar:', error)
@@ -187,6 +221,9 @@ onMounted(async () => {
     showSnackbar('Error al cargar selects', 'error')
   }
 })
+
+const weeklyProgress = computed(() => progress.value.weekly_percent || 0)
+const monthlyProgress = computed(() => progress.value.monthly_percent || 0)
 </script>
 
 <style scoped>
