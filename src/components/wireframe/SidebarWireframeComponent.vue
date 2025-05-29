@@ -87,7 +87,7 @@
         {
           title: 'Contrato',
           icon: 'mdi-file-document-outline',
-          to: '/seguimiento/contrato',
+          to: '/progress/contract',
         },
       ],
     },
