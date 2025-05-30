@@ -62,8 +62,9 @@
               <v-progress-linear
                 :model-value="progress.date_percent || 0"
                 color="cyan"
-                height="25"
+                height="40"
                 class="mt-2"
+                rounded
               >
                 <template v-slot:default="{ value }">
                   <strong>{{ Math.ceil(value) }}%</strong>
@@ -84,9 +85,10 @@
               <v-progress-linear
                 :model-value="weeklyProgress"
                 color="cyan"
-                height="25"
+                height="40"
                 class="ml-4"
-                style="width: 150px"
+                style="width: 250px"
+                rounded
               >
                 <template v-slot:default="{ value }">
                   <strong>{{ Math.ceil(value) }}%</strong>
@@ -104,9 +106,10 @@
               <v-progress-linear
                 :model-value="monthlyProgress"
                 color="cyan"
-                height="25"
+                height="40"
                 class="ml-4"
-                style="width: 150px"
+                style="width: 250px"
+                rounded
               >
                 <template v-slot:default="{ value }">
                   <strong>{{ Math.ceil(value) }}%</strong>
@@ -119,6 +122,7 @@
             color="green"
             class="mt-4"
             variant="flat"
+            style="width: auto"
             @click="showModal = true"
             :loading="isSaving"
           >

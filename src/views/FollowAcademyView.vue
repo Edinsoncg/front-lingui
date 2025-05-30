@@ -21,24 +21,44 @@
           <h2 class="text-h5 font-weight-bold mb-6">PROGRESO</h2>
 
           <v-row class="mb-4">
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="6">
               <v-text-field
                 label="NIVEL"
                 :model-value="current?.level || '......'"
                 readonly
                 outlined
-              />
-            </v-col>
-            <v-col cols="12" md="4">
-              <v-text-field
-                label="UNIDAD"
-                :model-value="current?.unit || '......'"
-                readonly
-                outlined
+                class="mr-4"
               />
             </v-col>
           </v-row>
 
+          <v-row class="mb-4">
+            <v-col cols="12" md="6">
+              <div class="d-flex align-center">
+                <v-text-field
+                  label="UNIDAD"
+                  :model-value="current?.unit || '......'"
+                  readonly
+                  outlined
+                  class="mr-4"
+                />
+              </div>
+            </v-col>
+
+            <v-col cols="12" md="6">
+                <v-progress-linear
+                  v-if="current?.progressPercentage != null"
+                  :model-value="current.progressPercentage"
+                  color="cyan"
+                  height="40"
+                  rounded=""
+                >
+                  <template v-slot:default="{ value }">
+                    <strong>{{ Math.ceil(value) }}%</strong>
+                  </template>
+                </v-progress-linear>
+            </v-col>
+          </v-row>
           <div>
             <p class="text-subtitle-1 font-weight-medium mb-2">COMPONENTE:</p>
             <v-row class="ml-1">
@@ -57,6 +77,7 @@
             color="green"
             class="mt-6"
             variant="flat"
+            style="width: auto"
             @click="showModal = true"
             :loading="isSaving"
           >
@@ -122,19 +143,22 @@ const saveProgress = async () => {
   if (!current.value || !current.value.components?.length) return
 
   isSaving.value = true
+  showModal.value = false // ✅ cerrar modal
+
   try {
     const changes = current.value.components.map((c) => ({
       unit_component_id: c.id,
       completed: c.completed,
     }))
 
-    await AcademyProgressService.saveChanges({
+    const result = await AcademyProgressService.saveChanges({
       student_id: current.value.components[0].student_id,
       changes,
     })
 
-    fetchProgress() // recargar
-    showSnackbar('Progreso guardado correctamente', 'success')
+    await fetchProgress() // ✅ recargar datos tras guardar
+
+    showSnackbar(result.message || 'Progreso guardado correctamente', 'success') // ✅ mensaje dinámico
   } catch (error) {
     console.error('Error al guardar progreso:', error)
     showSnackbar('Error al guardar progreso', 'error')
