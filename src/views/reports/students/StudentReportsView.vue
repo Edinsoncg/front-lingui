@@ -9,7 +9,7 @@
       clearable
       density="compact"
       class="mb-4"
-      style="width: 25%;"
+      style="width: 30%;"
     />
 
 

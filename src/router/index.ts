@@ -72,6 +72,13 @@ const router = createRouter({
       meta: {layout: 'WireframeLayout'}
     },
     {
+      path: '/report-student/:code',
+      name: 'report-student-detail',
+      component: StudentReportsView,
+      meta: {layout: 'WireframeLayout'},
+      props: true
+    },
+    {
       path: '/setting/user',
       name: 'setting-user',
       component: SettingUserView,

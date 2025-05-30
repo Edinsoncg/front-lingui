@@ -21,4 +21,21 @@ export default class ReportStudentService {
     if (!response.ok) throw new Error('Error al obtener datos')
     return await response.json()
   }
+
+    static async getByCode(code: string) {
+      const token = localStorage.getItem('token')
+
+      const response = await fetch(`${URL}/${code}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Error al obtener detalle del estudiante')
+      }
+
+      return await response.json()
+  }
 }
