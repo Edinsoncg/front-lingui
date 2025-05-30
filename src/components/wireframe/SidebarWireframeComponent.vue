@@ -103,7 +103,7 @@
         {
           title: 'Estudiantes',
           icon: 'mdi-account-multiple-outline',
-          to: '/reportes/estudiantes',
+          to: '/report-student',
         },
         {
           title: 'Salones',

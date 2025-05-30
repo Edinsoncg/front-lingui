@@ -8,6 +8,7 @@ import AgendaView from '@/views/AgendaView.vue'
 import SettingUserView from '@/views/SettingUserView.vue'
 import FollowAcademyView from '@/views/FollowAcademyView.vue'
 import FollowContractView from '@/views/FollowContractView.vue'
+import StudentReportsView from '@/views/reports/students/StudentReportsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -64,7 +65,13 @@ const router = createRouter({
       component: SupportMaterialView,
       meta: {layout: 'WireframeLayout'}
     },
-        {
+    {
+      path: '/report-student',
+      name: 'report-student',
+      component: StudentReportsView,
+      meta: {layout: 'WireframeLayout'}
+    },
+    {
       path: '/setting/user',
       name: 'setting-user',
       component: SettingUserView,
