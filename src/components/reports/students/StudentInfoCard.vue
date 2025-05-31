@@ -1,41 +1,48 @@
 <template>
-  <v-card class="pa-6 mb-4" elevation="2">
-    <v-row>
+  <v-card class="pa-4 mb-4" elevation="2">
+    <v-row dense>
       <v-col cols="12" md="6">
-        <p class="font-weight-bold mb-1">Código:</p>
-        <p>{{ student.codigo }}</p>
+        <strong>Código:</strong>
+        <div>{{ student.codigo }}</div>
       </v-col>
 
       <v-col cols="12" md="6">
-        <p class="font-weight-bold mb-1">Nombre completo:</p>
-        <p>{{ student.nombre }} {{ student.apellido }}</p>
+        <strong>Nombre completo:</strong>
+        <div>{{ student.nombre }} {{ student.apellido }}</div>
       </v-col>
 
       <v-col cols="12" md="6">
-        <p class="font-weight-bold mb-1">Idioma:</p>
-        <p>{{ student.idioma }}</p>
+        <strong>Idioma:</strong>
+        <div>{{ student.idioma }}</div>
       </v-col>
 
       <v-col cols="12" md="6">
-        <p class="font-weight-bold mb-1">Estado:</p>
-        <v-chip :color="student.estado === 'Activo' ? 'green' : 'red'" dark>
-          {{ student.estado }}
-        </v-chip>
+        <strong>Estado:</strong>
+        <div>
+          <v-chip
+            :color="student.estado === 'Activo' ? 'green' : 'red'"
+            variant="elevated"
+            size="small"
+          >
+            {{ student.estado }}
+          </v-chip>
+        </div>
+
       </v-col>
 
       <v-col cols="12" md="4">
-        <p class="font-weight-bold mb-1">Tipo de contrato:</p>
-        <p>{{ student.tipo_contrato }}</p>
+        <strong>Tipo de contrato:</strong>
+        <div>{{ student.tipo_contrato }}</div>
       </v-col>
 
       <v-col cols="6" md="4">
-        <p class="font-weight-bold mb-1">Fecha inicio:</p>
-        <p>{{ student.fecha_inicio }}</p>
+        <strong>Fecha inicio:</strong>
+        <div>{{ student.fecha_inicio }}</div>
       </v-col>
 
       <v-col cols="6" md="4">
-        <p class="font-weight-bold mb-1">Fecha fin:</p>
-        <p>{{ student.fecha_fin }}</p>
+        <strong>Fecha fin:</strong>
+        <div>{{ student.fecha_fin }}</div>
       </v-col>
     </v-row>
   </v-card>
