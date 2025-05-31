@@ -72,7 +72,7 @@ async function loadStudents(options?: any) {
 
 // 🔗 Ir a vista detalle
 function goToDetail(codigo: string) {
-  router.push(`/reportes/estudiantes/${codigo}`)
+  router.push(`/report/student/${codigo}`)
 }
 
 // 🚀 Cargar inicial

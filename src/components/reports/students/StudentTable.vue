@@ -10,10 +10,17 @@
     @update:options="onUpdate"
     class="elevation-2"
   >
-    <template #item.codigo="{ item }">
-      <v-btn variant="text" @click="emit('view', item.codigo)">
-        {{ item.codigo }}
-      </v-btn>
+    <!-- Resaltado y clic por fila -->
+    <template #item="{ item, index }">
+      <tr class="hover-row" @click="emit('view', item.codigo)">
+        <td>{{ item.codigo }}</td>
+        <td>{{ item.nombre }}</td>
+        <td>{{ item.apellido }}</td>
+        <td>{{ item.nivel }}</td>
+        <td>{{ item.idioma }}</td>
+        <td>{{ item.estado }}</td>
+        <td>{{ item.tipo_contrato }}</td>
+      </tr>
     </template>
   </v-data-table-server>
 </template>
@@ -49,7 +56,6 @@ const headers = [
 const internalPage = ref(props.page)
 const internalItemsPerPage = ref(props.itemsPerPage)
 
-// Sincroniza props externas con valores internos
 watch(() => props.page, (val) => internalPage.value = val)
 watch(() => props.itemsPerPage, (val) => internalItemsPerPage.value = val)
 
@@ -67,3 +73,11 @@ function onUpdate(options: any) {
   }
 }
 </script>
+
+<style scoped>
+tr.hover-row:hover {
+  background-color: #f2e2f1; /* gris claro */
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+</style>
