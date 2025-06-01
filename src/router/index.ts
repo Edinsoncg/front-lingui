@@ -12,6 +12,8 @@ import StudentReportsView from '@/views/reports/students/StudentReportsView.vue'
 import StudentReportDetailView from '@/views/reports/students/StudentReportDetailView.vue'
 import ClassroomReportsView from '@/views/reports/classrooms/ClassroomReportsView.vue'
 import ClassroomReportsDetailView from '@/views/reports/classrooms/ClassroomReportDetailView.vue'
+import TeacherReportsView from '@/views/reports/teachers/TeacherReportsView.vue'
+import TeacherReportDetailView from '@/views/reports/teachers/TeacherReportDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -91,6 +93,19 @@ const router = createRouter({
       path: '/report/classroom/:id',
       name: 'report-classroom-detail',
       component: ClassroomReportsDetailView,
+      meta: {layout: 'WireframeLayout'},
+      props: true
+    },
+    {
+      path: '/report/teacher',
+      name: 'report-teacher',
+      component: TeacherReportsView,
+      meta: {layout: 'WireframeLayout'}
+    },
+    {
+      path: '/report/teacher/:id',
+      name: 'report-teacher-detail',
+      component: TeacherReportDetailView,
       meta: {layout: 'WireframeLayout'},
       props: true
     },

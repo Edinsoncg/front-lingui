@@ -113,7 +113,7 @@
         {
           title: 'Profesores',
           icon: 'mdi-account-tie',
-          to: '/reportes/profesores',
+          to: '/report/teacher',
         },
       ],
     },
