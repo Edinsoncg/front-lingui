@@ -108,7 +108,7 @@
         {
           title: 'Salones',
           icon: 'mdi-door-open',
-          to: '/reportes/salones',
+          to: '/report/classroom',
         },
         {
           title: 'Profesores',

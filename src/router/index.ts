@@ -10,6 +10,8 @@ import FollowAcademyView from '@/views/FollowAcademyView.vue'
 import FollowContractView from '@/views/FollowContractView.vue'
 import StudentReportsView from '@/views/reports/students/StudentReportsView.vue'
 import StudentReportDetailView from '@/views/reports/students/StudentReportDetailView.vue'
+import ClassroomReportsView from '@/views/reports/classrooms/ClassroomReportsView.vue'
+import ClassroomReportsDetailView from '@/views/reports/classrooms/ClassroomReportDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -76,6 +78,19 @@ const router = createRouter({
       path: '/report/student/:code',
       name: 'report-student-detail',
       component: StudentReportDetailView,
+      meta: {layout: 'WireframeLayout'},
+      props: true
+    },
+    {
+      path: '/report/classroom',
+      name: 'report-classroom',
+      component: ClassroomReportsView,
+      meta: {layout: 'WireframeLayout'}
+    },
+    {
+      path: '/report/classroom/:id',
+      name: 'report-classroom-detail',
+      component: ClassroomReportsDetailView,
       meta: {layout: 'WireframeLayout'},
       props: true
     },
