@@ -3,7 +3,7 @@
     <!-- 🔍 Buscador -->
     <v-text-field
       v-model="searchQuery"
-      label="Buscar por nombre del profesor"
+      label="Buscar por nombre o correo"
       prepend-inner-icon="mdi-magnify"
       hide-details
       clearable

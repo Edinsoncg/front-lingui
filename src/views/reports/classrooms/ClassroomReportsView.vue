@@ -1,9 +1,9 @@
 <template>
   <v-container class="py-6">
-    <!-- 🔍 Buscador -->
+    <!--Buscador -->
     <v-text-field
       v-model="searchQuery"
-      label="Buscar por nombre del salón"
+      label="Buscar por nombre"
       prepend-inner-icon="mdi-magnify"
       hide-details
       clearable
@@ -12,7 +12,7 @@
       style="max-width: 300px;"
     />
 
-    <!-- 📊 Tabla de salones -->
+    <!--Tabla de salones -->
     <ClassroomTable
       :classrooms="classrooms"
       :total="total"

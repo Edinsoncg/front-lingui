@@ -20,6 +20,7 @@
             class="text-nowrap px-4 mr-2"
             prepend-icon="mdi-download"
             @click="exportToPDF"
+            style="width: auto;"
           >
             Exportar a PDF
           </v-btn>
