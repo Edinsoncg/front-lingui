@@ -8,6 +8,7 @@ import AgendaView from '@/views/AgendaView.vue'
 import SettingUserView from '@/views/SettingUserView.vue'
 import FollowAcademyView from '@/views/FollowAcademyView.vue'
 import FollowContractView from '@/views/FollowContractView.vue'
+import MyProfileView from '@/views/ProfileView.vue'
 import StudentReportsView from '@/views/reports/students/StudentReportsView.vue'
 import StudentReportDetailView from '@/views/reports/students/StudentReportDetailView.vue'
 import ClassroomReportsView from '@/views/reports/classrooms/ClassroomReportsView.vue'
@@ -62,6 +63,12 @@ const router = createRouter({
       path: '/progress/contract',
       name: 'progress-contract',
       component: FollowContractView,
+      meta: {layout: 'WireframeLayout'}
+    },
+    {
+      path: '/profile',
+      name: 'my-profile',
+      component: MyProfileView,
       meta: {layout: 'WireframeLayout'}
     },
     {
