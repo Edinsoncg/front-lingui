@@ -87,7 +87,7 @@
                 color="cyan"
                 height="40"
                 class="ml-4"
-                style="width: 250px"
+                style="width: 150px"
                 rounded
               >
                 <template v-slot:default="{ value }">
@@ -108,7 +108,7 @@
                 color="cyan"
                 height="40"
                 class="ml-4"
-                style="width: 250px"
+                style="width: 150px"
                 rounded
               >
                 <template v-slot:default="{ value }">
