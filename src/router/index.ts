@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import SignView from '@/views/auth/SignView.vue'
 import RestoreView from '@/views/auth/RestoreView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
-import DashboardView from '@/views/DashboardView.vue'
 import SupportMaterialView from '@/views/SupportMaterialView.vue'
 import AgendaView from '@/views/AgendaView.vue'
 import SettingUserView from '@/views/SettingUserView.vue'
@@ -15,6 +14,7 @@ import ClassroomReportsView from '@/views/reports/classrooms/ClassroomReportsVie
 import ClassroomReportsDetailView from '@/views/reports/classrooms/ClassroomReportDetailView.vue'
 import TeacherReportsView from '@/views/reports/teachers/TeacherReportsView.vue'
 import TeacherReportDetailView from '@/views/reports/teachers/TeacherReportDetailView.vue'
+import DashboardAdminView from '@/views/dashboard/DashboardAdminView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,9 +42,9 @@ const router = createRouter({
       meta: {layout: 'AuthLayout'}
     },
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: DashboardView,
+      path: '/dashboard/admin',
+      name: 'DashboardAdmin',
+      component: DashboardAdminView,
       meta: {layout: 'WireframeLayout'}
     },
     {

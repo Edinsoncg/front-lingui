@@ -63,7 +63,7 @@
     {
       title: 'Dashboard',
       icon: 'mdi-view-dashboard-outline',
-      to: '/dashboard',
+      to: '/dashboard/admin',
     },
     {
       title: 'Agenda',
