@@ -2,7 +2,7 @@
 
 const URL = 'http://localhost:3333/classroom'
 
-export default class AgendaService {
+export default class ClassroomService {
 
   static async getAll() {
     const token = localStorage.getItem("token")

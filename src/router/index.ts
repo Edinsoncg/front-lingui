@@ -15,6 +15,7 @@ import ClassroomReportsView from '@/views/reports/classrooms/ClassroomReportsVie
 import ClassroomReportsDetailView from '@/views/reports/classrooms/ClassroomReportDetailView.vue'
 import TeacherReportsView from '@/views/reports/teachers/TeacherReportsView.vue'
 import TeacherReportDetailView from '@/views/reports/teachers/TeacherReportDetailView.vue'
+import FormClassView from '@/views/crud/form-agenda-view.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +52,12 @@ const router = createRouter({
       path: '/agenda',
       name: 'agenda',
       component: AgendaView,
+      meta: {layout: 'WireframeLayout'}
+    },
+    {
+      path: '/agenda/class-form',
+      name: 'classroom-agenda',
+      component: FormClassView,
       meta: {layout: 'WireframeLayout'}
     },
     {

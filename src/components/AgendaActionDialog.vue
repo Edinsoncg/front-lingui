@@ -9,7 +9,8 @@
 
       <v-card-subtitle>
         Aula: <strong>{{ roomName }}</strong> <br>
-        Hora: <strong>{{ hour }}</strong>
+        Hora: <strong>{{ hour }}</strong> <br>
+        Fecha: <strong>{{ date }}</strong>
       </v-card-subtitle>
 
       <v-card-actions class="d-flex flex-column align-start pa-4">
@@ -40,11 +41,12 @@ const props = defineProps<{
   roomName: string
   roomId: number
   hour: string
+  date: string
 }>()
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
-  (e: 'action', value: { type: 'create' | 'view' | 'delete'; roomId: number; hour: string }): void
+  (e: 'action', value: { type: 'create' | 'view' | 'delete'; roomId: number; hour: string; date: date }): void
 }>()
 
 const isOpen = ref(props.modelValue)
@@ -57,6 +59,7 @@ function emitAction(type: 'create' | 'view' | 'delete') {
     type,
     roomId: props.roomId,
     hour: props.hour,
+    date: props.date,
   })
   isOpen.value = false
 }
