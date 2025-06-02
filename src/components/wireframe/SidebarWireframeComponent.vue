@@ -103,17 +103,17 @@
         {
           title: 'Estudiantes',
           icon: 'mdi-account-multiple-outline',
-          to: '/reportes/estudiantes',
+          to: '/report-student',
         },
         {
           title: 'Salones',
           icon: 'mdi-door-open',
-          to: '/reportes/salones',
+          to: '/report/classroom',
         },
         {
           title: 'Profesores',
           icon: 'mdi-account-tie',
-          to: '/reportes/profesores',
+          to: '/report/teacher',
         },
       ],
     },
