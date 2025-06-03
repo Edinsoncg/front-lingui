@@ -26,7 +26,7 @@ export const authSetStore = defineStore( 'auth', {
 
         localStorage.setItem('token', token)
 
-        router.push('/dashboard')
+        router.push('/dashboard/admin');
       }
   },
 
