@@ -192,7 +192,14 @@ async function fetchBookings() {
   try {
     console.log('Fecha enviada:', selectedDate.value)
     const data = await AgendaService.getAll(selectedDate.value)
-    originalBookings.value = data
+    originalBookings.value = data.map((booking: any) => ({
+      ...booking,
+      levelId: booking.unit.level.id,
+      unitId: booking.unit.id,
+      classTypeId: booking.classTypeId,
+      startAt: booking.startAt,
+      endAt: booking.endAt,
+    }))
 
     applyFilters()
   } catch (error) {
