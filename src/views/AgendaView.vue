@@ -28,6 +28,20 @@
         />
       </v-col>
 
+      <!-- Filtro por idioma -->
+      <v-col cols="12" sm="3">
+        <v-select
+          v-model="filters.language"
+          :items="languages"
+          item-title="name"
+          item-value="id"
+          label="Idioma"
+          clearable
+          density="compact"
+          @update:modelValue="applyFilters"
+        />
+      </v-col>
+
       <!-- Filtro por nivel -->
       <v-col cols="12" sm="3">
         <v-select
@@ -108,6 +122,7 @@ import AgendaActionDialog from '@/components/AgendaActionDialog.vue'
 import ClasstypesService from '@/services/ClasstypeService'
 import UnitService from '@/services/UnitService'
 import LevelService from '@/services/LevelService'
+import LanguageService from '@/services/LanguageService'
 
 const hours = ref([
   '6:00', '7:00', '8:00', '9:00', '10:00',
@@ -136,11 +151,13 @@ const filters = ref({
   classType: null,
   level: null,
   unit: null,
+  language: null
 })
 
 const levels = ref<{ id: number; name: string }[]>([])
 const units = ref<{ id: number; name: string; levelId: number }[]>([])
 const classTypes = ref<{ id: number; type: string }[]>([])
+const languages = ref<{ id: number; name: string }[]>([])
 const filteredUnits = ref<{ id: number; name: string; levelId: number }[]>([])
 
 const originalBookings = ref<any[]>([])
@@ -151,6 +168,7 @@ async function loadFilters() {
     classTypes.value = await ClasstypesService.getAll()
     levels.value = await LevelService.getAll()
     units.value = await UnitService.getAll()
+    languages.value = await LanguageService.getAll()
     filteredUnits.value = []
   } catch (err) {
     console.error('Error cargando filtros:', err)
@@ -164,11 +182,12 @@ function handleLevelChange(levelId: number | null) {
 }
 
 function applyFilters() {
-  const { classType, level, unit } = filters.value
+  const { classType, level, unit, language } = filters.value
   bookings.value = originalBookings.value.filter(booking => {
     return (!classType || booking.classTypeId === classType) &&
       (!level || booking.levelId === level) &&
-      (!unit || booking.unitId === unit)
+      (!unit || booking.unitId === unit) &&
+      (!language || booking.teacher.language.id === language)
   })
 }
 
@@ -224,8 +243,21 @@ function getBookingColor(roomId: number, hour: string): string {
 
   const totalInscritos = session.attendances.length
   const capacidadMaxima = session.classroom.capacity
+  const duration = session.duration
 
-  return totalInscritos >= capacidadMaxima ? 'red' : 'green'
+  if (totalInscritos >= capacidadMaxima) return 'red'
+
+  // Colores según duración
+  switch (duration) {
+    case 1:
+      return 'green' // verde claro
+    case 2:
+      return 'light-green-darken-2' // verde medio
+    case 3:
+      return 'green-darken-4'  // verde oscuro
+    default:
+      return 'green' // fallback
+  }
 }
 
 onMounted(async () => {
