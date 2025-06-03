@@ -48,24 +48,26 @@
       <v-col cols="12">
         <v-card class="pa-4">
           <v-card-title>Clases Programadas Hoy</v-card-title>
-          <v-card-text>
-            <v-list v-if="data.clases_hoy.length">
-              <v-list-item v-for="clase in data.clases_hoy" :key="clase.time + clase.classroom">
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ clase.time }} - {{ clase.classroom }} ({{ clase.level }})
-                  </v-list-item-title>
-                  <v-list-item-subtitle>
-                    Profesor: {{ clase.teacher }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-            <div v-else class="text-grey d-flex align-center">
-              <v-icon icon="mdi-calendar-remove" class="me-2" />
-              No hay clases programadas hoy.
-            </div>
-          </v-card-text>
+            <v-card-text>
+              <v-row v-if="data.clases_hoy.length">
+                <v-col
+                  v-for="clase in data.clases_hoy"
+                  :key="clase.time + clase.classroom"
+                  cols="12"
+                  md="2"
+                >
+                  <div class="mb-4">
+                    <strong>- {{ clase.classroom }} ({{ clase.level }})</strong><br />
+                    <small class="text-grey-darken-1">Profesor: {{ clase.teacher }}</small>
+                  </div>
+                </v-col>
+              </v-row>
+              <div v-else class="text-grey d-flex align-center">
+                <v-icon icon="mdi-calendar-remove" class="me-2" />
+                No hay clases programadas hoy.
+              </div>
+            </v-card-text>
+
         </v-card>
       </v-col>
     </v-row>
