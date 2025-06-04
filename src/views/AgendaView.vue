@@ -77,7 +77,7 @@
       <thead>
         <tr class="border-b">
           <th class="text-left border-r">CLASSROOM</th>
-          <th v-for="hour in hours" :key="hour" class="text-left border-r">
+          <th v-for="hour in hours" :key="hour" class="text-center border-r">
             {{ hour }}
           </th>
         </tr>
@@ -86,18 +86,20 @@
         <tr v-for="room in classrooms" :key="room.id" class="border-b">
           <td class="border-r">{{ room.name }}</td>
           <td
-            v-for="hour in hours"
-            :key="hour"
+            v-for="cell in renderAgendaRow(room.id)"
+            :key="cell.key"
+            :colspan="cell.colspan"
             class="text-center border-r cursor-pointer"
-            @click="openDialog(room.id, room.name, hour)"
+            @click="openDialog(room.id, room.name, cell.hour)"
           >
-            <v-chip
-              v-if="isBooked(room.id, hour)"
-              :color="getBookingColor(room.id, hour)"
-              text="Booking"
-              size="small"
-              variant="elevated"
-            />
+            <template v-if="cell.chip">
+              <v-chip
+                :color="cell.color"
+                text="Booking"
+                size="small"
+                variant="elevated"
+              />
+            </template>
           </td>
         </tr>
       </tbody>
@@ -109,6 +111,12 @@
       :room-name="selectedRoomName"
       :hour="selectedHour"
       :date="selectedDate"
+      :class-type="dialogProps.classType"
+      :language="dialogProps.language"
+      :level="dialogProps.level"
+      :unit="dialogProps.unit"
+      :end-hour="dialogProps.endHour"
+      :has-class="dialogProps.hasClass"
       @action="handleAction"
     />
   </div>
@@ -116,6 +124,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import ClassroomService from '@/services/ClassroomService'
 import AgendaService from '@/services/AgendaService'
 import AgendaActionDialog from '@/components/AgendaActionDialog.vue'
@@ -124,28 +133,17 @@ import UnitService from '@/services/UnitService'
 import LevelService from '@/services/LevelService'
 import LanguageService from '@/services/LanguageService'
 
+
 const hours = ref([
   '6:00', '7:00', '8:00', '9:00', '10:00',
   '11:00', '12:00', '13:00', '14:00', '15:00',
   '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
 ])
 
+const router = useRouter()
+
 const selectedDate = ref(new Date().toISOString().substring(0, 10))
 const classrooms = ref<{ id: number; name: string }[]>([])
-
-function isBooked(roomId: number, hour: string) {
-  const targetTime = new Date(`${selectedDate.value}T${hour.padStart(5, '0')}:00`)
-
-  return bookings.value.some(booking => {
-    const start = new Date(booking.startAt)
-    const end = new Date(booking.endAt)
-    return (
-      booking.classroom.id === roomId &&
-      targetTime >= start &&
-      targetTime < end
-    )
-  })
-}
 
 const filters = ref({
   classType: null,
@@ -195,21 +193,40 @@ const dialogOpen = ref(false)
 const selectedRoomId = ref(0)
 const selectedRoomName = ref('')
 const selectedHour = ref('')
+const dialogProps = ref({
+  classType: '',
+  language: '',
+  level: '',
+  unit: '',
+  endHour: '',
+  hasClass: false
+})
+
+function getHourString(date: Date) {
+  return date.toTimeString().substring(0, 5)
+}
 
 function openDialog(roomId: number, roomName: string, hour: string) {
+  const session = getSessionAt(roomId, hour)
+
   selectedRoomId.value = roomId
   selectedRoomName.value = roomName
   selectedHour.value = hour
-  dialogOpen.value = true
+
+  dialogProps.value = {
+  classType: session?.classType?.type || '',
+  language: session?.teacher?.language?.name || '',
+  level: session?.unit?.level?.name || '',
+  unit: session?.unit?.name || '',
+  endHour: session ? getHourString(new Date(session.endAt)) : '',
+  hasClass: !!session
 }
 
-function handleAction(action: { type: 'create' | 'view' | 'delete'; roomId: number; hour: string }) {
-  console.log('Acción:', action)
+  dialogOpen.value = true
 }
 
 async function fetchBookings() {
   try {
-    console.log('Fecha enviada:', selectedDate.value)
     const data = await AgendaService.getAll(selectedDate.value)
     originalBookings.value = data.map((booking: any) => ({
       ...booking,
@@ -219,50 +236,101 @@ async function fetchBookings() {
       startAt: booking.startAt,
       endAt: booking.endAt,
     }))
-
     applyFilters()
   } catch (error) {
     console.error('Error al obtener sesiones:', error)
   }
 }
 
-function getBookingColor(roomId: number, hour: string): string {
-  const targetTime = new Date(`${selectedDate.value}T${hour.padStart(5, '0')}:00`)
+function getHourDate(hour: string): Date {
+  return new Date(`${selectedDate.value}T${hour.padStart(5, '0')}:00`)
+}
 
-  const session = bookings.value.find(booking => {
-    const start = new Date(booking.startAt)
-    const end = new Date(booking.endAt)
+function getSessionAt(roomId: number, hour: string) {
+  const targetTime = getHourDate(hour)
+  return bookings.value.find(session => {
+    const start = new Date(session.startAt)
+    const end = new Date(session.endAt)
     return (
-      booking.classroom.id === roomId &&
+      session.classroom.id === roomId &&
       targetTime >= start &&
       targetTime < end
     )
   })
+}
 
+function getBookingColor(roomId: number, hour: string): string {
+  const session = getSessionAt(roomId, hour)
   if (!session) return 'grey'
-
   const totalInscritos = session.attendances.length
   const capacidadMaxima = session.classroom.capacity
-  const duration = session.duration
 
   if (totalInscritos >= capacidadMaxima) return 'red'
 
-  // Colores según duración
-  switch (duration) {
-    case 1:
-      return 'green' // verde claro
-    case 2:
-      return 'light-green-darken-2' // verde medio
-    case 3:
-      return 'green-darken-4'  // verde oscuro
-    default:
-      return 'green' // fallback
+  return 'green'
+}
+
+function renderAgendaRow(roomId: number) {
+  const cells = []
+  let hourIndex = 0
+
+  while (hourIndex < hours.value.length) {
+    const hour = hours.value[hourIndex]
+    const session = getSessionAt(roomId, hour)
+
+    if (session && getHourDate(hour).getTime() === new Date(session.startAt).getTime()) {
+      cells.push({
+        key: `${roomId}-${hour}`,
+        colspan: session.duration,
+        chip: true,
+        color: getBookingColor(roomId, hour),
+        hour,
+      })
+      hourIndex += session.duration
+    } else {
+      cells.push({
+        key: `${roomId}-${hour}`,
+        colspan: 1,
+        chip: false,
+        hour,
+      })
+      hourIndex += 1
+    }
+  }
+
+  return cells
+}
+
+function handleAction(payload: {
+  type: 'create' | 'view' | 'delete' | 'enroll'
+  roomId: number
+  hour: string
+  date: string
+  endHour?: string
+  classType?: string
+  language?: string
+  level?: string
+  unit?: string
+}) {
+  if (payload.type === 'create') {
+    router.push({
+      path: '/agenda/class-form',
+      query: {
+        roomId: payload.roomId.toString(),
+        date: payload.date,
+        hour: payload.hour,
+        endHour: payload.endHour,
+        classType: payload.classType,
+        language: payload.language,
+        level: payload.level,
+        unit: payload.unit
+      }
+    })
   }
 }
 
 onMounted(async () => {
-  const response = await ClassroomService.getAll()
-  classrooms.value = response
+  classrooms.value = await ClassroomService.getAll()
   await loadFilters()
   await fetchBookings()
 })

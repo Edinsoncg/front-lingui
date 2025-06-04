@@ -40,6 +40,19 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+
+
+const roomId = route.query.roomId
+const date = route.query.date
+const hour = route.query.hour
+const endHour = route.query.endHour
+const classType = route.query.classType
+const language = route.query.language
+const level = route.query.level
+const unit = route.query.unit
 
 const form = ref({
   house: null,
