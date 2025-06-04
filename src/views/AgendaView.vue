@@ -338,7 +338,7 @@ onMounted(async () => {
 
 <style scoped>
 th, td {
-  border: 1px solid #000;
+  border: 1px solid #747474;
 }
 .cursor-pointer {
   cursor: pointer;
