@@ -208,8 +208,9 @@ async function save() {
     }
 
     const response = await ProfileService.updateProfile(form)
+    debugger
+    if (response.user.profilePicture) {
 
-    if (response.user.profile_picture) {
       profile.value.profilePicture = response.user.profile_picture
       imageKey.value = Date.now()
     } else {
