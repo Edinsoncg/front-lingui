@@ -1,8 +1,13 @@
 //src/views/crud_material/form-material-view.vue
 
 <template>
-  <div>
-    <v-text-field label="Nombre" v-model="form.name" />
+  <v-form ref="formRef" v-model="formIsValid">
+    <v-text-field
+      label="Nombre"
+      v-model="form.name"
+      :rules="[rules.required, rules.minName, rules.maxName]"
+      :error-messages="errors.name"
+    />
 
     <v-select
       v-model="form.level_id"
@@ -10,17 +15,37 @@
       item-title="name"
       item-value="id"
       label="Nivel"
+      :rules="[rules.required]"
+      :error-messages="errors.level_id"
     />
 
-    <v-text-field label="Link" v-model="form.link" />
-    <v-textarea label="Descripción" v-model="form.description" />
+    <v-text-field
+      label="Link"
+      v-model="form.link"
+      :rules="[rules.required, rules.url]"
+      :error-messages="errors.link"
+      placeholder="https://example.com"
+    />
 
-    <v-btn color="primary" @click="confirmDialog = true" :loading="loading">
-      Guardar
-    </v-btn>
+    <v-textarea
+      label="Descripción"
+      v-model="form.description"
+      :rules="[rules.required, rules.minDesc]"
+      :error-messages="errors.description"
+    />
 
-    <v-btn @click="$emit('cancel')">Cancelar</v-btn>
+    <div>
+      <v-btn
+        color="primary"
+        style="margin-right:10px ;"
+        :disabled="!formIsValid || loading"
+        @click="checkFormBeforeConfirm"
+        :loading="loading">
+          Guardar
+      </v-btn>
 
+      <v-btn @click="$emit('cancel')">Cancelar</v-btn>
+    </div>
     <!-- Modal de confirmación -->
     <ConfirmDialog
       v-model="confirmDialog"
@@ -29,7 +54,7 @@
       @confirm="submit"
       @cancel="confirmDialog = false"
     />
-  </div>
+  </v-form>
 </template>
 
 <script setup lang="ts">
@@ -38,7 +63,7 @@ import LevelService from '@/services/LevelService'
 import SupportMaterialService from '@/services/SupportMaterialService'
 import ConfirmDialog from '@/components/ModalComponent.vue'
 
-//Interfaces y Tipos
+// Interfaces y Tipos
 interface SupportMaterialForm {
   id?: number
   name: string
@@ -51,24 +76,24 @@ interface Level {
   name: string
 }
 
-//props y emits
+// props y emits
 const props = defineProps<{
   mode: 'create' | 'update',
   initialData?: Partial<SupportMaterialForm>
 }>()
 const emit = defineEmits(['saved', 'cancel'])
 
-//Variables Computadas
+// Variables Computadas
 const modalTitle = computed(() =>
   props.mode === 'create' ? 'Crear Material' : 'Actualizar Material'
 )
 const modalMessage = computed(() =>
   props.mode === 'create'
-  ? '¿Está seguro de que desea crear el material?'
-  : '¿Está seguro de que desea actualizar el material?'
+    ? '¿Está seguro de que desea crear el material?'
+    : '¿Está seguro de que desea actualizar el material?'
 )
 
-//Refs y Estado Reactivo
+// Refs y Estado Reactivo
 const form = ref<SupportMaterialForm>({
   name: '',
   level_id: undefined,
@@ -78,8 +103,28 @@ const form = ref<SupportMaterialForm>({
 const levels = ref<Level[]>([])
 const loading = ref(false)
 const confirmDialog = ref(false)
+const formRef = ref()
+const formIsValid = ref(false)
 
-//Watcher
+const errors = ref<Record<string, string[]>>({
+  name: [],
+  level_id: [],
+  link: [],
+  description: [],
+})
+
+const rules = {
+  required: (v: any) => !!v || 'Este campo es obligatorio',
+  minName: (v: string) => v.length >= 3 || 'Mínimo 3 caracteres',
+  maxName: (v: string) => v.length <= 100 || 'Máximo 100 caracteres',
+  minDesc: (v: string) => v.length >= 5 || 'Mínimo 5 caracteres',
+  url: (v: string) => {
+    const pattern = /^(https?:\/\/)([\w-]+\.)+[\w-]{2,}(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/i
+    return pattern.test(v) || 'Debe ser una URL válida'
+  }
+}
+
+// Watcher
 watch(() => props.initialData, (data) => {
   if (props.mode === 'update' && data) {
     form.value = {
@@ -92,7 +137,7 @@ watch(() => props.initialData, (data) => {
   }
 }, { immediate: true })
 
-//Ciclo de Vida
+// Ciclo de Vida
 onMounted(async () => {
   try {
     levels.value = await LevelService.getAll()
@@ -102,33 +147,35 @@ onMounted(async () => {
   }
 })
 
-//Métodos
+// Validación antes de mostrar modal
+function checkFormBeforeConfirm() {
+  formRef.value?.validate().then((isValid: boolean) => {
+    if (isValid) {
+      confirmDialog.value = true
+    }
+  })
+}
+
+// Métodos
 async function submit() {
   confirmDialog.value = false
-
-  if (!form.value.name?.trim()) {
-    alert('El nombre es obligatorio')
-    return
-  }
-
-  if (form.value.level_id === undefined) {
-    alert('El nivel es obligatorio')
-    return
-  }
-
   loading.value = true
 
   try {
     if (props.mode === 'create') {
-      await SupportMaterialService.create({ ...form.value, level_id: form.value.level_id as number })
+      await SupportMaterialService.create({
+        ...form.value,
+        level_id: form.value.level_id as number
+      })
     } else if (props.mode === 'update' && form.value.id) {
-        await SupportMaterialService.update(form.value.id, {
-          name: form.value.name,
-          level_id: form.value.level_id,
-          link: form.value.link,
-          description: form.value.description
-        })
+      await SupportMaterialService.update(form.value.id, {
+        name: form.value.name,
+        level_id: form.value.level_id,
+        link: form.value.link,
+        description: form.value.description
+      })
     }
+
     emit('saved')
 
     form.value = {
@@ -138,7 +185,7 @@ async function submit() {
       description: ''
     }
   } catch (e) {
-    console.error('Error al crear el material:', e)
+    console.error('Error al guardar el material:', e)
   } finally {
     loading.value = false
   }
