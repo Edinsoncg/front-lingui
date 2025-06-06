@@ -11,8 +11,6 @@
     <section class="main-content">
       <RouterView />
     </section>
-
-    <FooterComponent />
   </div>
 </template>
 
@@ -20,7 +18,7 @@
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100%;
   font-family: Arial, sans-serif;
   width: 100%;
 }

@@ -1,86 +1,44 @@
 <template>
-  <div class="container">
-    <h1>Find your account</h1>
-    <div class="container-two">
-      <form action="#" method="post">
+  <v-container class="d-flex justify-center align-center fill-height" fluid>
+    <v-card class="pa-6" max-width="400" elevation="3" color="#f4eafd" rounded="lg">
+      <h1 class="text-h5 font-weight-bold mb-4 text-center">Find your account</h1>
 
-        <label for="Email">EMAIL OR MOBILE NUMBER</label>
-        <input type="text" id="emailOrNumber" name="emailOrNumber" required placeholder="Email or mobile number" />
+      <v-form @submit.prevent="handleSubmit">
+        <v-text-field
+          v-model="email"
+          label="Email or mobile number"
+          variant="outlined"
+          density="compact"
+          hide-details="auto"
+          required
+        />
 
-        <button type="submit">SEARCH</button>
+        <v-btn
+          type="submit"
+          color="primary"
+          class="mt-4 mx-auto d-block"
+          rounded
+        >
+          Search
+        </v-btn>
+      </v-form>
 
-        <p><Router-link to="/login">Do you remember your password?</Router-link></p>
-
-      </form>
-    </div>
-  </div>
+      <div class="text-center mt-4">
+        <RouterLink to="/login" class="text-decoration-underline" style="color: #632093;">
+          Do you remember your password?
+        </RouterLink>
+      </div>
+    </v-card>
+  </v-container>
 </template>
 
-<style>
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-h1 {
-  font-size: 35px;
-  font-weight: bold;
-  color: #000000;
-}
+<script setup lang="ts">
+import { ref } from 'vue'
 
-.container-two {
-  background: linear-gradient(to right , #9ebbfe, #cc9bf1);
-  padding: 2rem;
-  border-radius: 30px;
-  width: 300px;
-  text-align: center;
-  margin-top: 15px;
-}
+const email = ref('')
 
-form {
-  display: flex;
-  flex-direction: column;
+function handleSubmit() {
+  // Aquí se llamaría al servicio de AdonisJS para enviar el correo de recuperación
+  console.log('Email submitted:', email.value)
 }
-
-label {
-  margin-bottom: 5px;
-  text-align: left;
-  font-weight: bold;
-  color: #052e73;
-}
-
-input {
-  background-color: rgba(255, 255, 255, 0.3);;
-  margin-bottom: 1rem;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-::placeholder {
-  font-size: 14px;
-}
-
-button {
-  padding: 10px;
-  background-color: #632093;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  width: 150px;
-  display: block;
-  margin: 15px auto;
-}
-
-button:hover {
-  background-color: #7e21c0;
-}
-
-p {
-  font-size: 14px;
-  margin-top: 15px;
-  text-decoration: underline purple;
-}
-</style>
+</script>
