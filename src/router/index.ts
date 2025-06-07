@@ -17,6 +17,7 @@ import TeacherReportDetailView from '@/views/reports/teachers/TeacherReportDetai
 import DashboardAdminView from '@/views/dashboard/DashboardAdminView.vue'
 import DashboardReceptionistView from '@/views/dashboard/DashboardReceptionistView.vue'
 import DashboardTeacherView from '@/views/dashboard/DashboardTeacherView.vue'
+import DashboardStudentView from '@/views/dashboard/DashboardStudentView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -59,6 +60,12 @@ const router = createRouter({
       path: '/dashboard/teacher',
       name: 'DashboardTeacher',
       component: DashboardTeacherView,
+      meta: {layout: 'WireframeLayout'}
+    },
+    {
+      path: '/dashboard/student',
+      name: 'DashboardStudent',
+      component: DashboardStudentView,
       meta: {layout: 'WireframeLayout'}
     },
     {
