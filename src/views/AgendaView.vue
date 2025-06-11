@@ -142,7 +142,14 @@ const hours = ref([
 
 const router = useRouter()
 
-const selectedDate = ref(new Date().toISOString().substring(0, 10))
+function getLocalDateString(): string {
+  const now = new Date()
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
+  return now.toISOString().slice(0, 10)
+}
+
+const selectedDate = ref(getLocalDateString())
+
 const classrooms = ref<{ id: number; name: string }[]>([])
 
 const filters = ref({
