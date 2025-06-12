@@ -141,6 +141,11 @@
           icon: 'mdi-earth',
           to: '/configuracion/lenguaje-notificaciones',
         },
+        {
+          title: 'Salones',
+          icon: 'mdi-door-open',
+          to: '/setting/classrooms',
+        },
       ],
     },
   ]

@@ -15,6 +15,7 @@ import ClassroomReportsView from '@/views/reports/classrooms/ClassroomReportsVie
 import ClassroomReportsDetailView from '@/views/reports/classrooms/ClassroomReportDetailView.vue'
 import TeacherReportsView from '@/views/reports/teachers/TeacherReportsView.vue'
 import TeacherReportDetailView from '@/views/reports/teachers/TeacherReportDetailView.vue'
+import ClassroomView from '@/views/SettingClassroomView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -122,7 +123,12 @@ const router = createRouter({
       component: SettingUserView,
       meta: {layout: 'WireframeLayout'}
     },
-
+    {
+      path: '/setting/classrooms',
+      name: 'classrooms',
+      component: ClassroomView,  // Componente de la vista de salones
+      meta: { layout: 'WireframeLayout' },
+    }
   ],
 })
 
