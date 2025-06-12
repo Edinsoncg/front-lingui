@@ -117,6 +117,7 @@
       :unit="dialogProps.unit"
       :end-hour="dialogProps.endHour"
       :has-class="dialogProps.hasClass"
+      :session-id="dialogProps.sessionId"
       @action="handleAction"
     />
   </div>
@@ -132,7 +133,6 @@ import ClasstypesService from '@/services/ClasstypeService'
 import UnitService from '@/services/UnitService'
 import LevelService from '@/services/LevelService'
 import LanguageService from '@/services/LanguageService'
-
 
 const hours = ref([
   '6:00', '7:00', '8:00', '9:00', '10:00',
@@ -168,6 +168,20 @@ const filteredUnits = ref<{ id: number; name: string; levelId: number }[]>([])
 const originalBookings = ref<any[]>([])
 const bookings = ref<any[]>([])
 
+const dialogOpen = ref(false)
+const selectedRoomId = ref(0)
+const selectedRoomName = ref('')
+const selectedHour = ref('')
+const dialogProps = ref({
+  classType: '',
+  language: '',
+  level: '',
+  unit: '',
+  endHour: '',
+  hasClass: false,
+  sessionId: null
+})
+
 async function loadFilters() {
   try {
     classTypes.value = await ClasstypesService.getAll()
@@ -196,19 +210,6 @@ function applyFilters() {
   })
 }
 
-const dialogOpen = ref(false)
-const selectedRoomId = ref(0)
-const selectedRoomName = ref('')
-const selectedHour = ref('')
-const dialogProps = ref({
-  classType: '',
-  language: '',
-  level: '',
-  unit: '',
-  endHour: '',
-  hasClass: false
-})
-
 function getHourString(date: Date) {
   return date.toTimeString().substring(0, 5)
 }
@@ -221,13 +222,14 @@ function openDialog(roomId: number, roomName: string, hour: string) {
   selectedHour.value = hour
 
   dialogProps.value = {
-  classType: session?.classType?.type || '',
-  language: session?.teacher?.language?.name || '',
-  level: session?.unit?.level?.name || '',
-  unit: session?.unit?.name || '',
-  endHour: session ? getHourString(new Date(session.endAt)) : '',
-  hasClass: !!session
-}
+    classType: session?.classType?.type || '',
+    language: session?.teacher?.language?.name || '',
+    level: session?.unit?.level?.name || '',
+    unit: session?.unit?.name || '',
+    endHour: session ? getHourString(new Date(session.endAt)) : '',
+    hasClass: !!session,
+    sessionId: session?.id || null
+  }
 
   dialogOpen.value = true
 }
@@ -318,6 +320,7 @@ function handleAction(payload: {
   language?: string
   level?: string
   unit?: string
+  sessionId?: number
 }) {
   if (payload.type === 'create') {
     router.push({
@@ -333,6 +336,9 @@ function handleAction(payload: {
         unit: payload.unit
       }
     })
+  }
+  if (payload.type === 'view' && payload.sessionId) {
+    router.push({ name: 'ClassInfoView', params: { id: payload.sessionId } })
   }
 }
 

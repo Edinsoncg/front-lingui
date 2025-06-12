@@ -59,7 +59,9 @@ const props = defineProps<{
   unit?: string
   endHour?: string
   hasClass?: boolean
+  sessionId?: number // <-- NUEVO
 }>()
+
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
@@ -86,7 +88,8 @@ function emitAction(type: 'create' | 'view' | 'delete' | 'enroll') {
     classType: props.classType,
     language: props.language,
     level: props.level,
-    unit: props.unit
+    unit: props.unit,
+    sessionId: props.sessionId // <-- AÑADIDO
   })
   isOpen.value = false
 }
