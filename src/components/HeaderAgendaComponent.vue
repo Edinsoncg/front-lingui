@@ -9,8 +9,8 @@
     <h2 style="margin-left: 1rem;">ID: {{ classId }}</h2>
 
     <v-spacer />
-    <v-btn @click="goToAgenda" prepend-icon="mdi-calendar-arrow-left" color="purple-lighten-2" rounded>Agenda</v-btn>
-    <v-btn @click="cancelClass" prepend-icon="mdi-calendar-remove" color="blue-darken-3" rounded>Cancelar</v-btn>
+    <v-btn @click="goToAgenda" prepend-icon="mdi-calendar-arrow-left" color="primary" rounded style="margin-right: 10px; width: auto" >Volver</v-btn>
+    <v-btn @click="cancelClass" prepend-icon="mdi-calendar-remove" color="primary" rounded style="width: auto">Cancelar</v-btn>
   </v-app-bar>
 </template>
 
