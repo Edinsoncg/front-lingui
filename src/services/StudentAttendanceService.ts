@@ -50,7 +50,15 @@ export default class StudentAttendanceService {
       },
       body: JSON.stringify({ student_code }),
     })
-    return response.json()
+
+    const result = await response.json()
+
+    if (!response.ok) {
+      // Lanza error para que el frontend lo capture en el `catch`
+      throw { response: { data: result } }
+    }
+
+    return result
   }
 
   // Eliminar un estudiante de la clase

@@ -1,34 +1,37 @@
 <template>
   <div class="pa-4">
-    <CreateButtonComponent
+    <AddButtonComponent
       resource="student"
       label="Estudiante"
+      style="width: auto;"
       @open="openCreateForm"
     />
 
     <v-slide-y-transition>
-      <div v-if="showForm" class="mb-4">
+      <div v-if="showForm" class="mb-4" style="max-width: fit-content;">
         <v-text-field
           label="Código del Estudiante"
           v-model="studentCode"
-          @blur="fetchStudentInfo"
           outlined
         />
 
-        <div v-if="studentInfo" class="mb-2">
-          <div><strong>Nombre:</strong> {{ studentInfo.user.firstName }} {{ studentInfo.user.firstLastName }}</div>
-          <div><strong>Teléfono:</strong> {{ studentInfo.user.phoneNumber }}</div>
-        </div>
-
         <v-btn
           color="primary"
+          style="width: auto; margin-right: 1rem;"
           @click="addStudentToClass"
           :loading="adding"
         >
           Añadir Estudiante
         </v-btn>
 
-        <v-btn @click="cancelForm" :disabled="adding">Cancelar</v-btn>
+        <v-btn
+          color="primary"
+          style="width: auto;"
+          @click="cancelForm"
+          :disabled="adding"
+        >
+          Cancelar
+        </v-btn>
       </div>
     </v-slide-y-transition>
 
@@ -43,7 +46,6 @@
     >
       <template #tfoot>
         <tr>
-          <td></td>
           <td>
             <v-text-field
               v-model="searchName"
@@ -71,8 +73,12 @@
 
       <template #item.actions="{ item }">
         <div class="d-flex gap-1">
-          <v-icon @click="viewStudent(item)">mdi-eye</v-icon>
-          <v-icon @click="removeStudent(item)">mdi-delete</v-icon>
+          <v-icon @click="viewStudent(item)" color="primary">mdi-eye</v-icon>
+          <DeleteButtonComponent
+            :item="{ id: item.student_contract.student.id }"
+            resource="estudiante"
+            @confirm-delete="removeStudent"
+          />
         </div>
       </template>
     </v-data-table-server>
@@ -88,19 +94,18 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import StudentClassService from '@/services/StudentAttendanceService'
-import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
+import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent.vue'
+import AddButtonComponent from '@/components/buttons/AddButtonComponent.vue'
 
 const route = useRoute()
-const classId = Number(route.params.id) // 👈 Obtenemos el ID dinámico de la clase
+const classId = Number(route.params.id)
 
 const showForm = ref(false)
 const studentCode = ref('')
-const studentInfo = ref<any | null>(null)
 const loadingTable = ref(false)
 const adding = ref(false)
 const snackbar = ref(false)
@@ -125,73 +130,49 @@ onMounted(() => {
 function openCreateForm() {
   showForm.value = true
   studentCode.value = ''
-  studentInfo.value = null
 }
 
 function cancelForm() {
   showForm.value = false
   studentCode.value = ''
-  studentInfo.value = null
-}
-
-async function fetchStudentInfo() {
-  if (studentCode.value.length < 3) {
-    studentInfo.value = null
-    return
-  }
-  try {
-    const response = await StudentClassService.getAll(classId, 1, 1, studentCode.value)
-    studentInfo.value = response.data.length > 0 ? response.data[0] : null
-  } catch (error) {
-    console.error('Error al buscar estudiante:', error)
-  }
 }
 
 async function addStudentToClass() {
   adding.value = true
   try {
-    if (!studentInfo.value || studentInfo.value.studentCode !== studentCode.value) {
-      await fetchStudentInfo()
-    }
-
-    if (!studentInfo.value) {
-      snackbarMessage.value = 'Estudiante no encontrado'
+    if (studentCode.value.trim().length < 3) {
+      snackbarMessage.value = 'Ingresa un código válido'
       snackbarColor.value = 'warning'
       snackbar.value = true
       return
     }
 
-    // ✅ Validar si el estudiante YA está inscrito antes de enviar petición
-    const isAlreadyEnrolled = serverItems.value.some(item => item.student_contract.student.id === studentInfo.value.student.id)
-    if (isAlreadyEnrolled) {
-      snackbarMessage.value = 'El estudiante ya se encuentra inscrito en esta clase'
-      snackbarColor.value = 'warning'
+    const response = await StudentClassService.addStudentToClass(classId, studentCode.value.trim())
+
+    if (response?.message?.includes('capacidad máxima')) {
+      snackbarMessage.value = response.message
+      snackbarColor.value = 'error'
       snackbar.value = true
       return
     }
 
-    await StudentClassService.addStudentToClass(classId, studentCode.value)
     snackbarMessage.value = 'Estudiante agregado correctamente'
     snackbarColor.value = 'success'
     snackbar.value = true
+
     loadItems(lastOptions.value)
     cancelForm()
   } catch (error: any) {
-    console.error('Error al agregar estudiante:', error)
 
-    const responseMessage = error?.response?.data?.message || ''
-
-    if (responseMessage.includes('ya inscrito')) {
-      snackbarMessage.value = 'El estudiante ya se encuentra inscrito en esta clase'
-      snackbarColor.value = 'warning'
-    } else if (responseMessage.includes('capacidad máxima') || responseMessage.includes('límite de capacidad')) {
-      snackbarMessage.value = responseMessage
-      snackbarColor.value = 'warning'
+    if (error?.response?.data?.errors?.length > 0) {
+      snackbarMessage.value = error.response.data.errors[0].message
+    } else if (error?.response?.data?.message) {
+      snackbarMessage.value = error.response.data.message
     } else {
-      snackbarMessage.value = 'Error al agregar estudiante'
-      snackbarColor.value = 'error'
+      snackbarMessage.value = 'Error desconocido'
     }
 
+    snackbarColor.value = 'error'
     snackbar.value = true
   } finally {
     adding.value = false
@@ -234,10 +215,6 @@ async function removeStudent(item: any) {
     snackbar.value = true
   }
 }
-
-watch(studentCode, () => {
-  studentInfo.value = null
-})
 
 watch(searchName, () => {
   loadItems({ ...lastOptions.value, page: 1 })
