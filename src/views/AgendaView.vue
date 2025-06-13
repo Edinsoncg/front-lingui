@@ -337,10 +337,16 @@ function handleAction(payload: {
       }
     })
   }
+
   if (payload.type === 'view' && payload.sessionId) {
     router.push({ name: 'ClassInfoView', params: { id: payload.sessionId } })
   }
+
+  if (payload.type === 'enroll' && payload.sessionId) {
+    router.push({ name: 'ClassStudentsView', params: { id: payload.sessionId } })
+  }
 }
+
 
 onMounted(async () => {
   classrooms.value = await ClassroomService.getAll()

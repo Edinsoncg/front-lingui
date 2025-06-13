@@ -19,6 +19,7 @@ import FormClassView from '@/views/crud/form-agenda-view.vue'
 import ClassLayoutView from '@/layouts/ClassAgendaLayout.vue'
 import ClassInformationView from '@/views/ClassInformationView.vue'
 import ClassStudentsInformationView from '@/views/ClassStudentsInformationView.vue'
+import ClassTeacherInformationView from '@/views/ClassTeacherInformationView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -145,12 +146,12 @@ const router = createRouter({
         {
           path: 'students',
           name: 'ClassStudentsView',
-          component: () => ClassStudentsInformationView,
+          component: ClassStudentsInformationView,
         },
         {
           path: 'teacher',
           name: 'ClassTeacherView',
-          component: () => import('@/views/ClassTeacherInformationView.vue'),
+          component: ClassTeacherInformationView,
         },
       ]
   },

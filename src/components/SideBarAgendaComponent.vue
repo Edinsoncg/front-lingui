@@ -52,10 +52,3 @@ const currentSection = computed(() => {
   return ''
 })
 </script>
-
-<style scoped>
-.v-navigation-drawer {
-  height: 100vh;
-  width: 240px;
-}
-</style>
