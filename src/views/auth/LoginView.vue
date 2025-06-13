@@ -23,13 +23,14 @@ const handlerLogin = () => {
     <!-- Ilustraciones -->
     <img src="@/assets/characters/UK.png" class="character-img left-1" />
     <img src="@/assets/characters/FRANCE.png" class="character-img left-2" />
+    <img src="@/assets/characters/GUI.png" class="character-img-pet left-3" />
     <img src="@/assets/characters/ITALY.png" class="character-img right-2" />
     <img src="@/assets/characters/BRAZIL.png" class="character-img right-1" />
     <img src="@/assets/characters/GERMANY.png" class="character-img right-3" />
 
     <!-- Card de login -->
       <div class="login-background d-flex justify-center">
-        <v-card class="pa-10 login-card" width="300" rounded="lg" color="deep-purple-lighten-4">
+        <v-card class="pa-6 login-card" width="300" rounded="lg" color="deep-purple-lighten-4">
           <h2 class="text-center mb-6 font-weight-bold">Log in to Güi</h2>
 
           <form @submit.prevent="handlerLogin">
@@ -87,11 +88,18 @@ const handlerLogin = () => {
   z-index: 1;
 }
 
-.left-1 { left: -4%; }
-.left-2 { left: 10%; }
-.right-1 { right: -10%; }
-.right-2 { right: 1%; }
-.right-3 { right: 16%; }
+.character-img-pet {
+  position: absolute;
+  height: 200px;
+  z-index: 1;
+}
+
+.left-1 { left: -4%; bottom: 5%; }
+.left-2 { left: 10%; bottom: 5%; }
+.left-3 { left: 25%; bottom: 5%; }
+.right-1 { right: -10%; bottom: 5%; }
+.right-2 { right: 1%; bottom: 5%; }
+.right-3 { right: 16%; bottom: 5%; }
 
 .login-card {
   z-index: 2;
