@@ -18,6 +18,7 @@ import TeacherReportDetailView from '@/views/reports/teachers/TeacherReportDetai
 import FormClassView from '@/views/crud/form-agenda-view.vue'
 import ClassLayoutView from '@/layouts/ClassAgendaLayout.vue'
 import ClassInformationView from '@/views/ClassInformationView.vue'
+import ClassStudentsInformationView from '@/views/ClassStudentsInformationView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -144,7 +145,7 @@ const router = createRouter({
         {
           path: 'students',
           name: 'ClassStudentsView',
-          component: () => import('@/views/ClassStudentsInformationView.vue'),
+          component: () => ClassStudentsInformationView,
         },
         {
           path: 'teacher',
