@@ -157,10 +157,15 @@
           to: '/setting/languages',
         },
         {
-          title: 'Roles',
-          icon: 'mdi-account-key',
-          to: '/setting/role',
-        }
+          title: 'Tipo de Documento',
+          icon: 'mdi-card-account-details',
+          to: '/settings/document-types',
+        },
+        {
+          title: 'Estados',
+          icon: 'mdi-toggle-switch',
+          to: '/setting/status',
+        },
       ],
     },
   ]

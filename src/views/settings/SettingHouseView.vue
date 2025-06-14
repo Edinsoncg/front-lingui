@@ -1,54 +1,45 @@
 <template>
-  <v-container>
-    <!-- Botón de crear -->
+  <div class="pa-4">
     <CreateButtonComponent
       resource="house"
       label="Casa"
       @open="openCreateForm"
     />
 
-    <!-- Formulario -->
     <v-slide-y-transition>
-      <div v-if="showForm" class="mb-4">
-        <SimpleSettingForm
+      <div v-if="showForm" ref="formContainer" class="mb-4">
+        <HouseForm
           :mode="formMode"
           :initialData="editData"
-          :fields="[{ key: 'name', label: 'Nombre' }]"
-          :onSave="handleSave"
           @saved="onSaved"
           @cancel="showForm = false"
         />
       </div>
     </v-slide-y-transition>
 
-    <!-- Tabla -->
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
       :headers="headers"
-      :items="houses"
+      :items="serverItems"
       :items-length="totalItems"
       :loading="loading"
       item-value="id"
       @update:options="loadItems"
     >
-      <!-- Botones de acción -->
-      <template v-slot:item.actions="{ item }">
-        <div class="d-flex">
+      <template #item.actions="{ item }">
+        <div class="d-flex ga-1">
           <UpdateButtonComponent
             resource="house"
             label="Casa"
-            @edit="editItem(item)"
-          />
+            @edit="editItem(item)" />
           <DeleteButtonComponent
             :item="item"
             resource="house"
-            @confirm-delete="deleteItem"
-          />
+            @confirm-delete="deleteItem" />
         </div>
       </template>
 
-      <!-- Filtro -->
-      <template v-slot:tfoot>
+      <template #tfoot>
         <tr>
           <td>
             <v-text-field
@@ -64,47 +55,99 @@
       </template>
     </v-data-table-server>
 
-    <!-- Snackbar -->
-    <v-snackbar v-model="snackbar" :timeout="3000" :color="snackbarColor" location="top right">
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="3000"
+      :color="snackbarColor"
+      location="top right"
+    >
       {{ snackbarMessage }}
     </v-snackbar>
-  </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import HouseService from '@/services/HouseService'
 import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
 import UpdateButtonComponent from '@/components/buttons/UpdateButtonComponent.vue'
 import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent.vue'
-import SimpleSettingForm from '@/components/settings/SimpleSettingForm.vue'
+import HouseForm from '@/views/crud/form-setting-house-view.vue'
+
+interface HouseForm {
+  id?: number
+  name: string
+}
 
 const itemsPerPage = ref(10)
-const houses = ref([])
+const serverItems = ref([])
 const totalItems = ref(0)
 const loading = ref(false)
 const searchName = ref('')
 const showForm = ref(false)
 const formMode = ref<'create' | 'update'>('create')
-const editData = ref(null)
+const editData = ref<Partial<HouseForm> | undefined>(undefined)
+const formContainer = ref<HTMLElement | null>(null)
+
 const snackbar = ref(false)
 const snackbarMessage = ref('')
 const snackbarColor = ref('success')
 
 const headers = [
+  { title: 'ID', key: 'id' },
   { title: 'Nombre', key: 'name' },
-  { title: 'Acciones', key: 'actions', sortable: false },
+  { title: 'Acciones', key: 'actions', sortable: false }
 ]
 
-// Cargar casas
-const loadItems = async (options = { page: 1, itemsPerPage: itemsPerPage.value }) => {
+const lastOptions = ref({ page: 1, itemsPerPage: 10, sortBy: [] })
+
+function openCreateForm() {
+  formMode.value = 'create'
+  editData.value = undefined
+  showForm.value = true
+}
+
+async function editItem(item: any) {
+  formMode.value = 'update'
+  editData.value = { ...item }
+  showForm.value = true
+  await nextTick()
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function onSaved() {
+  showSnackbar(
+    formMode.value === 'create'
+      ? 'Casa creada correctamente'
+      : 'Casa actualizada correctamente',
+    formMode.value === 'create' ? 'success' : 'info'
+  )
+  showForm.value = false
+  loadItems(lastOptions.value)
+}
+
+async function deleteItem(item: { id: number }) {
+  try {
+    await HouseService.delete(item.id)
+    await loadItems(lastOptions.value)
+    showSnackbar('Casa eliminada correctamente', 'error')
+  } catch (error) {
+    console.error('Error al eliminar casa:', error)
+    showSnackbar('Error al eliminar la casa', 'warning')
+  }
+}
+
+async function loadItems(options: any) {
   loading.value = true
+  lastOptions.value = options
   try {
     const { items, total } = await HouseService.getPaginated({
-      ...options,
-      search: { name: searchName.value },
+      page: options.page,
+      itemsPerPage: options.itemsPerPage,
+      sortBy: options.sortBy ?? [],
+      search: { name: searchName.value }
     })
-    houses.value = items
+    serverItems.value = items
     totalItems.value = total
   } catch (error) {
     console.error('Error al cargar casas', error)
@@ -113,53 +156,13 @@ const loadItems = async (options = { page: 1, itemsPerPage: itemsPerPage.value }
   }
 }
 
-// Abrir formulario
-const openCreateForm = () => {
-  formMode.value = 'create'
-  editData.value = null
-  showForm.value = true
-}
+watch(searchName, () => {
+  loadItems({ ...lastOptions.value, page: 1 })
+})
 
-const editItem = (item) => {
-  formMode.value = 'update'
-  editData.value = { ...item }
-  showForm.value = true
-}
-
-const handleSave = async (data) => {
-  if (formMode.value === 'create') {
-    await HouseService.create(data)
-  } else {
-    await HouseService.update(editData.value.id, data)
-  }
-}
-
-const deleteItem = async (item) => {
-  try {
-    await HouseService.delete(item.id)
-    showSnackbar('Casa eliminada correctamente', 'success')
-    loadItems()
-  } catch (error) {
-    showSnackbar('Error al eliminar', 'error')
-  }
-}
-
-const onSaved = () => {
-  showSnackbar(
-    formMode.value === 'create' ? 'Casa creada' : 'Casa actualizada',
-    formMode.value === 'create' ? 'success' : 'info'
-  )
-  showForm.value = false
-  loadItems()
-}
-
-const showSnackbar = (message: string, color: string) => {
+function showSnackbar(message: string, color: string = 'success') {
   snackbarMessage.value = message
   snackbarColor.value = color
   snackbar.value = true
 }
-
-watch(searchName, () => {
-  loadItems()
-})
 </script>

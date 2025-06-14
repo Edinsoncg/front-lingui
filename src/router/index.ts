@@ -19,6 +19,8 @@ import ClassroomView from '@/views/settings/SettingClassroomView.vue'
 import SettingHouseView from '@/views/settings/SettingHouseView.vue'
 import SettingLanguageView from '@/views/settings/SettingLanguageView.vue'
 import SettingRoleView from '@/views/settings/SettingRoleView.vue'
+import SettingDocumentTypeView from '@/views/settings/SettingDocumentTypeView.vue'
+import SettingStatusView from '@/views/settings/SettingStatusView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -149,7 +151,19 @@ const router = createRouter({
       name: 'setting-role',
       component: SettingRoleView,
       meta: { layout: 'WireframeLayout' },
-    }
+    },
+    {
+      path: '/settings/document-types',
+      name: 'SettingDocumentTypeView',
+      component: SettingDocumentTypeView,
+      meta: { layout: 'WireframeLayout' },
+    },
+    {
+      path: '/setting/status',
+      name: 'setting-status',
+      component: SettingStatusView,
+      meta: { layout: 'WireframeLayout' },
+    },
   ],
 })
 

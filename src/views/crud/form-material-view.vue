@@ -1,4 +1,4 @@
-//src/views/crud_material/form-material-view.vue
+//src/views/crud/form-material-view.vue
 
 <template>
   <v-form ref="formRef" v-model="formIsValid">
