@@ -1,15 +1,43 @@
 <template>
   <div>
     <!-- Filtro de fecha -->
-    <v-row class="mb-4">
-      <v-col cols="auto">
+    <v-row class="mb-4 align-center">
+      <v-col cols="auto" class="d-flex align-center">
+        <v-btn
+          icon
+          size="small"
+          @click="goToPreviousDate"
+          color="purple-lighten-2"
+          class="no-hover"
+        >
+          <v-icon>mdi-chevron-left</v-icon>
+        </v-btn>
+      </v-col>
+
+      <!-- Campo de fecha -->
+      <v-col cols="auto" class="d-flex align-center">
         <v-text-field
           v-model="selectedDate"
           type="date"
           label="Seleccionar fecha"
           density="compact"
+          hide-details
+          class="date-picker-input"
           @change="() => { fetchBookings(); applyFilters(); }"
         />
+      </v-col>
+
+      <!-- Botón de fecha siguiente -->
+      <v-col cols="auto" class="d-flex align-center">
+        <v-btn
+          icon
+          size="small"
+          @click="goToNextDate"
+          color="purple-lighten-2"
+          class="no-hover"
+        >
+          <v-icon>mdi-chevron-right</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -73,7 +101,7 @@
     </v-row>
 
     <!-- Tabla de la agenda -->
-    <v-table class="elevation-1">
+    <v-table height="65vh" fixed-header class="elevation-1">
       <thead>
         <tr class="border-b">
           <th class="text-left border-r">CLASSROOM</th>
@@ -181,6 +209,23 @@ const dialogProps = ref({
   hasClass: false,
   sessionId: null
 })
+
+function changeDateBy(days: number) {
+  const current = new Date(selectedDate.value)
+  current.setDate(current.getDate() + days)
+  const isoString = current.toISOString().slice(0, 10)
+  selectedDate.value = isoString
+  fetchBookings()
+  applyFilters()
+}
+
+function goToPreviousDate() {
+  changeDateBy(-1)
+}
+
+function goToNextDate() {
+  changeDateBy(1)
+}
 
 async function loadFilters() {
   try {
