@@ -1,19 +1,20 @@
-export async function sendRestoreLink(email: string) {
-  const response = await fetch('http://localhost:3333/password/forgot', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email }),
-  })
-  if (!response.ok) throw new Error('Error al enviar el link')
-  return response.json()
-}
+// src/services/RestoreService.ts
+const URL = 'http://localhost:3333/forgot-password'
 
-export async function resetPassword(token: string, password: string) {
-  const response = await fetch('http://localhost:3333/password/reset', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token, password }),
-  })
-  if (!response.ok) throw new Error('Error al cambiar contraseña')
-  return response.json()
+export default class RestoreService {
+  static async requestPasswordReset(email: string) {
+    const response = await fetch(URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Error enviando el correo.')
+    }
+
+    return data
+  }
 }

@@ -5,7 +5,7 @@ import LoginView from '@/views/auth/LoginView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import SupportMaterialView from '@/views/SupportMaterialView.vue'
 import AgendaView from '@/views/AgendaView.vue'
-
+import NewPasswordView from '@/views/auth/NewPassword.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -24,6 +24,12 @@ const router = createRouter({
       name: 'restore',
       component: RestoreView,
       meta: {layout: 'AuthLayout'}
+    },
+    {
+    path: '/newpassword',
+    name: 'NewPassword',
+    component: NewPasswordView,
+    meta: {layout: 'AuthLayout'}
     },
     {
       path: '/login',

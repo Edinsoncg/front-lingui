@@ -18,9 +18,12 @@
           color="primary"
           class="mt-4 mx-auto d-block"
           rounded
+          :loading="loading"
+          :disabled="loading"
         >
           Search
         </v-btn>
+
       </v-form>
 
       <div class="text-center mt-4">
@@ -34,11 +37,31 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import RestoreService from '@/services/RestoreService'
 
 const email = ref('')
+const loading = ref(false)
 
-function handleSubmit() {
-  // Aquí se llamaría al servicio de AdonisJS para enviar el correo de recuperación
-  console.log('Email submitted:', email.value)
+// Snackbar
+const snackbar = ref(false)
+const snackbarColor = ref('success')
+const snackbarText = ref('')
+
+async function handleSubmit() {
+  loading.value = true
+  try {
+    await RestoreService.requestPasswordReset(email.value)
+    snackbarText.value = 'Correo enviado exitosamente. Revisa tu bandeja de entrada.'
+    snackbarColor.value = 'success'
+    snackbar.value = true
+    email.value = ''
+  } catch (error: any) {
+    snackbarText.value = error.message || 'No se pudo enviar el correo.'
+    snackbarColor.value = 'error'
+    snackbar.value = true
+  } finally {
+    loading.value = false
+  }
 }
 </script>
+
