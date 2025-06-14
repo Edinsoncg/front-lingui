@@ -32,7 +32,7 @@
     <v-row>
       <v-col cols="12" md="6">
         <v-card class="pa-4">
-          <v-card-title>Asistencias por Mes</v-card-title>
+          <v-card-title>Asistencias de estudiantes por Mes</v-card-title>
           <v-card-text>
             <v-chart :option="attendanceChartOptions" autoresize style="height: 300px" />
           </v-card-text>
@@ -86,7 +86,7 @@
                 v-for="contract in data.notificaciones.expiring_contracts"
                 :key="contract.id"
               >
-                <v-icon icon="mdi-alert" class="me-2" />
+                <v-icon icon="mdi-alert" class="me-2" color="red" />
                 <div>
                   <strong>{{ contract.student.user.firstName }} {{ contract.student.user.firstLastName }}</strong><br />
                   <small>Fin: {{ formatDate(contract.endDate) }}</small>

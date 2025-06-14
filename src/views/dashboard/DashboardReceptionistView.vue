@@ -18,7 +18,7 @@
             class="text-uppercase font-weight-bold text-center text-wrap"
             style="word-break: break-word; white-space: normal;"
           >
-            Total de asistencias registradas por mes</v-card-title>
+            Total de asistencias de estudiantes registradas por mes</v-card-title>
           <v-card-text>
             <VChartComponent
               v-if="Object.keys(data.graficos.attendance_by_month).length"

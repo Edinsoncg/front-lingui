@@ -29,7 +29,7 @@
     <v-row class="mb-4">
       <v-col cols="12">
         <v-card class="pa-4" elevation="2">
-          <v-card-title class="mb-2">Asistencia por Día (ultimos 7 días)</v-card-title>
+          <v-card-title class="mb-2">Asistencia de Estudiantes por Día (ultimos 7 días)</v-card-title>
           <v-chart :option="attendanceChartOptions" autoresize style="height: 300px" />
         </v-card>
       </v-col>
