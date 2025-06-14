@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { authSetStore } from '@/stores/AuthStore'
 import SignView from '@/views/auth/SignView.vue'
 import RestoreView from '@/views/auth/RestoreView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
@@ -18,6 +19,7 @@ import DashboardAdminView from '@/views/dashboard/DashboardAdminView.vue'
 import DashboardReceptionistView from '@/views/dashboard/DashboardReceptionistView.vue'
 import DashboardTeacherView from '@/views/dashboard/DashboardTeacherView.vue'
 import DashboardStudentView from '@/views/dashboard/DashboardStudentView.vue'
+import UnauthorizedView from '@/views/UnauthorizedView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -48,25 +50,25 @@ const router = createRouter({
       path: '/dashboard/admin',
       name: 'DashboardAdmin',
       component: DashboardAdminView,
-      meta: {layout: 'WireframeLayout'}
+      meta: {layout: 'WireframeLayout', requiresAuth: true, roles: ['Administrativo'] }
     },
     {
       path: '/dashboard/receptionist',
       name: 'DashboardReceptionist',
       component: DashboardReceptionistView,
-      meta: {layout: 'WireframeLayout'}
+      meta: {layout: 'WireframeLayout', requiresAuth: true, roles: ['Recepcionista'] }
     },
     {
       path: '/dashboard/teacher',
       name: 'DashboardTeacher',
       component: DashboardTeacherView,
-      meta: {layout: 'WireframeLayout'}
+      meta: {layout: 'WireframeLayout', requiresAuth: true, roles: ['Profesor'] }
     },
     {
       path: '/dashboard/student',
       name: 'DashboardStudent',
       component: DashboardStudentView,
-      meta: {layout: 'WireframeLayout'}
+      meta: {layout: 'WireframeLayout', requiresAuth: true, roles: ['Estudiante'] }
     },
     {
       path: '/agenda',
@@ -143,8 +145,36 @@ const router = createRouter({
       component: SettingUserView,
       meta: {layout: 'WireframeLayout'}
     },
-
+    {
+      path: '/unauthorized',
+      name: 'unauthorized',
+      component: UnauthorizedView,
+      meta: {layout: 'WireframeLayout'}
+    }
   ],
 })
 
+  router.beforeEach((to, from, next) => {
+    const auth = authSetStore()
+    const isAuthenticated = !!auth.token
+    const userRoles = auth.user?.roles || []
+
+    // Requiere autenticación pero no hay token
+    if (to.meta.requiresAuth && !isAuthenticated) {
+      return next('/login')
+    }
+
+    // Requiere roles específicos
+    if (to.meta.roles && isAuthenticated) {
+      const allowedRoles = (to.meta.roles as string[]).map((r) => r.toUpperCase())
+      const userRolesUpper = userRoles.map((r: string) => r.toUpperCase())
+
+      const hasAccess = userRolesUpper.some((role) => allowedRoles.includes(role))
+      if (!hasAccess) {
+        return next('/unauthorized') // Redirige a página de acceso denegado
+      }
+    }
+
+    next()
+  })
 export default router
