@@ -15,6 +15,11 @@ import ClassroomReportsView from '@/views/reports/classrooms/ClassroomReportsVie
 import ClassroomReportsDetailView from '@/views/reports/classrooms/ClassroomReportDetailView.vue'
 import TeacherReportsView from '@/views/reports/teachers/TeacherReportsView.vue'
 import TeacherReportDetailView from '@/views/reports/teachers/TeacherReportDetailView.vue'
+import FormClassView from '@/views/crud/form-agenda-view.vue'
+import ClassLayoutView from '@/layouts/ClassAgendaLayout.vue'
+import ClassInformationView from '@/views/ClassInformationView.vue'
+import ClassStudentsInformationView from '@/views/ClassStudentsInformationView.vue'
+import ClassTeacherInformationView from '@/views/ClassTeacherInformationView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +56,12 @@ const router = createRouter({
       path: '/agenda',
       name: 'agenda',
       component: AgendaView,
+      meta: {layout: 'WireframeLayout'}
+    },
+    {
+      path: '/agenda/class-form',
+      name: 'classroom-agenda',
+      component: FormClassView,
       meta: {layout: 'WireframeLayout'}
     },
     {
@@ -122,7 +133,50 @@ const router = createRouter({
       component: SettingUserView,
       meta: {layout: 'WireframeLayout'}
     },
+    {
+      path: '/clase/:id',
+      component: ClassLayoutView,
+      meta: {layout: 'WireframeLayout'},
+      children: [
+        {
+          path: '',
+          name: 'ClassInfoView',
+          component: ClassInformationView,
+        },
+        {
+          path: 'students',
+          name: 'ClassStudentsView',
+          component: ClassStudentsInformationView,
+        },
+        {
+          path: 'teacher',
+          name: 'ClassTeacherView',
+          component: ClassTeacherInformationView,
+        },
+      ]
+  },
+      /*
+    {
+      path: '/agenda/class-information/:id',
+      name: 'ClassInfoView',
+      component: ClassLayoutView,
+      props: true,
+      meta: { layout: 'WireframeLayout' }, // opcional, si deseas mantener el diseño
+    }
 
+    {
+      path: '/agenda/class-students',
+      name: 'ClassStudentsView',
+      component: ClassInformationView,
+      meta: {layout: 'ClassAgendaLayout'}
+    },
+    {
+      path: '/agenda/class-teacher',
+      name: 'ClassTeacherView',
+      component: ClassInformationView,
+      meta: {layout: 'ClassAgendaLayout'}
+    },
+*/
   ],
 })
 
