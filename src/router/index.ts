@@ -15,7 +15,10 @@ import ClassroomReportsView from '@/views/reports/classrooms/ClassroomReportsVie
 import ClassroomReportsDetailView from '@/views/reports/classrooms/ClassroomReportDetailView.vue'
 import TeacherReportsView from '@/views/reports/teachers/TeacherReportsView.vue'
 import TeacherReportDetailView from '@/views/reports/teachers/TeacherReportDetailView.vue'
-import ClassroomView from '@/views/SettingClassroomView.vue'
+import ClassroomView from '@/views/settings/SettingClassroomView.vue'
+import SettingHouseView from '@/views/settings/SettingHouseView.vue'
+import SettingLanguageView from '@/views/settings/SettingLanguageView.vue'
+import SettingRoleView from '@/views/settings/SettingRoleView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -126,7 +129,25 @@ const router = createRouter({
     {
       path: '/setting/classrooms',
       name: 'classrooms',
-      component: ClassroomView,  // Componente de la vista de salones
+      component: ClassroomView,
+      meta: { layout: 'WireframeLayout' },
+    },
+    {
+      path: '/setting/houses',
+      name: 'houses',
+      component: SettingHouseView,
+      meta: { layout: 'WireframeLayout' },
+    },
+     {
+      path: '/setting/languages',
+      name: 'languages',
+      component: SettingLanguageView,
+      meta: { layout: 'WireframeLayout' },
+    },
+    {
+      path: '/setting/role',
+      name: 'setting-role',
+      component: SettingRoleView,
       meta: { layout: 'WireframeLayout' },
     }
   ],

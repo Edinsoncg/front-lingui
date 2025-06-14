@@ -146,6 +146,21 @@
           icon: 'mdi-door-open',
           to: '/setting/classrooms',
         },
+        {
+          title: 'Casas',
+          icon: 'mdi-home-city-outline',
+          to: '/setting/houses',
+        },
+        {
+          title: 'Idiomas',
+          icon: 'mdi-translate',
+          to: '/setting/languages',
+        },
+        {
+          title: 'Roles',
+          icon: 'mdi-account-key',
+          to: '/setting/role',
+        }
       ],
     },
   ]
