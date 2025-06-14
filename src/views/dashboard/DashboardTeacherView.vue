@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="py-4" style="max-width: 1600px; margin: 0 auto;">
 
-    <!--RESUMEN -->
+    <!--RESUMEN-->
     <v-row class="mb-4" align="stretch">
       <v-col cols="12" md="4">
         <v-card class="pa-4 text-center" color="deep-purple-lighten-5" elevation="2">
@@ -11,29 +11,31 @@
       </v-col>
       <v-col cols="12" md="4">
         <v-card class="pa-4 text-center" color="indigo-lighten-5" elevation="2">
-          <v-card-title class="text-uppercase font-weight-bold">Total Clases del Mes</v-card-title>
+          <v-card-title class="text-uppercase font-weight-bold">
+            Total Clases de {{ data.resumen.current_month }}
+          </v-card-title>
           <v-card-text class="text-h4">{{ data.resumen.total_classes_month }}</v-card-text>
         </v-card>
       </v-col>
       <v-col cols="12" md="4">
         <v-card class="pa-4 text-center" color="teal-lighten-5" elevation="2">
-          <v-card-title class="text-uppercase font-weight-bold">Promedio Asistencia Semanal</v-card-title>
-          <v-card-text class="text-h4">{{ formattedAttendance }}</v-card-text>
+          <v-card-title class="text-uppercase font-weight-bold">Estudiantes esta semana</v-card-title>
+          <v-card-text class="text-h4">{{ data.resumen.total_students_this_week }}</v-card-text>
         </v-card>
       </v-col>
     </v-row>
 
-    <!--GRÁFICO DE ASISTENCIA -->
+    <!--GRÁFICO DE ASISTENCIA-->
     <v-row class="mb-4">
       <v-col cols="12">
         <v-card class="pa-4" elevation="2">
-          <v-card-title class="mb-2">Asistencia por Día (últimos 7 días)</v-card-title>
+          <v-card-title class="mb-2">Asistencia por Día (ultimos 7 días)</v-card-title>
           <v-chart :option="attendanceChartOptions" autoresize style="height: 300px" />
         </v-card>
       </v-col>
     </v-row>
 
-    <!--CLASES HOY -->
+    <!--CLASES HOY-->
     <v-row>
       <v-col cols="12">
         <v-card class="pa-4" elevation="2">
@@ -45,16 +47,16 @@
                 :key="clase.id || clase.time + clase.classroom"
                 cols="12" sm="6" md="4" lg="3" xl="2"
               >
-              <v-card class="pa-3" rounded="xl" elevation="1">
-                <div class="d-flex align-center mb-2">
-                  <v-icon icon="mdi-school" class="me-2" />
-                  <span>{{ clase.classroom }} ({{ clase.level }})</span>
-                </div>
-                <div class="d-flex align-center text-grey text-caption">
-                  <v-icon icon="mdi-clock-outline" size="18" class="me-1" />
-                  <span style="color: black;">{{ clase.hour }}</span>
-                </div>
-              </v-card>
+                <v-card class="pa-3" rounded="xl" elevation="1">
+                  <div class="d-flex align-center mb-2">
+                    <v-icon icon="mdi-school" class="me-2" />
+                    <span>{{ clase.classroom }} ({{ clase.level }})</span>
+                  </div>
+                  <div class="d-flex align-center text-grey text-caption">
+                    <v-icon icon="mdi-clock-outline" size="18" class="me-1" />
+                    <span style="color: black;">{{ clase.hour }}</span>
+                  </div>
+                </v-card>
               </v-col>
             </v-row>
             <div v-if="!data.clases_hoy.length" class="text-grey d-flex align-center mt-2">
@@ -68,7 +70,6 @@
 
   </v-container>
 </template>
-
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
@@ -93,18 +94,14 @@ const data = ref({
   resumen: {
     today_classes: 0,
     total_classes_month: 0,
-    avg_weekly_attendance: 0
+    total_students_this_week: 0,
+    current_month: ''
   },
   graficos: {
     asistencia_por_dia: {}
   },
   clases_hoy: []
 })
-
-const formattedAttendance = computed(() => {
-  return `${Number(data.value.resumen.avg_weekly_attendance).toFixed(1)}%`
-})
-
 
 const attendanceChartOptions = computed(() => {
   const entries = Object.entries(data.value.graficos.asistencia_por_dia)
@@ -144,6 +141,8 @@ onMounted(async () => {
 .v-card-title {
   font-weight: bold;
   font-size: 1.2rem;
+  white-space: normal;
+  word-break: break-word;
 }
 .v-card {
   border-radius: 12px;

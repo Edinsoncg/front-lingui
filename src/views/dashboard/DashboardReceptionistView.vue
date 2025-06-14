@@ -14,7 +14,11 @@
     <v-row>
       <v-col cols="12" md="6">
         <v-card class="pa-4">
-          <v-card-title>Asistencias por Mes</v-card-title>
+          <v-card-title
+            class="text-uppercase font-weight-bold text-center text-wrap"
+            style="word-break: break-word; white-space: normal;"
+          >
+            Total de asistencias registradas por mes</v-card-title>
           <v-card-text>
             <VChartComponent
               v-if="Object.keys(data.graficos.attendance_by_month).length"
@@ -47,7 +51,12 @@
     <v-row>
       <v-col cols="12">
         <v-card class="pa-4" elevation="2">
-          <v-card-title>Clases Programadas Hoy</v-card-title>
+          <v-card-title
+          class="text-uppercase font-weight-bold text-center text-wrap"
+            style="word-break: break-word; white-space: normal;"
+          >
+            Clases Programadas Hoy
+          </v-card-title>
           <v-card-text>
             <v-row dense>
               <v-col
