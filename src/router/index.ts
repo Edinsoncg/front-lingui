@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { authSetStore } from '@/stores/AuthStore'
 import SignView from '@/views/auth/SignView.vue'
 import RestoreView from '@/views/auth/RestoreView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
-import DashboardView from '@/views/DashboardView.vue'
 import SupportMaterialView from '@/views/SupportMaterialView.vue'
 import AgendaView from '@/views/AgendaView.vue'
 import SettingUserView from '@/views/SettingUserView.vue'
@@ -15,6 +15,11 @@ import ClassroomReportsView from '@/views/reports/classrooms/ClassroomReportsVie
 import ClassroomReportsDetailView from '@/views/reports/classrooms/ClassroomReportDetailView.vue'
 import TeacherReportsView from '@/views/reports/teachers/TeacherReportsView.vue'
 import TeacherReportDetailView from '@/views/reports/teachers/TeacherReportDetailView.vue'
+import DashboardAdminView from '@/views/dashboard/DashboardAdminView.vue'
+import DashboardReceptionistView from '@/views/dashboard/DashboardReceptionistView.vue'
+import DashboardTeacherView from '@/views/dashboard/DashboardTeacherView.vue'
+import DashboardStudentView from '@/views/dashboard/DashboardStudentView.vue'
+import UnauthorizedView from '@/views/UnauthorizedView.vue'
 import FormClassView from '@/views/crud/form-agenda-view.vue'
 import ClassLayoutView from '@/layouts/ClassAgendaLayout.vue'
 import ClassInformationView from '@/views/ClassInformationView.vue'
@@ -47,10 +52,28 @@ const router = createRouter({
       meta: {layout: 'AuthLayout'}
     },
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: DashboardView,
-      meta: {layout: 'WireframeLayout'}
+      path: '/dashboard/admin',
+      name: 'DashboardAdmin',
+      component: DashboardAdminView,
+      meta: {layout: 'WireframeLayout', requiresAuth: true, roles: ['Administrativo'] }
+    },
+    {
+      path: '/dashboard/receptionist',
+      name: 'DashboardReceptionist',
+      component: DashboardReceptionistView,
+      meta: {layout: 'WireframeLayout', requiresAuth: true, roles: ['Recepcionista'] }
+    },
+    {
+      path: '/dashboard/teacher',
+      name: 'DashboardTeacher',
+      component: DashboardTeacherView,
+      meta: {layout: 'WireframeLayout', requiresAuth: true, roles: ['Profesor'] }
+    },
+    {
+      path: '/dashboard/student',
+      name: 'DashboardStudent',
+      component: DashboardStudentView,
+      meta: {layout: 'WireframeLayout', requiresAuth: true, roles: ['Estudiante'] }
     },
     {
       path: '/agenda',
@@ -134,6 +157,12 @@ const router = createRouter({
       meta: {layout: 'WireframeLayout'}
     },
     {
+      path: '/unauthorized',
+      name: 'unauthorized',
+      component: UnauthorizedView,
+      meta: {layout: 'WireframeLayout'}
+    },
+    {
       path: '/clase/:id',
       component: ClassLayoutView,
       meta: {layout: 'WireframeLayout'},
@@ -154,30 +183,31 @@ const router = createRouter({
           component: ClassTeacherInformationView,
         },
       ]
-  },
-      /*
-    {
-      path: '/agenda/class-information/:id',
-      name: 'ClassInfoView',
-      component: ClassLayoutView,
-      props: true,
-      meta: { layout: 'WireframeLayout' }, // opcional, si deseas mantener el diseño
-    }
-
-    {
-      path: '/agenda/class-students',
-      name: 'ClassStudentsView',
-      component: ClassInformationView,
-      meta: {layout: 'ClassAgendaLayout'}
     },
-    {
-      path: '/agenda/class-teacher',
-      name: 'ClassTeacherView',
-      component: ClassInformationView,
-      meta: {layout: 'ClassAgendaLayout'}
-    },
-*/
   ],
 })
 
+  router.beforeEach((to, from, next) => {
+    const auth = authSetStore()
+    const isAuthenticated = !!auth.token
+    const userRoles = auth.user?.roles || []
+
+    // Requiere autenticación pero no hay token
+    if (to.meta.requiresAuth && !isAuthenticated) {
+      return next('/login')
+    }
+
+    // Requiere roles específicos
+    if (to.meta.roles && isAuthenticated) {
+      const allowedRoles = (to.meta.roles as string[]).map((r) => r.toUpperCase())
+      const userRolesUpper = userRoles.map((r: string) => r.toUpperCase())
+
+      const hasAccess = userRolesUpper.some((role) => allowedRoles.includes(role))
+      if (!hasAccess) {
+        return next('/unauthorized') // Redirige a página de acceso denegado
+      }
+    }
+
+    next()
+  })
 export default router
