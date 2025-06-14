@@ -1,9 +1,6 @@
-// src/services/ClassroomService.ts
+const URL = 'http://localhost:3333/settings/houses'
 
-//NUEVA VERSION
-const URL = 'http://localhost:3333/settings/classrooms'
-
-export default class ClassroomService {
+export default class HouseService {
   static async getAll() {
     const token = localStorage.getItem("token")
     const response = await fetch(URL, {
@@ -28,11 +25,7 @@ export default class ClassroomService {
     return response.json()
   }
 
-  static async create(data: {
-    name: string
-    capacity: number
-    house_id: number
-  }) {
+  static async create(data: { name: string }) {
     const token = localStorage.getItem("token")
     const response = await fetch(URL, {
       method: 'POST',
@@ -45,11 +38,7 @@ export default class ClassroomService {
     return response.json()
   }
 
-  static async update(id: number, data: Partial<{
-    name: string
-    capacity: number
-    house_id: number
-  }>) {
+  static async update(id: number, data: { name: string }) {
     const token = localStorage.getItem("token")
     const response = await fetch(`${URL}/${id}`, {
       method: 'PATCH',
@@ -104,7 +93,7 @@ export default class ClassroomService {
     })
 
     if (!response.ok) {
-      throw new Error('Error al obtener los salones')
+      throw new Error('Error al obtener las casas')
     }
 
     const result = await response.json()
@@ -114,63 +103,3 @@ export default class ClassroomService {
     }
   }
 }
-/*
-const URL = 'http://localhost:3333/classroom'
-
-export default class ClassroomService {
-
-  static async getAll() {
-    const token = localStorage.getItem("token")
-    const response = await fetch(URL, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        "Authorization": `Bearer ${token}`
-      },
-    })
-    return response.json()
-  }
-}
-
-//Demás servicios
-// Crear un salón
-  static async create(data) {
-    const token = localStorage.getItem("token")
-    const response = await fetch(URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify(data),
-    })
-    return response.json()
-  }
-
-  // Actualizar un salón
-  static async update(id, data) {
-    const token = localStorage.getItem("token")
-    const response = await fetch(`${URL}/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify(data),
-    })
-    return response.json()
-  }
-
-  // Eliminar un salón
-  static async delete(id) {
-    const token = localStorage.getItem("token")
-    const response = await fetch(`${URL}/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        "Authorization": `Bearer ${token}`
-      },
-    })
-    return response.json()
-  }
-} */
