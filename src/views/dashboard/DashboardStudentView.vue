@@ -12,8 +12,13 @@
 
       <v-col cols="12" md="4">
         <v-card class="pa-4 text-center" color="green-lighten-5" elevation="2">
-          <v-card-title class="text-uppercase font-weight-bold">% Asistencia</v-card-title>
-          <v-card-text class="text-h5">{{ data.resumen.porcentaje_asistencia }}%</v-card-text>
+          <v-card-title
+            class="text-uppercase font-weight-bold text-center text-wrap"
+            style="word-break: break-word; white-space: normal;"
+          >
+            Clases programadas en {{ currentMonth }}
+          </v-card-title>
+          <v-card-text class="text-h5">{{ data.resumen.clases_mes }}</v-card-text>
         </v-card>
       </v-col>
 
@@ -29,7 +34,12 @@
     <v-row class="mb-4">
       <v-col cols="12">
         <v-card class="pa-4" elevation="2">
-          <v-card-title class="mb-2">Asistencia por Día (7 días)</v-card-title>
+          <v-card-title
+            class="mb-2 font-weight-bold text-center text-wrap"
+            style="word-break: break-word; white-space: normal;"
+          >
+            Asistencia por Día (7 días)
+          </v-card-title>
           <v-chart :option="attendanceChartOptions" autoresize style="height: 300px" />
         </v-card>
       </v-col>
@@ -91,14 +101,19 @@ use([
 const data = ref({
   resumen: {
     nivel_actual: '',
-    porcentaje_asistencia: 0,
-    clases_hoy: 0
+    clases_hoy: 0,
+    clases_mes: 0
   },
   graficos: {
     asistencia_por_dia: {}
   },
   clases_hoy: []
 })
+
+const currentMonth = computed(() => {
+  return new Date().toLocaleDateString('es-CO', { month: 'long' }).toUpperCase()
+})
+
 
 const attendanceChartOptions = computed(() => {
   const entries = Object.entries(data.value.graficos.asistencia_por_dia)

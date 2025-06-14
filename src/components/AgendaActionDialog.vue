@@ -8,14 +8,26 @@
       </v-card-title>
 
       <v-card-subtitle>
-        Aula: <strong>{{ roomName }}</strong> <br>
-        Hora: <strong>{{ hour }}</strong>
+        <v-row class="mb-2">
+          <v-col cols="6">
+            Aula: <strong>{{ roomName }}</strong> <br>
+            Hora: <strong>{{ hour }} - {{ props.endHour || '...' }}</strong> <br>
+            Fecha: <strong>{{ date }}</strong> <br>
+            Tipo de clase: <strong>{{ props.classType || 'N/A' }}</strong> <br>
+          </v-col>
+          <v-col cols="6">
+            Idioma: <strong>{{ props.language || 'N/A' }}</strong> <br>
+            Nivel: <strong>{{ props.level || 'N/A' }}</strong> <br>
+            Unidad: <strong>{{ props.unit || 'N/A' }}</strong>
+          </v-col>
+        </v-row>
       </v-card-subtitle>
 
       <v-card-actions class="d-flex flex-column align-start pa-4">
-        <v-btn color="green" variant="flat" block @click="emitAction('create')">
-          Crear clase
+        <v-btn color="green" variant="flat" block @click="emitAction(hasClass ? 'enroll' : 'create')">
+          {{ hasClass ? 'Programar estudiante' : 'Crear clase' }}
         </v-btn>
+
         <v-btn color="blue" variant="flat" block @click="emitAction('view')">
           Ver clase
         </v-btn>
@@ -40,24 +52,49 @@ const props = defineProps<{
   roomName: string
   roomId: number
   hour: string
+  date: string
+  classType?: string
+  language?: string
+  level?: string
+  unit?: string
+  endHour?: string
+  hasClass?: boolean
+  sessionId?: number // <-- NUEVO
 }>()
+
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void
-  (e: 'action', value: { type: 'create' | 'view' | 'delete'; roomId: number; hour: string }): void
+  (e: 'action', value: {
+    type: 'create' | 'view' | 'delete' | 'enroll'
+    roomId: number
+    hour: string
+    date: string
+    endHour?: string
+    classType?: string
+    language?: string
+    level?: string
+    unit?: string
+  }): void
 }>()
 
-const isOpen = ref(props.modelValue)
-
-watch(() => props.modelValue, val => isOpen.value = val)
-watch(isOpen, val => emit('update:modelValue', val))
-
-function emitAction(type: 'create' | 'view' | 'delete') {
+function emitAction(type: 'create' | 'view' | 'delete' | 'enroll') {
   emit('action', {
     type,
     roomId: props.roomId,
     hour: props.hour,
+    date: props.date,
+    endHour: props.endHour,
+    classType: props.classType,
+    language: props.language,
+    level: props.level,
+    unit: props.unit,
+    sessionId: props.sessionId // <-- AÑADIDO
   })
   isOpen.value = false
 }
+const isOpen = ref(props.modelValue)
+
+watch(() => props.modelValue, val => isOpen.value = val)
+watch(isOpen, val => emit('update:modelValue', val))
 </script>

@@ -46,31 +46,45 @@
     <!-- 📋 CLASES DE HOY -->
     <v-row>
       <v-col cols="12">
-        <v-card class="pa-4">
+        <v-card class="pa-4" elevation="2">
           <v-card-title>Clases Programadas Hoy</v-card-title>
-            <v-card-text>
-              <v-row v-if="data.clases_hoy.length">
-                <v-col
-                  v-for="clase in data.clases_hoy"
-                  :key="clase.time + clase.classroom"
-                  cols="12"
-                  md="2"
-                >
-                  <div class="mb-4">
-                    <strong>- {{ clase.classroom }} ({{ clase.level }})</strong><br />
-                    <small class="text-grey-darken-1">Profesor: {{ clase.teacher }}</small>
+          <v-card-text>
+            <v-row dense>
+              <v-col
+                v-for="clase in data.clases_hoy"
+                :key="clase.time + clase.classroom + clase.level"
+                cols="12"
+                sm="6"
+                md="4"
+                lg="3"
+                xl="2"
+              >
+                <v-card class="pa-3" rounded="xl" elevation="1">
+                  <div class="d-flex align-center mb-1">
+                    <v-icon icon="mdi-school" class="me-2" />
+                    <span>{{ clase.classroom }} ({{ clase.level }})</span>
                   </div>
-                </v-col>
-              </v-row>
-              <div v-else class="text-grey d-flex align-center">
-                <v-icon icon="mdi-calendar-remove" class="me-2" />
-                No hay clases programadas hoy.
-              </div>
-            </v-card-text>
+                  <div class="text-grey text-caption d-flex align-center mb-1">
+                    <v-icon icon="mdi-account-tie" size="18" class="me-1" />
+                    {{ clase.teacher }}
+                  </div>
+                  <div class="text-grey text-caption d-flex align-center">
+                    <v-icon icon="mdi-clock-outline" size="18" class="me-1" />
+                    {{ clase.time }}
+                  </div>
+                </v-card>
+              </v-col>
+            </v-row>
 
+            <div v-if="!data.clases_hoy.length" class="text-grey d-flex align-center mt-2">
+              <v-icon icon="mdi-calendar-remove" class="me-2" />
+              No hay clases programadas hoy.
+            </div>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
+
   </v-container>
 </template>
 

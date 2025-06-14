@@ -20,6 +20,11 @@ import DashboardReceptionistView from '@/views/dashboard/DashboardReceptionistVi
 import DashboardTeacherView from '@/views/dashboard/DashboardTeacherView.vue'
 import DashboardStudentView from '@/views/dashboard/DashboardStudentView.vue'
 import UnauthorizedView from '@/views/UnauthorizedView.vue'
+import FormClassView from '@/views/crud/form-agenda-view.vue'
+import ClassLayoutView from '@/layouts/ClassAgendaLayout.vue'
+import ClassInformationView from '@/views/ClassInformationView.vue'
+import ClassStudentsInformationView from '@/views/ClassStudentsInformationView.vue'
+import ClassTeacherInformationView from '@/views/ClassTeacherInformationView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,6 +79,12 @@ const router = createRouter({
       path: '/agenda',
       name: 'agenda',
       component: AgendaView,
+      meta: {layout: 'WireframeLayout'}
+    },
+    {
+      path: '/agenda/class-form',
+      name: 'classroom-agenda',
+      component: FormClassView,
       meta: {layout: 'WireframeLayout'}
     },
     {
@@ -150,7 +161,29 @@ const router = createRouter({
       name: 'unauthorized',
       component: UnauthorizedView,
       meta: {layout: 'WireframeLayout'}
-    }
+    },
+    {
+      path: '/clase/:id',
+      component: ClassLayoutView,
+      meta: {layout: 'WireframeLayout'},
+      children: [
+        {
+          path: '',
+          name: 'ClassInfoView',
+          component: ClassInformationView,
+        },
+        {
+          path: 'students',
+          name: 'ClassStudentsView',
+          component: ClassStudentsInformationView,
+        },
+        {
+          path: 'teacher',
+          name: 'ClassTeacherView',
+          component: ClassTeacherInformationView,
+        },
+      ]
+    },
   ],
 })
 
