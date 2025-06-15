@@ -10,14 +10,9 @@
     <!-- Formulario -->
     <v-slide-y-transition>
       <div v-if="showForm" class="mb-4">
-        <SimpleSettingForm
+        <LanguageForm
           :mode="formMode"
           :initialData="editData"
-          :fields="[
-            { key: 'name', label: 'Nombre' },
-            { key: 'abbreviation', label: 'Abreviación' }
-          ]"
-          :onSave="handleSave"
           @saved="onSaved"
           @cancel="showForm = false"
         />
@@ -35,7 +30,7 @@
       @update:options="loadItems"
     >
       <!-- Acciones -->
-      <template v-slot:item.actions="{ item }">
+      <template #item.actions="{ item }">
         <div class="d-flex">
           <UpdateButtonComponent
             resource="language"
@@ -51,7 +46,7 @@
       </template>
 
       <!-- Filtro -->
-      <template v-slot:tfoot>
+      <template #tfoot>
         <tr>
           <td colspan="2">
             <v-text-field
@@ -68,7 +63,12 @@
     </v-data-table-server>
 
     <!-- Snackbar -->
-    <v-snackbar v-model="snackbar" :timeout="3000" :color="snackbarColor" location="top right">
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="3000"
+      :color="snackbarColor"
+      location="top right"
+    >
       {{ snackbarMessage }}
     </v-snackbar>
   </v-container>
@@ -80,7 +80,7 @@ import LanguageService from '@/services/LanguageService'
 import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
 import UpdateButtonComponent from '@/components/buttons/UpdateButtonComponent.vue'
 import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent.vue'
-import SimpleSettingForm from '@/components/settings/SimpleSettingForm.vue'
+import LanguageForm from '@/views/crud/form-setting-language-view.vue'
 
 const itemsPerPage = ref(10)
 const languages = ref([])
@@ -128,14 +128,6 @@ const editItem = (item) => {
   showForm.value = true
 }
 
-const handleSave = async (data) => {
-  if (formMode.value === 'create') {
-    await LanguageService.create(data)
-  } else {
-    await LanguageService.update(editData.value.id, data)
-  }
-}
-
 const deleteItem = async (item) => {
   try {
     await LanguageService.delete(item.id)
@@ -164,4 +156,7 @@ const showSnackbar = (message: string, color: string) => {
 watch(searchName, () => {
   loadItems()
 })
+
+// Carga inicial
+loadItems()
 </script>

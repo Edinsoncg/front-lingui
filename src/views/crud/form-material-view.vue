@@ -1,191 +1,123 @@
-//src/views/crud/form-material-view.vue
-
 <template>
-  <v-form ref="formRef" v-model="formIsValid">
-    <v-text-field
-      label="Nombre"
-      v-model="form.name"
-      :rules="[rules.required, rules.minName, rules.maxName]"
-      :error-messages="errors.name"
-    />
+  <v-card flat class="pa-4" color="#f4eafd">
+    <v-form ref="formRef" v-model="formIsValid">
+      <v-row>
+        <v-col cols="12" sm="6">
+          <v-text-field
+            v-model="form.name"
+            label="Nombre"
+            :rules="[rules.required, rules.minLength]"
+            :error-messages="errors.name"
+            variant="outlined"
+            density="comfortable"
+            color="purple"
+          />
+        </v-col>
 
-    <v-select
-      v-model="form.level_id"
-      :items="levels"
-      item-title="name"
-      item-value="id"
-      label="Nivel"
-      :rules="[rules.required]"
-      :error-messages="errors.level_id"
-    />
+        <v-col cols="12" sm="6">
+          <v-text-field
+            v-model="form.abbreviation"
+            label="Abreviación"
+            :rules="[rules.required, rules.maxLength]"
+            :error-messages="errors.abbreviation"
+            variant="outlined"
+            density="comfortable"
+            color="purple"
+          />
+        </v-col>
+      </v-row>
 
-    <v-text-field
-      label="Link"
-      v-model="form.link"
-      :rules="[rules.required, rules.url]"
-      :error-messages="errors.link"
-      placeholder="https://example.com"
-    />
+      <v-row justify="end" class="mt-2">
+        <v-btn color="grey-darken-1" variant="text" @click="$emit('cancel')">Cancelar</v-btn>
+        <v-btn color="purple" class="ml-2" :disabled="!formIsValid || loading" :loading="loading" @click="checkFormBeforeConfirm">Guardar</v-btn>
+      </v-row>
 
-    <v-textarea
-      label="Descripción"
-      v-model="form.description"
-      :rules="[rules.required, rules.minDesc]"
-      :error-messages="errors.description"
-    />
-
-    <div>
-      <v-btn
-        color="primary"
-        style="margin-right:10px ;"
-        :disabled="!formIsValid || loading"
-        @click="checkFormBeforeConfirm"
-        :loading="loading">
-          Guardar
-      </v-btn>
-
-      <v-btn @click="$emit('cancel')">Cancelar</v-btn>
-    </div>
-    <!-- Modal de confirmación -->
-    <ConfirmDialog
-      v-model="confirmDialog"
-      :title="modalTitle"
-      :message="modalMessage"
-      @confirm="submit"
-      @cancel="confirmDialog = false"
-    />
-  </v-form>
+      <!-- Modal de confirmación -->
+      <ConfirmDialog
+        v-model="confirmDialog"
+        :title="modalTitle"
+        :message="modalMessage"
+        @confirm="submit"
+        @cancel="confirmDialog = false"
+      />
+    </v-form>
+  </v-card>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue'
-import LevelService from '@/services/LevelService'
-import SupportMaterialService from '@/services/SupportMaterialService'
+import { ref, watch, computed } from 'vue'
+import LanguageService from '@/services/LanguageService'
 import ConfirmDialog from '@/components/ModalComponent.vue'
 
-// Interfaces y Tipos
-interface SupportMaterialForm {
-  id?: number
-  name: string
-  level_id: number | undefined
-  link: string
-  description: string
-}
-interface Level {
-  id: number
-  name: string
-}
-
-// props y emits
 const props = defineProps<{
-  mode: 'create' | 'update',
-  initialData?: Partial<SupportMaterialForm>
+  mode: 'create' | 'update'
+  initialData?: { id?: number; name?: string; abbreviation?: string }
 }>()
 const emit = defineEmits(['saved', 'cancel'])
 
-// Variables Computadas
-const modalTitle = computed(() =>
-  props.mode === 'create' ? 'Crear Material' : 'Actualizar Material'
-)
-const modalMessage = computed(() =>
-  props.mode === 'create'
-    ? '¿Está seguro de que desea crear el material?'
-    : '¿Está seguro de que desea actualizar el material?'
-)
-
-// Refs y Estado Reactivo
-const form = ref<SupportMaterialForm>({
+const form = ref({
+  id: undefined,
   name: '',
-  level_id: undefined,
-  link: '',
-  description: ''
+  abbreviation: ''
 })
-const levels = ref<Level[]>([])
-const loading = ref(false)
-const confirmDialog = ref(false)
 const formRef = ref()
 const formIsValid = ref(false)
+const confirmDialog = ref(false)
+const loading = ref(false)
 
 const errors = ref<Record<string, string[]>>({
   name: [],
-  level_id: [],
-  link: [],
-  description: [],
+  abbreviation: []
 })
 
 const rules = {
-  required: (v: any) => !!v || 'Este campo es obligatorio',
-  minName: (v: string) => v.length >= 3 || 'Mínimo 3 caracteres',
-  maxName: (v: string) => v.length <= 100 || 'Máximo 100 caracteres',
-  minDesc: (v: string) => v.length >= 5 || 'Mínimo 5 caracteres',
-  url: (v: string) => {
-    const pattern = /^(https?:\/\/)([\w-]+\.)+[\w-]{2,}(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/i
-    return pattern.test(v) || 'Debe ser una URL válida'
-  }
+  required: (v: string) => !!v || 'Este campo es obligatorio',
+  minLength: (v: string) => v.length >= 2 || 'Mínimo 2 caracteres',
+  maxLength: (v: string) => v.length <= 10 || 'Máximo 10 caracteres'
 }
 
-// Watcher
-watch(() => props.initialData, (data) => {
-  if (props.mode === 'update' && data) {
+const modalTitle = computed(() =>
+  props.mode === 'create' ? 'Crear Idioma' : 'Actualizar Idioma'
+)
+const modalMessage = computed(() =>
+  props.mode === 'create'
+    ? '¿Desea crear este idioma?'
+    : '¿Desea actualizar este idioma?'
+)
+
+watch(
+  () => props.initialData,
+  (newData) => {
     form.value = {
-      id: data.id ?? undefined,
-      name: data.name ?? '',
-      level_id: data.level_id ?? undefined,
-      link: data.link ?? '',
-      description: data.description ?? ''
+      id: newData?.id ?? undefined,
+      name: newData?.name ?? '',
+      abbreviation: newData?.abbreviation ?? ''
     }
-  }
-}, { immediate: true })
+  },
+  { immediate: true }
+)
 
-// Ciclo de Vida
-onMounted(async () => {
-  try {
-    levels.value = await LevelService.getAll()
-    console.log('NIVELES CARGADOS', levels.value)
-  } catch (error) {
-    console.error('Error while loading levels:', error)
-  }
-})
-
-// Validación antes de mostrar modal
 function checkFormBeforeConfirm() {
-  formRef.value?.validate().then((isValid: boolean) => {
-    if (isValid) {
-      confirmDialog.value = true
-    }
+  formRef.value?.validate().then((valid: boolean) => {
+    if (valid) confirmDialog.value = true
   })
 }
 
-// Métodos
 async function submit() {
   confirmDialog.value = false
   loading.value = true
-
   try {
     if (props.mode === 'create') {
-      await SupportMaterialService.create({
-        ...form.value,
-        level_id: form.value.level_id as number
-      })
+      await LanguageService.create(form.value)
     } else if (props.mode === 'update' && form.value.id) {
-      await SupportMaterialService.update(form.value.id, {
+      await LanguageService.update(form.value.id, {
         name: form.value.name,
-        level_id: form.value.level_id,
-        link: form.value.link,
-        description: form.value.description
+        abbreviation: form.value.abbreviation
       })
     }
-
     emit('saved')
-
-    form.value = {
-      name: '',
-      level_id: undefined,
-      link: '',
-      description: ''
-    }
-  } catch (e) {
-    console.error('Error al guardar el material:', e)
+  } catch (error) {
+    console.error('Error guardando idioma:', error)
   } finally {
     loading.value = false
   }

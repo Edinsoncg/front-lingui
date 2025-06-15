@@ -18,7 +18,6 @@ import TeacherReportDetailView from '@/views/reports/teachers/TeacherReportDetai
 import ClassroomView from '@/views/settings/SettingClassroomView.vue'
 import SettingHouseView from '@/views/settings/SettingHouseView.vue'
 import SettingLanguageView from '@/views/settings/SettingLanguageView.vue'
-import SettingRoleView from '@/views/settings/SettingRoleView.vue'
 import SettingDocumentTypeView from '@/views/settings/SettingDocumentTypeView.vue'
 import SettingStatusView from '@/views/settings/SettingStatusView.vue'
 
@@ -144,12 +143,6 @@ const router = createRouter({
       path: '/setting/languages',
       name: 'languages',
       component: SettingLanguageView,
-      meta: { layout: 'WireframeLayout' },
-    },
-    {
-      path: '/setting/role',
-      name: 'setting-role',
-      component: SettingRoleView,
       meta: { layout: 'WireframeLayout' },
     },
     {
