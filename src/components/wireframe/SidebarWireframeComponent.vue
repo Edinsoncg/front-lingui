@@ -1,11 +1,9 @@
-<!-- src/components/navigation/SidebarComponent.vue -->
 <template>
   <v-navigation-drawer
     app
     expand-on-hover
     rail
     color="deep-purple-lighten-4"
-
     permanent
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
@@ -33,7 +31,6 @@
           />
         </v-list-group>
 
-
         <!-- Ítem sin hijos -->
         <v-list-item
           v-else
@@ -48,102 +45,118 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { authSetStore } from '@/stores/authStore'
 
-  const isDrawerOpen = ref(false)
+const auth = authSetStore()
+const isDrawerOpen = ref(false)
 
-  const onMouseEnter = () => {
-    isDrawerOpen.value = true
+const onMouseEnter = () => {
+  isDrawerOpen.value = true
+}
+const onMouseLeave = () => {
+  isDrawerOpen.value = false
+}
+
+const dashboardRoute = computed(() => {
+  const role = auth.user?.roles?.[0]?.toUpperCase() || ''
+  switch (role) {
+    case 'ADMINISTRATIVO':
+      return '/dashboard/admin'
+    case 'RECEPCIONISTA':
+      return '/dashboard/receptionist'
+    case 'PROFESOR':
+      return '/dashboard/teacher'
+    case 'ESTUDIANTE':
+      return '/dashboard/student'
+    default:
+      return '/dashboard/student'
   }
-  const onMouseLeave = () => {
-    isDrawerOpen.value = false
-  }
+})
 
-  const menuItems = [
-    {
-      title: 'Dashboard',
-      icon: 'mdi-view-dashboard-outline',
-      to: '/dashboard',
-    },
-    {
-      title: 'Agenda',
-      icon: 'mdi-calendar-month-outline',
-      to: '/agenda',
-    },
-    {
-      title: 'Mi Perfil',
-      icon: 'mdi-account-circle-outline',
-      to: '/profile',
-    },
-    {
-      title: 'Mi Seguimiento',
-      icon: 'mdi-chart-line',
-      children: [
-        {
-          title: 'Académico',
-          icon: 'mdi-school-outline',
-          to: '/seguimiento/academico',
-        },
-        {
-          title: 'Contrato',
-          icon: 'mdi-file-document-outline',
-          to: '/seguimiento/contrato',
-        },
-      ],
-    },
-    {
-      title: 'Material de Soporte',
-      icon: 'mdi-bookshelf',
-      to: '/support-material',
-    },
-    {
-      title: 'Reportes',
-      icon: 'mdi-file-chart',
-      children: [
-        {
-          title: 'Estudiantes',
-          icon: 'mdi-account-multiple-outline',
-          to: '/reportes/estudiantes',
-        },
-        {
-          title: 'Salones',
-          icon: 'mdi-door-open',
-          to: '/reportes/salones',
-        },
-        {
-          title: 'Profesores',
-          icon: 'mdi-account-tie',
-          to: '/reportes/profesores',
-        },
-      ],
-    },
-    {
-      title: 'Soporte',
-      icon: 'mdi-lifebuoy',
-      to: '/soporte',
-    },
-    {
-      title: 'Configuración',
-      icon: 'mdi-cog-outline',
-      children: [
-        {
-          title: 'Usuarios',
-          icon: 'mdi-account-cog-outline',
-          to: '/configuracion/usuarios',
-        },
-        {
-          title: 'Permisos',
-          icon: 'mdi-shield-key-outline',
-          to: '/configuracion/permisos',
-        },
-        {
-          title: 'Lenguaje y Notificaciones',
-          icon: 'mdi-earth',
-          to: '/configuracion/lenguaje-notificaciones',
-        },
-      ],
-    },
-  ]
-
+const menuItems = computed(() => [
+  {
+    title: 'Dashboard',
+    icon: 'mdi-view-dashboard-outline',
+    to: dashboardRoute.value,
+  },
+  {
+    title: 'Agenda',
+    icon: 'mdi-calendar-month-outline',
+    to: '/agenda',
+  },
+  {
+    title: 'Mi Perfil',
+    icon: 'mdi-account-circle-outline',
+    to: '/profile',
+  },
+  {
+    title: 'Mi Seguimiento',
+    icon: 'mdi-chart-line',
+    children: [
+      {
+        title: 'Académico',
+        icon: 'mdi-school-outline',
+        to: '/progress/academic',
+      },
+      {
+        title: 'Contrato',
+        icon: 'mdi-file-document-outline',
+        to: '/progress/contract',
+      },
+    ],
+  },
+  {
+    title: 'Material de Soporte',
+    icon: 'mdi-bookshelf',
+    to: '/support-material',
+  },
+  {
+    title: 'Reportes',
+    icon: 'mdi-file-chart',
+    children: [
+      {
+        title: 'Estudiantes',
+        icon: 'mdi-account-multiple-outline',
+        to: '/report-student',
+      },
+      {
+        title: 'Salones',
+        icon: 'mdi-door-open',
+        to: '/report/classroom',
+      },
+      {
+        title: 'Profesores',
+        icon: 'mdi-account-tie',
+        to: '/report/teacher',
+      },
+    ],
+  },
+  {
+    title: 'Soporte',
+    icon: 'mdi-lifebuoy',
+    to: '/soporte',
+  },
+  {
+    title: 'Configuración',
+    icon: 'mdi-cog-outline',
+    children: [
+      {
+        title: 'Usuarios',
+        icon: 'mdi-account-cog-outline',
+        to: '/setting/user',
+      },
+      {
+        title: 'Permisos',
+        icon: 'mdi-shield-key-outline',
+        to: '/configuracion/permisos',
+      },
+      {
+        title: 'Lenguaje y Notificaciones',
+        icon: 'mdi-earth',
+        to: '/configuracion/lenguaje-notificaciones',
+      },
+    ],
+  },
+])
 </script>
-

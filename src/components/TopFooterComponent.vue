@@ -8,7 +8,7 @@ const userName = authStore.user?.name || 'Usuario'
 <template>
   <footer class="top-footer">
     <div class="user-greeting">
-      Bienvenid@, {{ userName }}
+      Hola {{ userName }}
     </div>
   </footer>
 </template>

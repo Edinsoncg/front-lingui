@@ -66,7 +66,8 @@
 
           <DeleteButtonComponent
             :item="item"
-            @deleted="onDeleted" />
+            resource="material"
+            @confirm-delete="deleteMaterial" />
         </div>
       </template>
 
@@ -90,7 +91,7 @@ import SupportMaterialService from '@/services/SupportMaterialService'
 import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
 import UpdateButtonComponent from '@/components/buttons/UpdateButtonComponent.vue'
 import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent.vue'
-import MaterialForm from '@/views/crud_material/form-material-view.vue'
+import MaterialForm from '@/views/crud/form-material-view.vue'
 
 //interfaces
 interface SupportMaterialForm {
@@ -159,9 +160,15 @@ function onSaved() {
 }
 
 //Funciones de la Tabla
-async function onDeleted() {
-  await loadItems(lastOptions.value)
-  showSnackbar('Material eliminado correctamente', 'error')
+async function deleteMaterial(item: { id: number }) {
+  try {
+    await SupportMaterialService.delete(item.id)
+    await loadItems(lastOptions.value)
+    showSnackbar('Material eliminado correctamente', 'error')
+  } catch (error) {
+    console.error('Error al eliminar material:', error)
+    showSnackbar('Error al eliminar el material', 'warning')
+  }
 }
 
   // Cargar items desde el servicio con filtros

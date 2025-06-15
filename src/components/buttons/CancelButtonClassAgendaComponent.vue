@@ -1,13 +1,20 @@
 <template>
   <div>
-    <v-btn icon size="small" color="error" @click="openDialog">
-      <v-icon size="small">mdi-delete</v-icon>
+    <v-btn
+      color="purple-lighten-2"
+      rounded
+      variant="flat"
+      prepend-icon="mdi-calendar-remove"
+      class="text-white font-weight-bold"
+      @click="openDialog"
+    >
+      Cancelar
     </v-btn>
 
     <ConfirmDialog
       v-model="showDialog"
-      :title="`¿Eliminar ${resource}?`"
-      :message="`¿Estás seguro de que deseas eliminar este ${resource}?`"
+      :title="`¿Cancelar clase?`"
+      :message="`¿Estás seguro de que deseas cancelar esta clase? Esta acción no se puede deshacer.`"
       @confirm="confirmDelete"
       @cancel="showDialog = false"
     />
@@ -19,12 +26,11 @@ import { ref } from 'vue'
 import ConfirmDialog from '@/components/ModalComponent.vue'
 
 const props = defineProps<{
-  item: { id: number }
-  resource: string
+  itemId: number
 }>()
 
 const emit = defineEmits<{
-  (e: 'confirm-delete', item: { id: number }): void
+  (e: 'confirm-cancel', id: number): void
 }>()
 
 const showDialog = ref(false)
@@ -34,7 +40,7 @@ function openDialog() {
 }
 
 function confirmDelete() {
-  emit('confirm-delete', props.item)
+  emit('confirm-cancel', props.itemId)
   showDialog.value = false
 }
 </script>
