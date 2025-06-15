@@ -5,6 +5,7 @@ import RestoreView from '@/views/auth/RestoreView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
 import SupportMaterialView from '@/views/SupportMaterialView.vue'
 import AgendaView from '@/views/AgendaView.vue'
+import NewPasswordView from '@/views/auth/NewPassword.vue'
 import SettingUserView from '@/views/SettingUserView.vue'
 import FollowAcademyView from '@/views/FollowAcademyView.vue'
 import FollowContractView from '@/views/FollowContractView.vue'
@@ -44,6 +45,12 @@ const router = createRouter({
       name: 'restore',
       component: RestoreView,
       meta: {layout: 'AuthLayout'}
+    },
+    {
+    path: '/newpassword',
+    name: 'NewPassword',
+    component: NewPasswordView,
+    meta: {layout: 'AuthLayout'}
     },
     {
       path: '/login',

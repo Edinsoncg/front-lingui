@@ -19,7 +19,6 @@
 <style scoped>
 header {
   margin: 0 auto;
-  padding: 1.5rem;
 }
 
 .flags{
