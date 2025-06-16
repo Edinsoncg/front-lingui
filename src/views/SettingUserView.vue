@@ -18,6 +18,17 @@
       </div>
     </v-slide-y-transition>
 
+    <v-slide-y-transition>
+      <div v-if="showExtraForm && extraUserId" class="mb-4">
+        <FormStudentView
+          :user-id="extraUserId"
+          @saved="onSavedExtra"
+          @cancel="onCancelExtra"
+        />
+      </div>
+    </v-slide-y-transition>
+
+
     <!-- Tabla paginada con búsqueda -->
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
@@ -55,6 +66,12 @@
             label="Usuario"
             @edit="editItem(item)" />
 
+          <EditExtraStudentButtonComponent
+            v-if="item.role === 'Estudiante'"
+            :userId="item.id"
+            @open="openExtraForm"
+          />
+
           <DeleteButtonComponent
             :item="item"
             resource="usuario"
@@ -82,6 +99,8 @@ import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vu
 import UpdateButtonComponent from '@/components/buttons/UpdateButtonComponent.vue'
 import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent.vue'
 import UserForm from '@/views/crud/form-user-view.vue'
+import EditExtraStudentButtonComponent from '@/components/buttons/EditExtraStudentButtonComponent.vue'
+import FormStudentView from '@/views/crud/form-student-view.vue'
 
 // interfaces
 interface UserForm {
@@ -104,6 +123,11 @@ const showForm = ref(false)
 const editData = ref<Partial<UserForm> | undefined>(undefined)
 const formMode = ref<'create' | 'update'>('create')
 const formContainer = ref<HTMLElement | null>(null)
+
+// Formulario de estudiante extendido
+const showExtraForm = ref(false)
+const extraUserId = ref<number | null>(null)
+
 
 // Snackbar
 const snackbar = ref(false)
@@ -129,6 +153,8 @@ const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
 
 // Funciones del formulario
 function openCreateForm() {
+  showExtraForm.value = false
+  extraUserId.value = null
   formMode.value = 'create'
   editData.value = undefined
   showForm.value = true
@@ -153,6 +179,8 @@ async function editItem(item: any) {
       role_id: userData.role_id,
     }
 
+    showExtraForm.value = false
+    extraUserId.value = null
     showForm.value = true
     await nextTick()
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -161,8 +189,6 @@ async function editItem(item: any) {
     showSnackbar('No se pudo cargar el usuario para editar', 'error')
   }
 }
-
-
 
 function onSaved() {
   showSnackbar(
@@ -174,6 +200,26 @@ function onSaved() {
 
   showForm.value = false
   loadItems(lastOptions.value)
+}
+
+// Funciones del formulario de estudiante extendido
+function openExtraForm(userId: number) {
+  showForm.value = false
+  showExtraForm.value = true
+  extraUserId.value = userId
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function onSavedExtra() {
+  showSnackbar('Datos extendidos guardados', 'success')
+  showExtraForm.value = false
+  extraUserId.value = null
+  loadItems(lastOptions.value)
+}
+
+function onCancelExtra() {
+  showExtraForm.value = false
+  extraUserId.value = null
 }
 
 // Función de borrado
