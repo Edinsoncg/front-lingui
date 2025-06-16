@@ -55,8 +55,17 @@
         </tr>
       </template>
 
-      <template #item.role="{ item }">
-        {{ item.role }}
+      <template #item.roles="{ item }">
+          <v-chip
+            v-for="role in item.roles"
+            :key="role"
+            color="blue-lighten-4"
+            class="ma-1"
+            size="small"
+            label
+          >
+            {{ role }}
+          </v-chip>
       </template>
 
       <template #item.actions="{ item }">
@@ -67,7 +76,7 @@
             @edit="editItem(item)" />
 
           <EditExtraStudentButtonComponent
-            v-if="item.role === 'Estudiante'"
+            v-if="item.roles.includes('Estudiante')"
             :userId="item.id"
             @open="openExtraForm"
           />
@@ -110,12 +119,13 @@ interface UserForm {
   first_last_name: string
   second_last_name: string
   email: string
-  role_id: number
+  role_ids: number[]
   document_type_id: number
   document_number: string
   phone_number: string
   workday_id?: number | null
   password?: string
+  language_ids: number[]
 }
 
 // Estado del FORMULARIO
@@ -141,7 +151,7 @@ const headers = ref([
   { title: 'Nombre', key: 'first_name' },
   { title: 'Apellido', key: 'first_last_name' },
   { title: 'Correo', key: 'email' },
-  { title: 'Rol', key: 'role' },
+  { title: 'Roles', key: 'roles' },
   { title: 'Acciones', key: 'actions', sortable: false }
 ])
 
@@ -176,7 +186,8 @@ async function editItem(item: any) {
       email: userData.email,
       phone_number: userData.phoneNumber,
       workday_id: userData.workdayId,
-      role_id: userData.role_id,
+      role_ids: userData.roles.map((r: any) => r.id), // ya es array
+      language_ids: userData.languages?.map((l: any) => l.id) ?? [],
     }
 
     showExtraForm.value = false
@@ -246,12 +257,11 @@ async function loadItems(options: any) {
       search: { search: searchName.value }
     })
     serverItems.value = items.map((item: any) => ({
-      id: item.user.id,
-      first_name: item.user.firstName,
-      first_last_name: item.user.firstLastName,
-      email: item.user.email,
-      role: item.role?.name ?? null,
-      role_id: item.roleId,
+      id: item.id,
+      first_name: item.firstName,
+      first_last_name: item.firstLastName,
+      email: item.email,
+      roles: item.roles?.map((r: any) => r.name) ?? [],
     }))
     totalItems.value = total
   } catch (error) {

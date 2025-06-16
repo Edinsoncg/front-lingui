@@ -1,70 +1,92 @@
 <template>
   <div>
     <v-row dense>
-      <v-col cols="12" md="4">
-        <v-text-field label="Nombre" v-model="form.first_name" density="compact" />
+      <v-col cols="12" md="3">
+        <v-text-field label="Nombre" v-model="form.first_name" density="compact" :rules="[rules.required, rules.minName, rules.maxName]"/>
       </v-col>
 
-      <v-col cols="12" md="4">
-        <v-text-field label="Segundo Nombre" v-model="form.middle_name" density="compact" />
+      <v-col cols="12" md="3">
+        <v-text-field label="Segundo Nombre" v-model="form.middle_name" density="compact"/>
       </v-col>
 
-      <v-col cols="12" md="4">
-        <v-text-field label="Apellido" v-model="form.first_last_name" density="compact" />
+      <v-col cols="12" md="3">
+        <v-text-field label="Apellido" v-model="form.first_last_name" density="compact" :rules="[rules.required, rules.minName, rules.maxName]"/>
       </v-col>
 
-      <v-col cols="12" md="4">
-        <v-text-field label="Segundo Apellido" v-model="form.second_last_name" density="compact" />
+      <v-col cols="12" md="3">
+        <v-text-field label="Segundo Apellido" v-model="form.second_last_name" density="compact" :rules="[rules.required, rules.minName, rules.maxName]"/>
       </v-col>
 
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="3">
         <v-select
           v-model="form.document_type_id"
           :items="documentTypes"
           item-title="name"
           item-value="id"
           label="Tipo de Documento"
+          :rules="[rules.required]"
         />
       </v-col>
 
-      <v-col cols="12" md="4">
-        <v-text-field label="Número de Documento" v-model="form.document_number" density="compact" />
+      <v-col cols="12" md="3">
+        <v-text-field label="Número de Documento" v-model="form.document_number" density="compact" :rules="[rules.required, rules.minDocumentNumber, rules.maxDocumentNumber]"/>
       </v-col>
 
-      <v-col cols="12" md="4">
-        <v-text-field label="Correo Electrónico" v-model="form.email" density="compact" />
+      <v-col cols="12" md="3">
+        <v-text-field label="Correo Electrónico" v-model="form.email" density="compact" :rules="[rules.required, rules.email]" />
       </v-col>
 
-      <v-col cols="12" md="4">
-        <v-text-field label="Teléfono" v-model="form.phone_number" density="compact" />
+      <v-col cols="12" md="3">
+        <v-text-field label="Teléfono" v-model="form.phone_number" density="compact" :rules="[rules.required, rules.minPhoneNumber, rules.maxPhoneNumber]" />
       </v-col>
 
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="3">
+        <v-select
+          v-model="form.role_ids"
+          :items="roles"
+          item-title="name"
+          item-value="id"
+          label="Roles"
+          multiple
+          chips
+          :rules="[rules.required]"
+          density="compact"
+        />
+      </v-col>
+
+      <!-- Idiomas: solo aparece si incluye el rol profesor (id === 3) -->
+      <v-col cols="12" md="3" v-if="includesTeacher">
+        <v-select
+          v-model="form.language_ids"
+          :items="languages"
+          item-title="name"
+          item-value="id"
+          label="Idiomas (solo para profesores)"
+          multiple
+          chips
+          density="compact"
+        />
+      </v-col>
+
+      <!-- Jornada: se desactiva si solo tiene el rol estudiante -->
+      <v-col cols="12" md="3">
         <v-select
           v-model="form.workday_id"
           :items="workdays"
           item-title="journal"
           item-value="id"
           label="Jornada"
+          :disabled="isOnlyStudent"
+          density="compact"
         />
       </v-col>
 
-      <v-col cols="12" md="4">
-        <v-select
-          v-model="form.role_id"
-          :items="roles"
-          item-title="name"
-          item-value="id"
-          label="Rol"
-        />
-      </v-col>
-
-      <v-col cols="12" md="4" v-if="props.mode === 'create'">
+      <v-col cols="12" md="3" v-if="props.mode === 'create'">
         <v-text-field label="Contraseña" type="password" v-model="form.password" density="compact" />
       </v-col>
     </v-row>
 
-    <v-btn color="primary" @click="confirmDialog = true" :loading="loading">
+    <v-btn color="primary" @click="confirmDialog = true" :loading="loading" style="width: auto; margin-right: 1rem;">
       Guardar
     </v-btn>
 
@@ -87,6 +109,7 @@ import SettingUserService from '@/services/SettingUserService'
 import WorkdayService from '@/services/WorkdayService'
 import DocumentTypeService from '@/services/DocumentTypeService'
 import RoleService from '@/services/RoleService'
+import LanguageService from '@/services/LanguageService'
 
 // Interfaces
 interface UserForm {
@@ -101,7 +124,8 @@ interface UserForm {
   password?: string
   phone_number: string
   workday_id?: number | null
-  role_id: number | undefined
+    role_ids: number[]
+  language_ids: number[]
 }
 
 interface SelectOption {
@@ -116,16 +140,6 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['saved', 'cancel'])
 
-// Computados
-const modalTitle = computed(() =>
-  props.mode === 'create' ? 'Crear Usuario' : 'Actualizar Usuario'
-)
-const modalMessage = computed(() =>
-  props.mode === 'create'
-    ? '¿Está seguro de que desea crear este usuario?'
-    : '¿Está seguro de que desea actualizar este usuario?'
-)
-
 // Refs
 const form = ref<UserForm>({
   first_name: '',
@@ -138,14 +152,51 @@ const form = ref<UserForm>({
   password: '',
   phone_number: '',
   workday_id: null,
-  role_id: undefined,
+  role_ids: [],
+  language_ids: [],
 })
 
 const documentTypes = ref<SelectOption[]>([])
 const workdays = ref<SelectOption[]>([])
 const roles = ref<SelectOption[]>([])
+const languages = ref<SelectOption[]>([])
 const loading = ref(false)
 const confirmDialog = ref(false)
+
+const rules = {
+  required: (value: any) => !!value && value.length !== 0 || 'Este campo es obligatorio',
+  minName: (value:any) => String(value).length >= 3  || 'Debe tener al menos 3 caracteres',
+  maxName: (value:any) => String(value).length <= 33  || 'Debe tener menos de 32 caracteres',
+  numeric: (v: any) =>
+    /^\d+$/.test(v) || 'Solo se permiten números',
+  minDocumentNumber: (v: any) =>
+    String(v).length >= 8 || 'Debe tener al menos 8 cifras numéricas',
+  maxDocumentNumber: (v: any) =>
+    String(v).length <= 10 || 'Debe tener al menos 10 cifras numéricas',
+  minPhoneNumber: (v: any) =>
+    String(v).length >= 7 || 'Debe tener al menos 7 cifras numéricas',
+  maxPhoneNumber: (v: any) =>
+    String(v).length <= 15 || 'Debe tener al menos 15 cifras numéricas',
+   // 📧 Validación de formato de correo
+  email: (v: string) => {
+    const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|co|es|org|edu|net|gob|gov|ut\.edu)$/i
+    return pattern.test(v) || 'Correo no válido o dominio incorrecto'
+  },
+}
+
+// Computados
+const modalTitle = computed(() =>
+  props.mode === 'create' ? 'Crear Usuario' : 'Actualizar Usuario'
+)
+const modalMessage = computed(() =>
+  props.mode === 'create'
+    ? '¿Está seguro de que desea crear este usuario?'
+    : '¿Está seguro de que desea actualizar este usuario?'
+)
+
+// 👇 Computados para lógica de campos condicionales
+const isOnlyStudent = computed(() => form.value.role_ids.length === 1 && form.value.role_ids[0] === 4)
+const includesTeacher = computed(() => form.value.role_ids.includes(3))
 
 // Watch
 watch(() => props.initialData, (data) => {
@@ -161,7 +212,8 @@ watch(() => props.initialData, (data) => {
       email: data.email ?? '',
       phone_number: data.phone_number ?? '',
       workday_id: data.workday_id ?? null,
-      role_id: data.role_id ?? undefined,
+      role_ids: data.role_ids ?? [],
+      language_ids: data.language_ids ?? [],
     }
   }
 }, { immediate: true })
@@ -172,6 +224,7 @@ onMounted(async () => {
     roles.value = await RoleService.getAll()
     workdays.value = await WorkdayService.getAll()
     documentTypes.value = await DocumentTypeService.getAll()
+    languages.value = await LanguageService.getAll()
   } catch (error) {
     console.error('Error al cargar listas para el formulario:', error)
   }
@@ -183,10 +236,16 @@ async function submit() {
 
   loading.value = true
   try {
+    const payload = { ...form.value }
+
+    if (props.mode !== 'create') {
+      delete payload.password
+    }
+
     if (props.mode === 'create') {
-      await SettingUserService.create(form.value)
+      await SettingUserService.create(payload)
     } else if (props.mode === 'update' && form.value.id) {
-      await SettingUserService.update(form.value.id, form.value)
+      await SettingUserService.update(form.value.id, payload)
     }
 
     emit('saved')

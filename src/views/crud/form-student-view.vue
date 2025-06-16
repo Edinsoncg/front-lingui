@@ -3,18 +3,32 @@
     <v-form ref="formRef" @submit.prevent="save">
     <v-row>
       <!-- Código -->
-      <v-col cols="12" sm="6">
+      <v-col cols="12" sm="4">
         <v-text-field v-model.number="form.student_code" label="Código Estudiante" outlined dense :rules="[rules.required, rules.numeric, rules.minDigits]"/>
       </v-col>
 
       <!-- Estado -->
-      <v-col cols="12" sm="6">
+      <v-col cols="12" sm="4">
         <v-select
           v-model="form.status_id"
           :items="statusOptions"
           item-title="name"
           item-value="id"
           label="Estado"
+          outlined
+          dense
+          :rules="[rules.required]"
+        />
+      </v-col>
+
+      <!-- Leguaje -->
+      <v-col cols="12" sm="4">
+        <v-select
+          v-model="form.language_id"
+          :items="languages"
+          item-title="name"
+          item-value="id"
+          label="Idioma"
           outlined
           dense
           :rules="[rules.required]"
@@ -109,6 +123,7 @@ import StatusService from '@/services/StatusService'
 import UnitService from '@/services/UnitService'
 import ContractService from '@/services/ContractService'
 import LevelService from '@/services/LevelService'
+import LanguageService from '@/services/LanguageService'
 
 const props = defineProps<{
   userId: number
@@ -123,6 +138,7 @@ const form = ref({
   contract_id: null,
   start_date: '',
   level_id: null,
+  language_id: null,
 })
 
 const rules = {
@@ -138,7 +154,7 @@ const rules = {
 const statusOptions = ref([])
 const unitOptions = ref([])
 const contractOptions = ref([])
-
+const languages = ref([])
 const levels = ref([])
 const units = ref([])
 const filteredUnits = ref([])
@@ -154,6 +170,7 @@ const loadOptions = async () => {
   contractOptions.value = await ContractService.getAll()
   levels.value = await LevelService.getAll()
   units.value = await UnitService.getAll()
+  languages.value = await LanguageService.getAll()
 }
 
 const loadData = async () => {
@@ -165,7 +182,8 @@ const loadData = async () => {
       unit_id: data.unit.id,
       contract_id: data.contract.id,
       start_date: data.start_date,
-      level_id: data.level.id
+      level_id: data.level.id,
+      language_id: data.language?.id ?? null,
     }
 
     // Llenar unidades disponibles tras cargar nivel
