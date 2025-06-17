@@ -1,8 +1,5 @@
 <template>
-  <v-container
-    class="fill-height d-flex justify-center align-center"
-    fluid
-  >
+  <v-container class="fill-height d-flex justify-center align-center" fluid>
     <v-card flat class="pa-6 elevation-3" max-width="960" color="#f4eafd" rounded="lg">
       <v-row>
         <!-- Columna del avatar -->
@@ -28,74 +25,82 @@
 
         <!-- Columna del formulario -->
         <v-col cols="12" md="7" class="mt-5">
-          <v-row>
-            <!-- Campos -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="profile.firstName"
-                label="Nombre"
-                prepend-inner-icon="mdi-account"
-                variant="outlined"
-                density="compact"
-                color="purple"
-              />
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="profile.middleName"
-                label="Segundo Nombre"
-                prepend-inner-icon="mdi-account"
-                variant="outlined"
-                density="compact"
-                color="purple"
-              />
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="profile.firstLastName"
-                label="Apellido"
-                prepend-inner-icon="mdi-account"
-                variant="outlined"
-                density="compact"
-                color="purple"
-              />
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="profile.secondLastName"
-                label="Segundo Apellido"
-                prepend-inner-icon="mdi-account"
-                variant="outlined"
-                density="compact"
-                color="purple"
-              />
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="profile.email"
-                label="Correo Electrónico"
-                prepend-inner-icon="mdi-email"
-                variant="outlined"
-                density="compact"
-                color="purple"
-              />
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="profile.phoneNumber"
-                label="Teléfono"
-                prepend-inner-icon="mdi-phone"
-                variant="outlined"
-                density="compact"
-                color="purple"
-              />
-            </v-col>
-            <v-col cols="12" class="text-right">
-              <v-btn color="primary" @click="save" style="width: auto;">
-                Guardar cambios
-              </v-btn>
-            </v-col>
-          </v-row>
+          <v-form ref="formRef" v-model="formIsValid">
+            <v-row>
+              <!-- Campos -->
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="profile.firstName"
+                  label="Nombre"
+                  :rules="[rules.required, rules.name]"
+                  prepend-inner-icon="mdi-account"
+                  variant="outlined"
+                  density="compact"
+                  color="purple"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="profile.middleName"
+                  label="Segundo Nombre"
+                  :rules="[rules.name]"
+                  prepend-inner-icon="mdi-account"
+                  variant="outlined"
+                  density="compact"
+                  color="purple"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="profile.firstLastName"
+                  label="Apellido"
+                  :rules="[rules.required, rules.name]"
+                  prepend-inner-icon="mdi-account"
+                  variant="outlined"
+                  density="compact"
+                  color="purple"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="profile.secondLastName"
+                  label="Segundo Apellido"
+                  :rules="[rules.required, rules.name]"
+                  prepend-inner-icon="mdi-account"
+                  variant="outlined"
+                  density="compact"
+                  color="purple"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="profile.email"
+                  label="Correo Electrónico"
+                  :rules="[rules.required, rules.email]"
+                  prepend-inner-icon="mdi-email"
+                  variant="outlined"
+                  density="compact"
+                  color="purple"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="profile.phoneNumber"
+                  label="Teléfono"
+                  :rules="[rules.required, rules.phone]"
+                  prepend-inner-icon="mdi-phone"
+                  variant="outlined"
+                  density="compact"
+                  color="purple"
+                />
+              </v-col>
+              <v-col cols="12" class="text-right">
+                <v-btn color="primary" @click="save" style="width: auto;">
+                  Guardar cambios
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
         </v-col>
       </v-row>
 
@@ -113,7 +118,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted} from 'vue'
+import { ref, onMounted } from 'vue'
 import ProfileService from '@/services/MyProfileService'
 
 const profilePicture = ref<File | null>(null)
@@ -121,6 +126,8 @@ const defaultAvatar = '/default-avatar.png'
 const previewUrl = ref<string | null>(null)
 const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3333'
 const imageKey = ref(Date.now())
+const formRef = ref()
+const formIsValid = ref(false)
 
 interface UserProfile {
   firstName: string
@@ -193,7 +200,14 @@ onMounted(async () => {
   }
 })
 
+// Validación frontend antes de enviar
 async function save() {
+  const { valid } = await formRef.value.validate()
+  if (!valid) {
+    showSnackbar('Revisa los campos del formulario', 'error')
+    return
+  }
+
   try {
     const form = new FormData()
     form.append('first_name', profile.value.firstName)
@@ -208,9 +222,8 @@ async function save() {
     }
 
     const response = await ProfileService.updateProfile(form)
-    debugger
-    if (response.user.profilePicture) {
 
+    if (response.user.profilePicture) {
       profile.value.profilePicture = response.user.profile_picture
       imageKey.value = Date.now()
     } else {
@@ -224,4 +237,16 @@ async function save() {
     showSnackbar('Error al actualizar perfil', 'error')
   }
 }
+
+// Validation rules
+const rules = {
+  required: (v: string) => !!v || 'This field is required',
+  name: (v: string) =>
+    (!v || (v.length >= 3 && v.length <= 10)) ? true : 'Must be between 1 and 10 characters',
+  email: (v: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Must be a valid email address',
+  phone: (v: string) =>
+    /^\d{10}$/.test(v) || 'Must be exactly 10 digits',
+}
+
 </script>

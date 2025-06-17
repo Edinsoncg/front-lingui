@@ -29,7 +29,7 @@ export const authSetStore = defineStore('auth', {
       const login = await auth.login(userData.email, userData.password)
 
       if (login.errors?.[0]) {
-        alert(login.errors[0].message)
+        throw new Error(login.errors[0].message)
       } else {
         const token = login.token.token
         const user = login.user
