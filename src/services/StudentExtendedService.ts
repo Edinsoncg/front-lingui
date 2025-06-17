@@ -6,40 +6,53 @@ export default class StudentExtendedService {
    */
   static async getByUserId(userId: number) {
     const token = localStorage.getItem('token')
-    const response = await fetch(`${BASE_URL}/${userId}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    })
 
-    if (!response.ok) {
-      throw new Error('Error al obtener datos extendidos del estudiante')
+    try {
+      const response = await fetch(`${BASE_URL}/${userId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Error al obtener datos del estudiante')
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error('Error en getByUserId:', error)
+      throw error
     }
-
-    return await response.json()
   }
 
   /**
-   * Actualizar o crear datos extendidos
+   * Guardar o actualizar datos extendidos
    */
   static async saveByUserId(userId: number, data: any) {
     const token = localStorage.getItem('token')
-    const response = await fetch(`${BASE_URL}/${userId}`, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
 
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message || 'Error al guardar los datos extendidos')
+    try {
+      const response = await fetch(`${BASE_URL}/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Error al guardar los datos extendidos')
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error('Error en saveByUserId:', error)
+      throw error
     }
-
-    return await response.json()
   }
 }

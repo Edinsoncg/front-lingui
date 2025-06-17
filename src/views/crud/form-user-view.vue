@@ -2,19 +2,19 @@
   <div>
     <v-row dense>
       <v-col cols="12" md="3">
-        <v-text-field label="Nombre" v-model="form.first_name" density="compact" :rules="[rules.required, rules.minName, rules.maxName]"/>
+        <v-text-field label="Nombre" v-model="form.first_name" :rules="[rules.required, rules.minName, rules.maxName]"/>
       </v-col>
 
       <v-col cols="12" md="3">
-        <v-text-field label="Segundo Nombre" v-model="form.middle_name" density="compact"/>
+        <v-text-field label="Segundo Nombre" v-model="form.middle_name"/>
       </v-col>
 
       <v-col cols="12" md="3">
-        <v-text-field label="Apellido" v-model="form.first_last_name" density="compact" :rules="[rules.required, rules.minName, rules.maxName]"/>
+        <v-text-field label="Apellido" v-model="form.first_last_name" :rules="[rules.required, rules.minName, rules.maxName]"/>
       </v-col>
 
       <v-col cols="12" md="3">
-        <v-text-field label="Segundo Apellido" v-model="form.second_last_name" density="compact" :rules="[rules.required, rules.minName, rules.maxName]"/>
+        <v-text-field label="Segundo Apellido" v-model="form.second_last_name" :rules="[rules.required, rules.minName, rules.maxName]"/>
       </v-col>
 
       <v-col cols="12" md="3">
@@ -29,15 +29,15 @@
       </v-col>
 
       <v-col cols="12" md="3">
-        <v-text-field label="Número de Documento" v-model="form.document_number" density="compact" :rules="[rules.required, rules.minDocumentNumber, rules.maxDocumentNumber]"/>
+        <v-text-field label="Número de Documento" v-model="form.document_number" :rules="[rules.required, rules.minDocumentNumber, rules.maxDocumentNumber]"/>
       </v-col>
 
       <v-col cols="12" md="3">
-        <v-text-field label="Correo Electrónico" v-model="form.email" density="compact" :rules="[rules.required, rules.email]" />
+        <v-text-field label="Correo Electrónico" v-model="form.email" :rules="[rules.required, rules.email]" />
       </v-col>
 
       <v-col cols="12" md="3">
-        <v-text-field label="Teléfono" v-model="form.phone_number" density="compact" :rules="[rules.required, rules.minPhoneNumber, rules.maxPhoneNumber]" />
+        <v-text-field label="Teléfono" v-model="form.phone_number" :rules="[rules.required, rules.minPhoneNumber, rules.maxPhoneNumber]" />
       </v-col>
 
       <v-col cols="12" md="3">
@@ -50,7 +50,6 @@
           multiple
           chips
           :rules="[rules.required]"
-          density="compact"
         />
       </v-col>
 
@@ -64,7 +63,6 @@
           label="Idiomas (solo para profesores)"
           multiple
           chips
-          density="compact"
         />
       </v-col>
 
@@ -77,12 +75,11 @@
           item-value="id"
           label="Jornada"
           :disabled="isStudent"
-          density="compact"
         />
       </v-col>
 
       <v-col cols="12" md="3" v-if="props.mode === 'create'">
-        <v-text-field label="Contraseña" type="password" v-model="form.password" density="compact" :rules="[rules.required , rules.password]"/>
+        <v-text-field label="Contraseña" type="password" v-model="form.password" :rules="[rules.required , rules.password]"/>
       </v-col>
     </v-row>
 

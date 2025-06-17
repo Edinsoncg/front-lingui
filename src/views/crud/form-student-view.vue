@@ -4,7 +4,7 @@
     <v-row>
       <!-- Código -->
       <v-col cols="12" sm="4">
-        <v-text-field v-model.number="form.student_code" label="Código Estudiante" outlined dense :rules="[rules.required, rules.numeric, rules.minDigits]"/>
+        <v-text-field v-model="form.student_code" label="Código Estudiante" outlined dense :rules="[rules.required, rules.numeric, rules.minDigits]" :error-messages="formErrors.student_code"/>
       </v-col>
 
       <!-- Estado -->
@@ -109,7 +109,7 @@
       @confirm="save"
     />
 
-    <v-snackbar v-model="snackbar" color="success" location="top end" timeout="3000">
+    <v-snackbar v-model="snackbar" :color="snackbarColor" location="top end" timeout="3000">
       {{ snackbarText }}
     </v-snackbar>
   </v-card>
@@ -159,6 +159,8 @@ const levels = ref([])
 const units = ref([])
 const filteredUnits = ref([])
 
+const formErrors = ref<{ [key: string]: string }>({})
+const snackbarColor = ref('success')
 const showModal = ref(false)
 const snackbar = ref(false)
 const snackbarText = ref('')
@@ -198,25 +200,34 @@ const loadData = async () => {
 const formRef = ref()
 
 const save = async () => {
+  formErrors.value = {} // limpiar errores previos
   const isValid = await formRef.value?.validate()
   if (!isValid) {
     snackbarText.value = 'Por favor completa los campos requeridos.'
+    snackbarColor.value = 'error'
     snackbar.value = true
     return
   }
-  try {
-    debugger
 
+  try {
     const payload = { ...form.value }
     delete payload.level_id
 
-    await StudentExtendedService.saveByUserId(props.userId, form.value)
+    await StudentExtendedService.saveByUserId(props.userId, payload)
     snackbarText.value = 'Datos guardados correctamente'
+    snackbarColor.value = 'success'
     snackbar.value = true
     emit('saved')
-  } catch (error) {
+  } catch (error: any) {
+    console.error(error)
+
+    // Error específico de duplicado
+    if (error.message?.includes('Duplicate entry')) {
+      formErrors.value.student_code = 'Este código ya está en uso'
+    }
 
     snackbarText.value = 'Error al guardar datos'
+    snackbarColor.value = 'error'
     snackbar.value = true
   }
 }

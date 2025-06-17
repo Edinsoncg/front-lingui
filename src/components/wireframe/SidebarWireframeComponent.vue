@@ -147,6 +147,11 @@ const menuItems = computed(() => [
         to: '/setting/user',
       },
       {
+        title: 'Usuarios Inactivos',
+        icon: 'mdi-account-off-outline',
+        to: '/setting/inactive-user',
+      },
+      {
         title: 'Permisos',
         icon: 'mdi-shield-key-outline',
         to: '/configuracion/permisos',
