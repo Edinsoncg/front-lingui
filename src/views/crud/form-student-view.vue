@@ -205,11 +205,17 @@ const save = async () => {
     return
   }
   try {
+    debugger
+
+    const payload = { ...form.value }
+    delete payload.level_id
+
     await StudentExtendedService.saveByUserId(props.userId, form.value)
     snackbarText.value = 'Datos guardados correctamente'
     snackbar.value = true
     emit('saved')
   } catch (error) {
+
     snackbarText.value = 'Error al guardar datos'
     snackbar.value = true
   }

@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { authSetStore } from '@/stores/authStore'
+import { authSetStore } from '@/stores/AuthStore'
 
 const auth = authSetStore()
 const isDrawerOpen = ref(false)

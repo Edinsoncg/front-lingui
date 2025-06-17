@@ -59,7 +59,7 @@
           <v-chip
             v-for="role in item.roles"
             :key="role"
-            color="blue-lighten-4"
+            :color="roleColors[role] || 'grey-lighten-2'"
             class="ma-1"
             size="small"
             label
@@ -81,10 +81,10 @@
             @open="openExtraForm"
           />
 
-          <DeleteButtonComponent
+          <InactivateButtonComponent
             :item="item"
             resource="usuario"
-            @confirm-delete="deleteUser" />
+            @confirm-inactive="inactivateUser" />
         </div>
       </template>
 
@@ -106,7 +106,7 @@ import { nextTick, ref, watch } from 'vue'
 import UserService from '@/services/SettingUserService'
 import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
 import UpdateButtonComponent from '@/components/buttons/UpdateButtonComponent.vue'
-import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent.vue'
+import InactivateButtonComponent from '@/components/buttons/InactivateButtonComponent.vue'
 import UserForm from '@/views/crud/form-user-view.vue'
 import EditExtraStudentButtonComponent from '@/components/buttons/EditExtraStudentButtonComponent.vue'
 import FormStudentView from '@/views/crud/form-student-view.vue'
@@ -161,6 +161,12 @@ const loading = ref(false)
 const searchName = ref('')
 const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
 
+const roleColors = {
+  Estudiante: 'green-lighten-2',
+  Profesor: 'blue-lighten-2',
+  Administrativo: 'deep-purple-lighten-2',
+  Recepcionista: 'orange-lighten-2',
+}
 // Funciones del formulario
 function openCreateForm() {
   showExtraForm.value = false
@@ -234,14 +240,14 @@ function onCancelExtra() {
 }
 
 // Función de borrado
-async function deleteUser(item: { id: number }) {
+async function inactivateUser(item: { id: number }) {
   try {
-    await UserService.delete(item.id)
+    await UserService.delete(item.id) // esto ya es inactivar
     await loadItems(lastOptions.value)
-    showSnackbar('Usuario eliminado correctamente', 'error')
+    showSnackbar('Usuario inactivado correctamente', 'info')
   } catch (error) {
-    console.error('Error al eliminar usuario', error)
-    showSnackbar('Error al eliminar el usuario', 'warning')
+    console.error('Error al inactivar usuario', error)
+    showSnackbar('Error al inactivar usuario', 'error')
   }
 }
 

@@ -40,5 +40,9 @@ const currentComponent = computed(() => {
   font-weight: bold;
   text-transform: none;
 }
+
+button{
+  margin: 1rem auto;
+}
 </style>
 

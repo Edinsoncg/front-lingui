@@ -76,13 +76,13 @@
           item-title="journal"
           item-value="id"
           label="Jornada"
-          :disabled="isOnlyStudent"
+          :disabled="isStudent"
           density="compact"
         />
       </v-col>
 
       <v-col cols="12" md="3" v-if="props.mode === 'create'">
-        <v-text-field label="Contraseña" type="password" v-model="form.password" density="compact" />
+        <v-text-field label="Contraseña" type="password" v-model="form.password" density="compact" :rules="[rules.required , rules.password]"/>
       </v-col>
     </v-row>
 
@@ -182,6 +182,7 @@ const rules = {
     const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|co|es|org|edu|net|gob|gov|ut\.edu)$/i
     return pattern.test(v) || 'Correo no válido o dominio incorrecto'
   },
+  password: (value:any) => String(value).length >= 6 || 'Debe tener al menos 6 caracteres'
 }
 
 // Computados
@@ -195,7 +196,7 @@ const modalMessage = computed(() =>
 )
 
 // 👇 Computados para lógica de campos condicionales
-const isOnlyStudent = computed(() => form.value.role_ids.length === 1 && form.value.role_ids[0] === 4)
+const isStudent = computed(() => form.value.role_ids.includes(4))
 const includesTeacher = computed(() => form.value.role_ids.includes(3))
 
 // Watch
@@ -218,6 +219,16 @@ watch(() => props.initialData, (data) => {
   }
 }, { immediate: true })
 
+watch(() => form.value.role_ids, () => {
+  if (isStudent.value) {
+    form.value.workday_id = null
+  }
+
+  if (!includesTeacher.value) {
+    form.value.language_ids = []
+  }
+})
+
 // Lifecycle
 onMounted(async () => {
   try {
@@ -235,8 +246,30 @@ async function submit() {
   confirmDialog.value = false
 
   loading.value = true
+
+
   try {
     const payload = { ...form.value }
+
+    // Eliminar password si es actualización
+    if (props.mode !== 'create') {
+      delete payload.password
+    }
+
+    // Eliminar language_ids si no es profesor o está vacío
+    if (!includesTeacher.value || !payload.language_ids?.length) {
+      delete payload.language_ids
+    }
+
+    // Eliminar workday_id si es solo estudiante
+    if (isStudent.value) {
+      payload.workday_id = null
+    }
+
+    // Eliminar role_ids si está vacío
+    if (!payload.role_ids?.length) {
+      delete payload.role_ids
+    }
 
     if (props.mode !== 'create') {
       delete payload.password
