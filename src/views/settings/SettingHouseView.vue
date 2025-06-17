@@ -17,6 +17,7 @@
       </div>
     </v-slide-y-transition>
 
+  <div class="tabla-wrapper">
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
       :headers="headers"
@@ -27,7 +28,7 @@
       @update:options="loadItems"
     >
       <template #item.actions="{ item }">
-        <div class="d-flex ga-1">
+        <div class="d-flex ga-1 btn-style">
           <UpdateButtonComponent
             resource="house"
             label="Casa"
@@ -54,7 +55,7 @@
         </tr>
       </template>
     </v-data-table-server>
-
+  </div>
     <v-snackbar
       v-model="snackbar"
       :timeout="3000"
@@ -96,7 +97,7 @@ const snackbarColor = ref('success')
 const headers = [
   { title: 'ID', key: 'id' },
   { title: 'Nombre', key: 'name' },
-  { title: 'Acciones', key: 'actions', sortable: false }
+  { title: 'Acciones', key: 'actions', sortable: false, align: 'center' }
 ]
 
 const lastOptions = ref({ page: 1, itemsPerPage: 10, sortBy: [] })
@@ -166,3 +167,22 @@ function showSnackbar(message: string, color: string = 'success') {
   snackbar.value = true
 }
 </script>
+
+<style scoped>
+.tabla-wrapper {
+  max-width: 900px; /* Ancho maximo de la tabla */
+  margin: auto;
+}
+
+.btn-style {
+  align-items: center; /* centra verticalmente los botones */
+  margin-top: -2px;    /* corrige alineación vertical con el encabezado */
+  justify-content: center;
+}
+
+/* Apunta a los v-btn internos de los componentes */
+.btn-style :deep(.v-btn) {
+  margin: 3px;
+  padding: px;
+}
+</style>

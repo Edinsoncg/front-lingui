@@ -1,35 +1,52 @@
 <template>
-  <v-form ref="formRef" v-model="formIsValid">
-    <v-text-field
-      label="Nombre del estado"
-      v-model="form.name"
-      :rules="[rules.required, rules.minName, rules.maxName]"
-      :error-messages="errors.name"
-    />
+  <v-card flat class="pa-4" color="#f4eafd">
+    <v-form ref="formRef" v-model="formIsValid">
+      <v-row>
+        <!-- Nombre del estado -->
+        <v-col cols="12" sm="12">
+          <v-text-field
+            label="Nombre del estado"
+            v-model="form.name"
+            :rules="[rules.required, rules.minName, rules.maxName]"
+            :error-messages="errors.name"
+            variant="outlined"
+            density="comfortable"
+            color="purple"
+          />
+        </v-col>
+      </v-row>
 
-    <div>
-      <v-btn
-        color="primary"
-        style="margin-right:10px;"
-        :disabled="!formIsValid || loading"
-        @click="checkFormBeforeConfirm"
-        :loading="loading"
-      >
-        Guardar
-      </v-btn>
+      <v-row justify="end" class="mt-2">
+        <v-btn
+          color="grey-darken-1"
+          variant="text"
+          @click="$emit('cancel')"
+        >
+          Cancelar
+        </v-btn>
 
-      <v-btn @click="$emit('cancel')">Cancelar</v-btn>
-    </div>
+        <v-btn
+          color="purple"
+          class="ml-2"
+          :disabled="!formIsValid || loading"
+          :loading="loading"
+          @click="checkFormBeforeConfirm"
+        >
+          Guardar
+        </v-btn>
+      </v-row>
 
-    <ConfirmDialog
-      v-model="confirmDialog"
-      :title="modalTitle"
-      :message="modalMessage"
-      @confirm="submit"
-      @cancel="confirmDialog = false"
-    />
-  </v-form>
+      <ConfirmDialog
+        v-model="confirmDialog"
+        :title="modalTitle"
+        :message="modalMessage"
+        @confirm="submit"
+        @cancel="confirmDialog = false"
+      />
+    </v-form>
+  </v-card>
 </template>
+
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'

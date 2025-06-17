@@ -1,39 +1,60 @@
 <template>
-  <v-form ref="formRef" v-model="formIsValid">
-    <v-text-field
-      label="Nombre"
-      v-model="form.name"
-      :rules="[rules.required, rules.min, rules.max]"
-      :error-messages="errors.name"
-    />
-    <v-text-field
-      label="Abreviación"
-      v-model="form.abbreviation"
-      :rules="[rules.required, rules.maxAbbr]"
-      :error-messages="errors.abbreviation"
-    />
+  <v-card flat class="pa-4" color="#f4eafd">
+    <v-form ref="formRef" v-model="formIsValid">
+      <v-row>
+        <!-- Nombre -->
+        <v-col cols="12" sm="6">
+          <v-text-field
+            label="Nombre"
+            v-model="form.name"
+            :rules="[rules.required, rules.min, rules.max]"
+            :error-messages="errors.name"
+            variant="outlined"
+            density="comfortable"
+            color="purple"
+          />
+        </v-col>
 
-    <div class="mt-2">
-      <v-btn
-        color="primary"
-        :disabled="!formIsValid || loading"
-        @click="checkFormBeforeConfirm"
-        :loading="loading"
-        class="me-2"
-      >Guardar</v-btn>
+        <!-- Abreviación -->
+        <v-col cols="12" sm="6">
+          <v-text-field
+            label="Abreviación"
+            v-model="form.abbreviation"
+            :rules="[rules.required, rules.maxAbbr]"
+            :error-messages="errors.abbreviation"
+            variant="outlined"
+            density="comfortable"
+            color="purple"
+          />
+        </v-col>
+      </v-row>
 
-      <v-btn @click="$emit('cancel')">Cancelar</v-btn>
-    </div>
+      <v-row justify="end" class="mt-2">
+        <v-btn color="grey-darken-1" variant="text" @click="$emit('cancel')">
+          Cancelar
+        </v-btn>
+        <v-btn
+          color="purple"
+          class="ml-2"
+          :disabled="!formIsValid || loading"
+          :loading="loading"
+          @click="checkFormBeforeConfirm"
+        >
+          Guardar
+        </v-btn>
+      </v-row>
 
-    <ConfirmDialog
-      v-model="confirmDialog"
-      :title="modalTitle"
-      :message="modalMessage"
-      @confirm="submit"
-      @cancel="confirmDialog = false"
-    />
-  </v-form>
+      <ConfirmDialog
+        v-model="confirmDialog"
+        :title="modalTitle"
+        :message="modalMessage"
+        @confirm="submit"
+        @cancel="confirmDialog = false"
+      />
+    </v-form>
+  </v-card>
 </template>
+
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'

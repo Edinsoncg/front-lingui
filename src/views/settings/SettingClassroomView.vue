@@ -16,7 +16,7 @@
         />
       </div>
     </v-slide-y-transition>
-
+<div class="tabla-wrapper">
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
       :headers="headers"
@@ -47,7 +47,7 @@
       </template>
 
       <template #item.actions="{ item }">
-        <div class="d-flex ga-1">
+        <div class="d-flex ga-1 btn-style">
           <UpdateButtonComponent
             resource="classroom"
             label="Salón"
@@ -61,7 +61,7 @@
       </template>
 
     </v-data-table-server>
-
+</div>
     <v-snackbar
       v-model="snackbar"
       :timeout="3000"
@@ -79,7 +79,7 @@ import ClassroomService from '@/services/ClassroomService'
 import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
 import UpdateButtonComponent from '@/components/buttons/UpdateButtonComponent.vue'
 import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent.vue'
-import ClassroomForm from '@/components/settings/ClassroomForm.vue'
+import ClassroomForm from '@/views/crud/form-setting-classroom-view.vue'
 
 interface Classroom {
   id?: number
@@ -103,7 +103,7 @@ const headers = ref([
   { title: 'Nombre', key: 'name' },
   { title: 'Capacidad', key: 'capacity' },
   { title: 'Casa', key: 'house.name' },
-  { title: 'Acciones', key: 'actions', sortable: false }
+  { title: 'Acciones', key: 'actions', sortable: false, align: 'center' }
 ])
 
 const serverItems = ref([])
@@ -180,3 +180,21 @@ function showSnackbar(message: string, color: string = 'success') {
   snackbar.value = true
 }
 </script>
+
+<style scoped>
+.tabla-wrapper {
+  max-width: 1000px; /* Ancho maximo de la tabla */
+  margin: auto;
+}
+
+.btn-style {
+  align-items: center; /* centra verticalmente los botones */
+  margin-top: -2px;    /* corrige alineación vertical con el encabezado */
+  justify-content: center;
+}
+
+/* Apunta a los v-btn internos de los componentes */
+.btn-style :deep(.v-btn) {
+  margin: 3px;
+}
+</style>

@@ -20,6 +20,7 @@
     </v-slide-y-transition>
 
     <!-- Tabla -->
+  <div class="tabla-wrapper">
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
       :headers="headers"
@@ -31,7 +32,7 @@
     >
       <!-- Acciones -->
       <template #item.actions="{ item }">
-        <div class="d-flex ga-1">
+        <div class="d-flex ga-1 btn-style">
           <UpdateButtonComponent
             resource="status"
             label="Estado"
@@ -46,7 +47,7 @@
       <!-- Filtro -->
       <template #tfoot>
         <tr>
-          <td colspan="100%">
+          <td colspan="1">
             <v-text-field
               v-model="searchName"
               class="ma-2"
@@ -59,7 +60,7 @@
         </tr>
       </template>
     </v-data-table-server>
-
+  </div>
     <!-- Snackbar -->
     <v-snackbar
       v-model="snackbar"
@@ -107,7 +108,7 @@ const snackbarColor = ref('success')
 const headers = [
   { title: 'ID', key: 'id' },
   { title: 'Nombre', key: 'name' },
-  { title: 'Acciones', key: 'actions', sortable: false },
+  { title: 'Acciones', key: 'actions', sortable: false, align: 'center' },
 ]
 
 // Lógica CRUD
@@ -176,3 +177,21 @@ function showSnackbar(message: string, color: string) {
   snackbar.value = true
 }
 </script>
+
+<style scoped>
+.tabla-wrapper {
+  max-width: 800px; /* Ancho maximo de la tabla */
+  margin: auto;
+}
+
+.btn-style {
+  align-items: center; /* centra verticalmente los botones */
+  margin-top: -2px;    /* corrige alineación vertical con el encabezado */
+  justify-content: center;
+}
+
+/* Apunta a los v-btn internos de los componentes */
+.btn-style :deep(.v-btn) {
+  margin: 3px;
+}
+</style>

@@ -17,6 +17,7 @@
       </div>
     </v-slide-y-transition>
 
+  <div class="tabla-wrapper">
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
       :headers="headers"
@@ -27,7 +28,7 @@
       @update:options="loadItems"
     >
       <template #item.actions="{ item }">
-        <div class="d-flex ga-1">
+        <div class="d-flex ga-1 btn-style">
           <UpdateButtonComponent
             resource="documento"
             label="Tipo de Documento"
@@ -43,7 +44,7 @@
 
       <template #tfoot>
         <tr>
-          <td colspan="2">
+          <td colspan="1">
             <v-text-field
               v-model="searchName"
               class="ma-2"
@@ -56,7 +57,7 @@
         </tr>
       </template>
     </v-data-table-server>
-
+  </div>
     <v-snackbar
       v-model="snackbar"
       :timeout="3000"
@@ -92,7 +93,7 @@ const lastOptions = ref({ page: 1, itemsPerPage: 10, sortBy: [] })
 const headers = [
   { title: 'Nombre', key: 'name' },
   { title: 'Abreviación', key: 'abbreviation' },
-  { title: 'Acciones', key: 'actions', sortable: false },
+  { title: 'Acciones', key: 'actions', sortable: false, align: 'center' },
 ]
 
 const openCreateForm = () => {
@@ -105,14 +106,6 @@ const editItem = (item) => {
   formMode.value = 'update'
   editData.value = { ...item }
   showForm.value = true
-}
-
-const handleSave = async (data) => {
-  if (formMode.value === 'create') {
-    await DocumentTypeService.create(data)
-  } else {
-    await DocumentTypeService.update(editData.value.id, data)
-  }
 }
 
 const deleteItem = async (item) => {
@@ -164,3 +157,29 @@ watch(searchName, () => {
   loadItems({ ...lastOptions.value, page: 1 })
 })
 </script>
+<style scoped>
+.tabla-wrapper {
+  max-width: 800px; /* Ancho maximo de la tabla */
+  margin: auto;
+}
+
+.btn-style {
+  align-items: center; /* centra verticalmente los botones */
+  margin-top: -2px;    /* corrige alineación vertical con el encabezado */
+  justify-content: center;
+}
+
+/* Apunta a los v-btn internos de los componentes */
+.btn-style :deep(.v-btn) {
+  margin: 3px;
+  padding: px;
+}
+
+:deep(.v-btn) {
+  padding: 0 16px !important;
+  min-width: max-content;
+  overflow: visible;
+  white-space: nowrap;
+}
+
+</style>
