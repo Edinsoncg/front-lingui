@@ -30,7 +30,7 @@
       </v-row>
 
       <v-row justify="end" class="mt-2">
-        <v-btn color="grey-darken-1" variant="text" @click="$emit('cancel')">
+        <v-btn color="red" variant="elevated" @click="$emit('cancel')">
           Cancelar
         </v-btn>
         <v-btn

@@ -47,6 +47,7 @@
       <!-- Filtro -->
       <template #tfoot>
         <tr>
+          <td></td>
           <td colspan="1">
             <v-text-field
               v-model="searchName"

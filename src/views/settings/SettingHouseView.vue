@@ -42,6 +42,7 @@
 
       <template #tfoot>
         <tr>
+          <td></td>
           <td>
             <v-text-field
               v-model="searchName"

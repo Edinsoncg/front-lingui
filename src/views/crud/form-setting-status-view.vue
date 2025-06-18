@@ -18,8 +18,8 @@
 
       <v-row justify="end" class="mt-2">
         <v-btn
-          color="grey-darken-1"
-          variant="text"
+          color="red"
+          variant="elevated"
           @click="$emit('cancel')"
         >
           Cancelar
