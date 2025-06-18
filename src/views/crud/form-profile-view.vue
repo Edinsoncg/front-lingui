@@ -4,7 +4,7 @@
       <v-row>
         <!-- Columna del avatar -->
         <v-col cols="12" md="5" class="text-center mt-6">
-          <v-avatar size="200" class="mx-auto">
+          <v-avatar size="200" class="mx-auto" color="white">
             <v-img
               :src="getImageUrl()"
               :key="imageKey"
@@ -120,7 +120,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import ProfileService from '@/services/MyProfileService'
+import { authSetStore } from '@/stores/AuthStore'
 
+const authStore = authSetStore()
 const profilePicture = ref<File | null>(null)
 const defaultAvatar = '/default-avatar.png'
 const previewUrl = ref<string | null>(null)
@@ -222,9 +224,12 @@ async function save() {
     }
 
     const response = await ProfileService.updateProfile(form)
-
+    debugger
+    console.log('🧪 user:', response.user)
     if (response.user.profilePicture) {
-      profile.value.profilePicture = response.user.profile_picture
+      const newUrl = response.user.profilePicture
+      profile.value.profilePicture = newUrl
+      authStore.setUserImage(newUrl) // 🔥 aquí actualiza el avatar
       imageKey.value = Date.now()
     } else {
       previewUrl.value = null
@@ -242,7 +247,7 @@ async function save() {
 const rules = {
   required: (v: string) => !!v || 'This field is required',
   name: (v: string) =>
-    (!v || (v.length >= 3 && v.length <= 10)) ? true : 'Must be between 1 and 10 characters',
+    (!v || (v.length >= 3 && v.length <= 20)) ? true : 'Must be between 1 and 20 characters',
   email: (v: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Must be a valid email address',
   phone: (v: string) =>

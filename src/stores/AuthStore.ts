@@ -54,6 +54,13 @@ export const authSetStore = defineStore('auth', {
       localStorage.removeItem('user')
       localStorage.removeItem('token')
       router.push('/login')
+    },
+
+    setUserImage(newUrl: string) {
+      if (this.user) {
+        this.user.profile_picture = newUrl
+        localStorage.setItem('user', JSON.stringify(this.user))
+      }
     }
   }
 })

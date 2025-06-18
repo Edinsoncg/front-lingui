@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { authSetStore } from '@/stores/AuthStore'
+import { computed } from 'vue'
+import guiDefault from '@/assets/characters/GUI.png'
 
 const router = useRouter()
 const authStore = authSetStore()
 
-const userImage = ref('https://secrecyjewels.es/blog/wp-content/uploads/2022/10/esencia-de-una-persona.jpg')
+const userImage = computed(() => {
+  const image = authStore.user?.profile_picture
+  return image
+    ? `http://localhost:3333/${image}`
+    : guiDefault
+})
 
 const goToProfile = () => router.push('/profile')
 const handlerLogOut = () => authStore.logout()
@@ -24,6 +30,7 @@ const handlerLogOut = () => authStore.logout()
           v-bind="props"
           class="cursor-pointer"
           size="50"
+          color="white"
         >
           <v-img :src="userImage" alt="Avatar" />
         </v-avatar>

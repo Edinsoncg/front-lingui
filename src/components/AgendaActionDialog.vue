@@ -31,9 +31,6 @@
         <v-btn color="blue" variant="flat" block @click="emitAction('view')">
           Ver clase
         </v-btn>
-        <v-btn color="red" variant="flat" block @click="emitAction('delete')">
-          Eliminar clase
-        </v-btn>
       </v-card-actions>
 
       <v-card-actions>
