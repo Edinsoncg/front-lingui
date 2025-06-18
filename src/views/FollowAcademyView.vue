@@ -124,7 +124,17 @@ function showSnackbar(message: string, color: string = 'success') {
 }
 
 const fetchProgress = async () => {
-  if (!studentCode.value) return
+const code = studentCode.value.trim()
+  if (!code) {
+    showSnackbar('Student code is required.', 'warning')
+    return
+  }
+
+  if (code.length < 4 || !/^\d+$/.test(code)) {
+    showSnackbar('Student code must be at least 4 digits.', 'warning')
+    return
+  }
+
   try {
     const data = await AcademyProgressService.getByStudentCode(studentCode.value)
     student.value = data.student
