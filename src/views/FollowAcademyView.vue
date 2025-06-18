@@ -62,6 +62,7 @@
                 :model-value="current.progressPercentage"
                 color="cyan"
                 height="40"
+                class="mt-2"
                 rounded
               >
                 <template v-slot:default="{ value }">
