@@ -10,11 +10,12 @@
     >
       <h3 class="mb-6 font-weight-bold text-h6 text-primary">RESTORE YOUR PASSWORD</h3>
 
-      <v-form @submit.prevent="handleSubmit">
+      <v-form ref="formRef" v-model="formIsValid" @submit.prevent="handleSubmit">
         <v-text-field
           v-model="form.new_password"
           label="New Password"
           type="password"
+          :rules="[rules.required, rules.password]"
           variant="outlined"
           color="deep-purple"
           class="mb-4"
@@ -23,6 +24,7 @@
           v-model="form.confirm_password"
           label="Confirm Password"
           type="password"
+          :rules="[rules.required, rules.match]"
           variant="outlined"
           color="deep-purple"
         />
@@ -71,12 +73,25 @@ const snackbar = ref({
   color: 'success',
 })
 
+// Validations
+const formRef = ref()
+const formIsValid = ref(false)
+
+const rules = {
+  required: (v: string) => !!v || 'This field is required.',
+  password: (v: string) =>
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[\S]{6,}$/.test(v) ||
+    'Password must be at least 6 characters and include uppercase, lowercase, number, and special character.',
+  match: (v: string) =>
+    v === form.value.new_password || 'Passwords do not match.',
+}
+
 onMounted(() => {
   const urlToken = route.query.token
   if (!urlToken || typeof urlToken !== 'string') {
     snackbar.value = {
       show: true,
-      text: 'Token inválido o faltante.',
+      text: 'Invalid or missing token.',
       color: 'error',
     }
     setTimeout(() => router.push('/login'), 3000)
@@ -86,14 +101,8 @@ onMounted(() => {
 })
 
 async function handleSubmit() {
-  if (form.value.new_password !== form.value.confirm_password) {
-    snackbar.value = {
-      show: true,
-      text: 'Las contraseñas no coinciden.',
-      color: 'error',
-    }
-    return
-  }
+  const { valid } = await formRef.value.validate()
+  if (!valid) return
 
   loading.value = true
   try {
@@ -112,14 +121,14 @@ async function handleSubmit() {
 
     snackbar.value = {
       show: true,
-      text: 'Contraseña actualizada exitosamente.',
+      text: 'Password updated successfully.',
       color: 'success',
     }
     setTimeout(() => router.push('/login'), 2000)
   } catch (error: any) {
     snackbar.value = {
       show: true,
-      text: error.message || 'Error al actualizar la contraseña.',
+      text: error.message || 'Error updating password.',
       color: 'error',
     }
   } finally {

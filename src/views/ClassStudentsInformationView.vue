@@ -140,10 +140,21 @@ function cancelForm() {
 async function addStudentToClass() {
   adding.value = true
   try {
-    if (studentCode.value.trim().length < 3) {
-      snackbarMessage.value = 'Ingresa un código válido'
+    const code = studentCode.value.trim()
+
+    if (!code) {
+      snackbarMessage.value = 'Student code is required.'
       snackbarColor.value = 'warning'
       snackbar.value = true
+      adding.value = false
+      return
+    }
+
+    if (code.length < 4 || !/^\d+$/.test(code)) {
+      snackbarMessage.value = 'Student code must be at least 4 digits.'
+      snackbarColor.value = 'warning'
+      snackbar.value = true
+      adding.value = false
       return
     }
 

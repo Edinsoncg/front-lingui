@@ -4,6 +4,7 @@
       <v-text-field
         v-model="form.old_password"
         label="Contraseña Actual"
+        :rules="[rules.required]"
         type="password"
         density="compact"
         prepend-inner-icon="mdi-lock"
@@ -11,6 +12,7 @@
       <v-text-field
         v-model="form.new_password"
         label="Nueva Contraseña"
+        :rules="[rules.required, rules.password]"
         type="password"
         density="compact"
         prepend-inner-icon="mdi-lock-outline"
@@ -18,6 +20,7 @@
       <v-text-field
         v-model="form.confirm_password"
         label="Confirmar Contraseña"
+        :rules="[rules.required, rules.matchPassword]"
         type="password"
         density="compact"
         prepend-inner-icon="mdi-lock-check"
@@ -58,6 +61,15 @@ function showSnackbar(message: string, color: string = 'success') {
   snackbar.value.message = message
   snackbar.value.color = color
   snackbar.value.show = true
+}
+
+const rules = {
+  required: (v: string) => !!v || 'This field is required.',
+  password: (v: string) =>
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[\S]{6,}$/.test(v) ||
+    'Password must be at least 6 characters and include uppercase, lowercase, number, and special character.',
+  matchPassword: (v: string) =>
+    v === form.value.new_password || 'Passwords do not match.',
 }
 
 async function cambiarPassword() {

@@ -29,7 +29,7 @@ export const authSetStore = defineStore('auth', {
       const login = await auth.login(userData.email, userData.password)
 
       if (login.errors?.[0]) {
-        alert(login.errors[0].message)
+        throw new Error(login.errors[0].message)
       } else {
         const token = login.token.token
         const user = login.user
@@ -54,6 +54,13 @@ export const authSetStore = defineStore('auth', {
       localStorage.removeItem('user')
       localStorage.removeItem('token')
       router.push('/login')
+    },
+
+    setUserImage(newUrl: string) {
+      if (this.user) {
+        this.user.profile_picture = newUrl
+        localStorage.setItem('user', JSON.stringify(this.user))
+      }
     }
   }
 })
