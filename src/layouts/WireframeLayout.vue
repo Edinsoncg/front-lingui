@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import SidebarWireframeComponent from '@/components/wireframe/SidebarWireframeComponent.vue';
-import HeaderWireframeComponent from '@/components/wireframe/HeaderWireframeComponent.vue';
+import SidebarWireframeComponent from '@/components/wireframe/SidebarWireframeComponent.vue'
+import HeaderWireframeComponent from '@/components/wireframe/HeaderWireframeComponent.vue'
+import { fetchMenu } from '@/stores/UsePermissions'
+import { onMounted } from 'vue'
+
+onMounted(() => {
+  fetchMenu()
+})
 </script>
 
 <template>
@@ -8,14 +14,10 @@ import HeaderWireframeComponent from '@/components/wireframe/HeaderWireframeComp
     <HeaderWireframeComponent />
     <SidebarWireframeComponent />
 
-      <!-- Contenido principal -->
-      <v-main>
-        <v-container>
-          <router-view />
-        </v-container>
-      </v-main>
-
+    <v-main>
+      <v-container>
+        <router-view />
+      </v-container>
+    </v-main>
   </v-app>
 </template>
-
-

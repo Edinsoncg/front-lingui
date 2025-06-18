@@ -27,6 +27,7 @@ import ClassInformationView from '@/views/ClassInformationView.vue'
 import ClassStudentsInformationView from '@/views/ClassStudentsInformationView.vue'
 import ClassTeacherInformationView from '@/views/ClassTeacherInformationView.vue'
 import SettingUserInactiveView from '@/views/SettingUserInactiveView.vue'
+import PermissionAssignmentView from '@/views/PermissionAssignmentView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -198,6 +199,12 @@ const router = createRouter({
         },
       ]
     },
+    {
+      path: '/configuracion/asignar-permisos',
+      name: 'PermissionAssignment',
+      component: PermissionAssignmentView,
+      meta: {layout: 'WireframeLayout'},
+    }
   ],
 })
 

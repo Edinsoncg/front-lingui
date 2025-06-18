@@ -11,7 +11,7 @@
     <v-list nav density="compact">
       <template v-for="item in menuItems" :key="item.title">
         <!-- Si tiene hijos (submenu) -->
-        <v-list-group v-if="item.children">
+        <v-list-group v-if="item.children && item.children.length">
           <template #activator="{ props }">
             <v-list-item
               v-bind="props"
@@ -45,11 +45,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted} from 'vue'
 import { authSetStore } from '@/stores/AuthStore'
+import { usePermissions } from '@/stores/UsePermissions'
 
 const auth = authSetStore()
 const isDrawerOpen = ref(false)
+const { getMenu, fetchMenu } = usePermissions()
 
 const onMouseEnter = () => {
   isDrawerOpen.value = true
@@ -74,94 +76,6 @@ const dashboardRoute = computed(() => {
   }
 })
 
-const menuItems = computed(() => [
-  {
-    title: 'Dashboard',
-    icon: 'mdi-view-dashboard-outline',
-    to: dashboardRoute.value,
-  },
-  {
-    title: 'Agenda',
-    icon: 'mdi-calendar-month-outline',
-    to: '/agenda',
-  },
-  {
-    title: 'Mi Perfil',
-    icon: 'mdi-account-circle-outline',
-    to: '/profile',
-  },
-  {
-    title: 'Mi Seguimiento',
-    icon: 'mdi-chart-line',
-    children: [
-      {
-        title: 'Académico',
-        icon: 'mdi-school-outline',
-        to: '/progress/academic',
-      },
-      {
-        title: 'Contrato',
-        icon: 'mdi-file-document-outline',
-        to: '/progress/contract',
-      },
-    ],
-  },
-  {
-    title: 'Material de Soporte',
-    icon: 'mdi-bookshelf',
-    to: '/support-material',
-  },
-  {
-    title: 'Reportes',
-    icon: 'mdi-file-chart',
-    children: [
-      {
-        title: 'Estudiantes',
-        icon: 'mdi-account-multiple-outline',
-        to: '/report-student',
-      },
-      {
-        title: 'Salones',
-        icon: 'mdi-door-open',
-        to: '/report/classroom',
-      },
-      {
-        title: 'Profesores',
-        icon: 'mdi-account-tie',
-        to: '/report/teacher',
-      },
-    ],
-  },
-  {
-    title: 'Soporte',
-    icon: 'mdi-lifebuoy',
-    to: '/soporte',
-  },
-  {
-    title: 'Configuración',
-    icon: 'mdi-cog-outline',
-    children: [
-      {
-        title: 'Usuarios',
-        icon: 'mdi-account-cog-outline',
-        to: '/setting/user',
-      },
-      {
-        title: 'Usuarios Inactivos',
-        icon: 'mdi-account-off-outline',
-        to: '/setting/inactive-user',
-      },
-      {
-        title: 'Permisos',
-        icon: 'mdi-shield-key-outline',
-        to: '/configuracion/permisos',
-      },
-      {
-        title: 'Lenguaje y Notificaciones',
-        icon: 'mdi-earth',
-        to: '/configuracion/lenguaje-notificaciones',
-      },
-    ],
-  },
-])
+onMounted(fetchMenu)
+const menuItems = computed(() => getMenu())
 </script>
