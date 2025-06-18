@@ -18,6 +18,17 @@
       </div>
     </v-slide-y-transition>
 
+    <v-slide-y-transition>
+      <div v-if="showExtraForm && extraUserId" class="mb-4">
+        <FormStudentView
+          :user-id="extraUserId"
+          @saved="onSavedExtra"
+          @cancel="onCancelExtra"
+        />
+      </div>
+    </v-slide-y-transition>
+
+
     <!-- Tabla paginada con búsqueda -->
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
@@ -44,8 +55,17 @@
         </tr>
       </template>
 
-      <template #item.role="{ item }">
-        {{ item.role }}
+      <template #item.roles="{ item }">
+          <v-chip
+            v-for="role in item.roles"
+            :key="role"
+            :color="roleColors[role] || 'grey-lighten-2'"
+            class="ma-1"
+            size="small"
+            label
+          >
+            {{ role }}
+          </v-chip>
       </template>
 
       <template #item.actions="{ item }">
@@ -55,10 +75,16 @@
             label="Usuario"
             @edit="editItem(item)" />
 
-          <DeleteButtonComponent
+          <EditExtraStudentButtonComponent
+            v-if="item.roles.includes('Estudiante')"
+            :userId="item.id"
+            @open="openExtraForm"
+          />
+
+          <InactivateButtonComponent
             :item="item"
             resource="usuario"
-            @confirm-delete="deleteUser" />
+            @confirm-inactive="inactivateUser" />
         </div>
       </template>
 
@@ -80,8 +106,10 @@ import { nextTick, ref, watch } from 'vue'
 import UserService from '@/services/SettingUserService'
 import CreateButtonComponent from '@/components/buttons/CreateButtonComponent.vue'
 import UpdateButtonComponent from '@/components/buttons/UpdateButtonComponent.vue'
-import DeleteButtonComponent from '@/components/buttons/DeleteButtonComponent.vue'
+import InactivateButtonComponent from '@/components/buttons/InactivateButtonComponent.vue'
 import UserForm from '@/views/crud/form-user-view.vue'
+import EditExtraStudentButtonComponent from '@/components/buttons/EditExtraStudentButtonComponent.vue'
+import FormStudentView from '@/views/crud/form-student-view.vue'
 
 // interfaces
 interface UserForm {
@@ -91,12 +119,13 @@ interface UserForm {
   first_last_name: string
   second_last_name: string
   email: string
-  role_id: number
+  role_ids: number[]
   document_type_id: number
   document_number: string
   phone_number: string
   workday_id?: number | null
   password?: string
+  language_ids: number[]
 }
 
 // Estado del FORMULARIO
@@ -104,6 +133,11 @@ const showForm = ref(false)
 const editData = ref<Partial<UserForm> | undefined>(undefined)
 const formMode = ref<'create' | 'update'>('create')
 const formContainer = ref<HTMLElement | null>(null)
+
+// Formulario de estudiante extendido
+const showExtraForm = ref(false)
+const extraUserId = ref<number | null>(null)
+
 
 // Snackbar
 const snackbar = ref(false)
@@ -117,7 +151,7 @@ const headers = ref([
   { title: 'Nombre', key: 'first_name' },
   { title: 'Apellido', key: 'first_last_name' },
   { title: 'Correo', key: 'email' },
-  { title: 'Rol', key: 'role' },
+  { title: 'Roles', key: 'roles' },
   { title: 'Acciones', key: 'actions', sortable: false }
 ])
 
@@ -127,8 +161,16 @@ const loading = ref(false)
 const searchName = ref('')
 const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
 
+const roleColors = {
+  Estudiante: 'green-lighten-2',
+  Profesor: 'blue-lighten-2',
+  Administrativo: 'deep-purple-lighten-2',
+  Recepcionista: 'orange-lighten-2',
+}
 // Funciones del formulario
 function openCreateForm() {
+  showExtraForm.value = false
+  extraUserId.value = null
   formMode.value = 'create'
   editData.value = undefined
   showForm.value = true
@@ -150,9 +192,12 @@ async function editItem(item: any) {
       email: userData.email,
       phone_number: userData.phoneNumber,
       workday_id: userData.workdayId,
-      role_id: userData.role_id,
+      role_ids: userData.roles.map((r: any) => r.id), // ya es array
+      language_ids: userData.languages?.map((l: any) => l.id) ?? [],
     }
 
+    showExtraForm.value = false
+    extraUserId.value = null
     showForm.value = true
     await nextTick()
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -161,8 +206,6 @@ async function editItem(item: any) {
     showSnackbar('No se pudo cargar el usuario para editar', 'error')
   }
 }
-
-
 
 function onSaved() {
   showSnackbar(
@@ -176,15 +219,35 @@ function onSaved() {
   loadItems(lastOptions.value)
 }
 
+// Funciones del formulario de estudiante extendido
+function openExtraForm(userId: number) {
+  showForm.value = false
+  showExtraForm.value = true
+  extraUserId.value = userId
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function onSavedExtra() {
+  showSnackbar('Datos extendidos guardados', 'success')
+  showExtraForm.value = false
+  extraUserId.value = null
+  loadItems(lastOptions.value)
+}
+
+function onCancelExtra() {
+  showExtraForm.value = false
+  extraUserId.value = null
+}
+
 // Función de borrado
-async function deleteUser(item: { id: number }) {
+async function inactivateUser(item: { id: number }) {
   try {
-    await UserService.delete(item.id)
+    await UserService.delete(item.id) // esto ya es inactivar
     await loadItems(lastOptions.value)
-    showSnackbar('Usuario eliminado correctamente', 'error')
+    showSnackbar('Usuario inactivado correctamente', 'info')
   } catch (error) {
-    console.error('Error al eliminar usuario', error)
-    showSnackbar('Error al eliminar el usuario', 'warning')
+    console.error('Error al inactivar usuario', error)
+    showSnackbar('Error al inactivar usuario', 'error')
   }
 }
 
@@ -200,12 +263,11 @@ async function loadItems(options: any) {
       search: { search: searchName.value }
     })
     serverItems.value = items.map((item: any) => ({
-      id: item.user.id,
-      first_name: item.user.firstName,
-      first_last_name: item.user.firstLastName,
-      email: item.user.email,
-      role: item.role?.name ?? null,
-      role_id: item.roleId,
+      id: item.id,
+      first_name: item.firstName,
+      first_last_name: item.firstLastName,
+      email: item.email,
+      roles: item.roles?.map((r: any) => r.name) ?? [],
     }))
     totalItems.value = total
   } catch (error) {

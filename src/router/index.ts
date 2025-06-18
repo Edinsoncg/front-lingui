@@ -26,6 +26,7 @@ import ClassLayoutView from '@/layouts/ClassAgendaLayout.vue'
 import ClassInformationView from '@/views/ClassInformationView.vue'
 import ClassStudentsInformationView from '@/views/ClassStudentsInformationView.vue'
 import ClassTeacherInformationView from '@/views/ClassTeacherInformationView.vue'
+import SettingUserInactiveView from '@/views/SettingUserInactiveView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -161,6 +162,12 @@ const router = createRouter({
       path: '/setting/user',
       name: 'setting-user',
       component: SettingUserView,
+      meta: {layout: 'WireframeLayout'}
+    },
+    {
+      path: '/setting/inactive-user',
+      name: 'setting-user-inactive',
+      component: SettingUserInactiveView,
       meta: {layout: 'WireframeLayout'}
     },
     {

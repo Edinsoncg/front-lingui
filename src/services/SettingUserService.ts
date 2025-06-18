@@ -36,7 +36,8 @@ export default class UserService {
     password: string
     phone_number: string
     workday_id?: number | null
-    role_id: number
+    role_ids: number[]
+    language_ids: number[]
   }) {
     const token = localStorage.getItem('token')
     const response = await fetch(URL, {
@@ -61,7 +62,8 @@ export default class UserService {
     password?: string
     phone_number: string
     workday_id?: number | null
-    role_id: number
+    role_ids: number[]
+    language_ids: number[]
   }>) {
     const token = localStorage.getItem('token')
     const response = await fetch(`${URL}/${id}`, {

@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { authSetStore } from '@/stores/authStore'
+import { authSetStore } from '@/stores/AuthStore'
 
 const auth = authSetStore()
 const isDrawerOpen = ref(false)
@@ -145,6 +145,11 @@ const menuItems = computed(() => [
         title: 'Usuarios',
         icon: 'mdi-account-cog-outline',
         to: '/setting/user',
+      },
+      {
+        title: 'Usuarios Inactivos',
+        icon: 'mdi-account-off-outline',
+        to: '/setting/inactive-user',
       },
       {
         title: 'Permisos',

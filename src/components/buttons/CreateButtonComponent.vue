@@ -17,3 +17,8 @@ const emit = defineEmits<{
 }>()
 </script>
 
+<style scoped>
+button {
+  margin: 1.3rem auto;
+}
+</style>
