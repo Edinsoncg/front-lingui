@@ -2,38 +2,44 @@
 
 <template>
   <v-form ref="formRef" v-model="formIsValid">
-    <v-text-field
-      label="Nombre"
-      v-model="form.name"
-      :rules="[rules.required, rules.minName, rules.maxName]"
-      :error-messages="errors.name"
-    />
-
-    <v-select
-      v-model="form.level_id"
-      :items="levels"
-      item-title="name"
-      item-value="id"
-      label="Nivel"
-      :rules="[rules.required]"
-      :error-messages="errors.level_id"
-    />
-
-    <v-text-field
-      label="Link"
-      v-model="form.link"
-      :rules="[rules.required, rules.url]"
-      :error-messages="errors.link"
-      placeholder="https://example.com"
-    />
-
-    <v-textarea
-      label="Descripción"
-      v-model="form.description"
-      :rules="[rules.required, rules.minDesc]"
-      :error-messages="errors.description"
-    />
-
+    <v-row>
+      <v-col cols="12" md="4">
+        <v-text-field
+          label="Nombre"
+          v-model="form.name"
+          :rules="[rules.required, rules.minName, rules.maxName]"
+          :error-messages="errors.name"
+        />
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-select
+          v-model="form.level_id"
+          :items="levels"
+          item-title="name"
+          item-value="id"
+          label="Nivel"
+          :rules="[rules.required]"
+          :error-messages="errors.level_id"
+        />
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
+          label="Link"
+          v-model="form.link"
+          :rules="[rules.required, rules.url]"
+          :error-messages="errors.link"
+          placeholder="https://example.com"
+        />
+      </v-col>
+      <v-col cols="12" md="12">
+        <v-textarea
+          label="Descripción"
+          v-model="form.description"
+          :rules="[rules.required, rules.minDesc]"
+          :error-messages="errors.description"
+        />
+      </v-col>
+    </v-row>
     <div>
       <v-btn
         color="primary"
