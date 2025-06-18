@@ -15,7 +15,22 @@
     </v-row>
 
     <!-- PROGRESO -->
-    <v-row justify="center" v-if="student">
+    <v-row justify="center" align="stretch" v-if="student">
+      <!-- Avatar + Nombre -->
+      <v-col cols="12" md="3" class="d-flex">
+        <v-card class="pa-4 d-flex flex-column align-center justify-center w-100" elevation="4" color="#fff">
+          <AvatarComponent :imagePath="student.profile_picture" size="180" color="blue-grey-lighten-5"/>
+          <v-card
+            class="mt-6 transition-all hover-scale"
+            color="blue-grey-lighten-5"
+            elevation="2"
+            width="100%"
+          >
+            <v-card-title class="text-center justify-center">{{ student.full_name }}</v-card-title>
+          </v-card>
+        </v-card>
+      </v-col>
+
       <v-col cols="12" md="8">
         <v-card class="pa-6" elevation="4">
           <h2 class="text-h5 font-weight-bold mb-6">PROGRESO</h2>
@@ -44,7 +59,7 @@
           </v-row>
 
           <v-row class="mb-4">
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
               <v-text-field
                 v-model="form.new_start_date"
                 label="Fecha de inicio"
@@ -52,13 +67,15 @@
                 outlined
               />
             </v-col>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
               <v-text-field
                 :model-value="student.contracts?.[0]?.endDate?.split('T')[0] || '......'"
                 label="Fecha final estimada"
                 readonly
                 outlined
               />
+            </v-col>
+            <v-col cols="12" md="4">
               <v-progress-linear
                 :model-value="progress.date_percent || 0"
                 color="cyan"
@@ -74,7 +91,7 @@
           </v-row>
 
           <v-row class="mb-4">
-            <v-col cols="12" md="6" class="d-flex align-center">
+            <v-col cols="12" md="3">
               <v-text-field
                 :model-value="`${progress.weekly_hours_completed || 0}h / ${progress.weekly_sessions_completed || 0} sesiones`"
                 label="Horas semanales"
@@ -82,12 +99,13 @@
                 outlined
                 class="flex-grow-1"
               />
+            </v-col>
+            <v-col cols="12" md="3">
               <v-progress-linear
                 :model-value="weeklyProgress"
                 color="cyan"
                 height="40"
-                class="ml-4"
-                style="width: 150px"
+                class="mt-2"
                 rounded
               >
                 <template v-slot:default="{ value }">
@@ -95,7 +113,7 @@
                 </template>
               </v-progress-linear>
             </v-col>
-            <v-col cols="12" md="6" class="d-flex align-center">
+            <v-col cols="12" md="3">
               <v-text-field
                 :model-value="`${progress.monthly_hours_completed || 0}h / ${progress.monthly_sessions_completed || 0} sesiones`"
                 label="Horas mensuales"
@@ -103,12 +121,13 @@
                 outlined
                 class="flex-grow-1"
               />
+            </v-col>
+            <v-col cols="12" md="3">
               <v-progress-linear
                 :model-value="monthlyProgress"
                 color="cyan"
                 height="40"
-                class="ml-4"
-                style="width: 150px"
+                class="mt-2"
                 rounded
               >
                 <template v-slot:default="{ value }">
@@ -152,6 +171,7 @@ import ContractProgressService from '@/services/ContractProgressService'
 import StatusService from '@/services/StatusService'
 import ContractService from '@/services/ContractService'
 import ModalComponent from '@/components/ModalComponent.vue'
+import AvatarComponent from '@/components/shared/AvatarComponent.vue'
 
 const studentCode = ref('')
 const student = ref(null)
@@ -181,7 +201,7 @@ function showSnackbar(message: string, color: string = 'success') {
 }
 
 const fetchProgress = async () => {
-const code = studentCode.value.trim()
+  const code = studentCode.value.trim()
 
   if (!code) {
     showSnackbar('Student code is required.', 'warning')
