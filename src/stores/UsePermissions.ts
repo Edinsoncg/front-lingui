@@ -1,5 +1,6 @@
 // src/stores/usePermissions.ts
 import { ref } from 'vue'
+import { authSetStore } from '@/stores/AuthStore'
 
 const menuItems = ref<any[]>([])
 
@@ -28,7 +29,7 @@ export const hasPermission = (path: string, permission: string) => {
 }
 
 /**
- * Devuelve el menú jerárquico agrupado por parent_id
+ * Devuelve el menú jerárquico agrupado por parent_id y ordenado
  */
 export const getMenu = () => {
   const grouped: Record<number, any> = {}
@@ -36,23 +37,23 @@ export const getMenu = () => {
   for (const { item, permissions } of menuItems.value) {
     if (!permissions.includes('view')) continue
 
-    // Convertir item a formato esperado por Vuetify
+    // Obtener todos los roles del usuario en minúscula
+    const auth = authSetStore()
+    const roles = (auth.user?.roles || []).map((r: string) => r.toLowerCase())
+
+    // Ajustar ruta del dashboard según el rol
     let to = item.url
     if (item.url === '/dashboard') {
-      const role = localStorage.getItem('role') || ''
-      switch (role.toUpperCase()) {
-        case 'ADMINISTRATIVO':
-          to = '/dashboard/admin'
-          break
-        case 'RECEPCIONISTA':
-          to = '/dashboard/receptionist'
-          break
-        case 'PROFESOR':
-          to = '/dashboard/teacher'
-          break
-        case 'ESTUDIANTE':
-          to = '/dashboard/student'
-          break
+      if (roles.includes('administrativo')) {
+        to = '/dashboard/admin'
+      } else if (roles.includes('recepcionista')) {
+        to = '/dashboard/receptionist'
+      } else if (roles.includes('profesor')) {
+        to = '/dashboard/teacher'
+      } else if (roles.includes('estudiante')) {
+        to = '/dashboard/student'
+      } else {
+        to = '/unauthorized'
       }
     }
 
@@ -62,28 +63,63 @@ export const getMenu = () => {
       icon: item.icon,
       to,
       children: [],
+      permissions,
     }
 
     if (!item.parent_id) {
       grouped[item.id] = formattedItem
     } else {
-      // Asegurar que el padre exista antes de asignar hijos
       if (!grouped[item.parent_id]) {
-        grouped[item.parent_id] = {
-          id: item.parent_id,
-          title: '',
-          icon: '',
-          to: '',
-          children: [],
+        const parent = menuItems.value.find((i) => i.item.id === item.parent_id)?.item
+        if (parent) {
+          grouped[item.parent_id] = {
+            id: parent.id,
+            title: parent.name,
+            icon: parent.icon,
+            to: '',
+            children: [],
+            permissions: [],
+          }
         }
       }
-      grouped[item.parent_id].children.push(formattedItem)
+      grouped[item.parent_id]?.children.push(formattedItem)
     }
   }
 
-  // Solo retornar elementos con title (padres con subitems o ítems principales)
-  return Object.values(grouped).filter(item => item.title || item.children.length)
+  // Orden personalizado del menú principal
+  const customOrder = [
+    'Dashboard',
+    'Agenda',
+    'Mi Perfil',
+    'Mi Seguimiento',
+    'Material de Soporte',
+    'Reportes',
+    'Soporte',
+    'Configuración',
+  ]
+
+  // Orden personalizado de hijos
+  const customChildOrder: Record<string, string[]> = {
+    'Mi Seguimiento': ['Académico', 'Contrato'],
+    'Reportes': ['Estudiantes', 'Salones', 'Profesores'],
+    'Configuración': ['Usuarios', 'Usuarios Inactivos', 'Permisos', 'Lenguaje y Notificaciones'],
+  }
+
+  for (const key in grouped) {
+    const group = grouped[key]
+    const childOrder = customChildOrder[group.title]
+    if (group.children?.length && childOrder) {
+      group.children.sort(
+        (a, b) => childOrder.indexOf(a.title) - childOrder.indexOf(b.title)
+      )
+    }
+  }
+
+  return Object.values(grouped).sort(
+    (a, b) => customOrder.indexOf(a.title) - customOrder.indexOf(b.title)
+  )
 }
+
 
 export const usePermissions = () => ({
   fetchMenu,
