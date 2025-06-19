@@ -65,7 +65,7 @@
             @edit="editItem(item)" />
 
           <DeleteButtonComponent
-            :item="item"
+            :item="{ id: item.id as number }"
             resource="material"
             @confirm-delete="deleteMaterial" />
         </div>
