@@ -50,6 +50,15 @@ import ClassroomInfoCard from '@/components/reports/classrooms/ClassroomInfoCard
 import ClassroomClassTable from '@/components/reports/classrooms/ClassroomClassTable.vue'
 import ReportClassroomService from '@/services/ReportClassroomService'
 import BackButtonComponent from '@/components/buttons/BackButtonComponent.vue'
+import 'jspdf-autotable'
+
+declare module 'jspdf' {
+  interface jsPDF {
+    lastAutoTable: {
+      finalY: number
+    }
+  }
+}
 
 const route = useRoute()
 const id = Number(route.params.id)

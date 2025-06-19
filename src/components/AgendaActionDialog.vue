@@ -72,6 +72,7 @@ const emit = defineEmits<{
     language?: string
     level?: string
     unit?: string
+    sessionId?: number
   }): void
 }>()
 

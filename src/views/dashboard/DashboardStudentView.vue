@@ -98,7 +98,24 @@ use([
   LegendComponent
 ])
 
-const data = ref({
+type ClaseHoy = {
+  id: number
+  classroom: string
+  level: string
+  hour: string
+}
+
+const data = ref<{
+  resumen: {
+    nivel_actual: string
+    clases_hoy: number
+    clases_mes: number
+  },
+  graficos: {
+    asistencia_por_dia: Record<string, number>
+  },
+  clases_hoy: ClaseHoy[]
+}>({
   resumen: {
     nivel_actual: '',
     clases_hoy: 0,

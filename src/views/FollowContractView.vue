@@ -174,9 +174,34 @@ import ModalComponent from '@/components/ModalComponent.vue'
 import AvatarComponent from '@/components/shared/AvatarComponent.vue'
 
 const studentCode = ref('')
-const student = ref(null)
+
+interface Student {
+  id: number
+  full_name: string
+  profile_picture: string
+  status?: { id: number; name: string }
+  contracts?: Array<{
+    contract?: { id: number; name: string }
+    startDate?: string
+    endDate?: string
+  }>
+}
+
+const student = ref<Student | null>(null)
 const attendances = ref([])
-const progress = ref({})
+
+interface Progress {
+  date_percent?: number
+  weekly_percent?: number
+  monthly_percent?: number
+  weekly_hours_completed?: number
+  weekly_sessions_completed?: number
+  monthly_hours_completed?: number
+  monthly_sessions_completed?: number
+  // add other properties as needed
+}
+
+const progress = ref<Progress>({})
 const statusOptions = ref([])
 const contractOptions = ref([])
 

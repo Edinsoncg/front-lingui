@@ -44,7 +44,7 @@
             <v-row dense class="g-3">
               <v-col
                 v-for="clase in data.clases_hoy"
-                :key="clase.id || clase.time + clase.classroom"
+                :key="clase.id ?? `${clase.time ?? ''}-${clase.classroom ?? ''}`"
                 cols="12" sm="6" md="4" lg="3" xl="2"
               >
                 <v-card class="pa-3" rounded="xl" elevation="1">
@@ -90,7 +90,26 @@ use([
 
 const VChartComponent = VChart
 
-const data = ref({
+interface ClaseHoy {
+  id?: number
+  time?: string
+  classroom?: string
+  level?: string
+  hour?: string
+}
+
+const data = ref<{
+  resumen: {
+    today_classes: number
+    total_classes_month: number
+    total_students_this_week: number
+    current_month: string
+  },
+  graficos: {
+    asistencia_por_dia: Record<string, number>
+  },
+  clases_hoy: ClaseHoy[]
+}>({
   resumen: {
     today_classes: 0,
     total_classes_month: 0,

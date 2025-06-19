@@ -3,7 +3,7 @@
     variant="text"
     prepend-icon="mdi-arrow-left"
     class="back-btn mb-4"
-    @click="router.push(to)"
+    @click="to && router.push(to)"
   >
     Volver
   </v-btn>

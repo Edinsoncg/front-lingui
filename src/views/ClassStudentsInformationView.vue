@@ -73,7 +73,6 @@
 
       <template #item.actions="{ item }">
         <div class="d-flex gap-1">
-          <v-icon @click="viewStudent(item)" color="primary">mdi-eye</v-icon>
           <DeleteButtonComponent
             :item="{ id: item.student_contract.student.id }"
             resource="estudiante"
@@ -119,7 +118,23 @@ const headers = ref([
   { title: 'Teléfono', key: 'phone_number' },
   { title: 'Acciones', key: 'actions', sortable: false }
 ])
-const serverItems = ref([])
+
+interface StudentTableItem {
+  id: number
+  student_contract: {
+    student: {
+      id: number
+      studentCode: string
+      user: {
+        firstName: string
+        firstLastName: string
+        phoneNumber: string
+      }
+    }
+  }
+}
+
+const serverItems = ref<StudentTableItem[]>([])
 const totalItems = ref(0)
 const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
 

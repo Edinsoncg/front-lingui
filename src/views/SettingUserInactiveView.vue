@@ -90,13 +90,22 @@ const headers = ref([
   { title: 'Roles', key: 'roles' },
   { title: 'Acciones', key: 'actions', sortable: false }
 ])
-const serverItems = ref([])
+
+interface UserItem {
+  id: number
+  first_name: string
+  first_last_name: string
+  email: string
+  roles: string[]
+}
+
+const serverItems = ref<UserItem[]>([])
 const totalItems = ref(0)
 const loading = ref(false)
 const searchName = ref('')
 const lastOptions = ref({ page: 1, itemsPerPage: 5, sortBy: [] })
 
-const roleColors = {
+const roleColors: Record<string, string> = {
   Estudiante: 'green-lighten-2',
   Profesor: 'blue-lighten-2',
   Administrativo: 'deep-purple-lighten-2',

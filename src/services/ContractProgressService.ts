@@ -22,9 +22,9 @@ export default class ContractProgressService {
 
   static async update(payload: {
     student_id: number
-    new_status_id: number
+    new_status_id: number | null
     new_start_date: string
-    new_contract_id: number
+    new_contract_id: number | null
   }) {
     const token = localStorage.getItem('token')
 
