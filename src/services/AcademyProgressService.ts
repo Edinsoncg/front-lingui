@@ -26,7 +26,7 @@ export default class AcademyProgressService {
   /**
    * Marca un componente como completado
    */
-  static async completeComponent({ student_id, unit_component_id }) {
+  static async completeComponent({ student_id, unit_component_id }: { student_id: string; unit_component_id: string }) {
     const token = localStorage.getItem('token')
     await fetch(BASE_URL, {
       method: 'POST',
@@ -41,7 +41,7 @@ export default class AcademyProgressService {
   /**
    * Desmarca un componente como completado (via query string)
    */
-  static async uncompleteComponent({ student_id, unit_component_id }) {
+  static async uncompleteComponent({ student_id, unit_component_id }: { student_id: string; unit_component_id: string }) {
     const token = localStorage.getItem('token')
     const url = `${BASE_URL}?student_id=${student_id}&unit_component_id=${unit_component_id}`
 
@@ -57,7 +57,7 @@ export default class AcademyProgressService {
     /**
    * Guarda todos los cambios del progreso (marcados y desmarcados)
    */
-  static async saveChanges({ student_id, changes }) {
+  static async saveChanges({ student_id, changes }: { student_id: string; changes: unknown }) {
     const token = localStorage.getItem('token')
     const url = `${BASE_URL}/save`
 

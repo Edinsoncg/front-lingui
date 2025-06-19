@@ -119,7 +119,25 @@ use([
 ])
 
 const VChartComponent = VChart
-const data = ref({
+interface ClaseHoy {
+  classroom: string
+  level: string
+  time: string
+  teacher: string
+}
+
+const data = ref<{
+  resumen: {
+    total_students: number
+    total_teachers: number
+    today_classes: number
+  },
+  graficos: {
+    attendance_by_month: Record<string, number>
+    students_by_level: Record<string, number>
+  },
+  clases_hoy: ClaseHoy[]
+}>({
   resumen: {
     total_students: 0,
     total_teachers: 0,

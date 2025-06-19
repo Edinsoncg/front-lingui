@@ -145,7 +145,7 @@
       :unit="dialogProps.unit"
       :end-hour="dialogProps.endHour"
       :has-class="dialogProps.hasClass"
-      :session-id="dialogProps.sessionId"
+      :session-id="dialogProps.sessionId ?? undefined"
       @action="handleAction"
     />
   </div>
@@ -207,7 +207,7 @@ const dialogProps = ref({
   unit: '',
   endHour: '',
   hasClass: false,
-  sessionId: null
+  sessionId: undefined
 })
 
 function changeDateBy(days: number) {
@@ -273,7 +273,7 @@ function openDialog(roomId: number, roomName: string, hour: string) {
     unit: session?.unit?.name || '',
     endHour: session ? getHourString(new Date(session.endAt)) : '',
     hasClass: !!session,
-    sessionId: session?.id || null
+    sessionId: session?.id ?? undefined
   }
 
   dialogOpen.value = true

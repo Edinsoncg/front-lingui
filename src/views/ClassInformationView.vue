@@ -67,8 +67,8 @@ watch(() => route.params.id, (newId) => {
 })
 
 // Función para obtener el color de la tarjeta según el nombre de la propiedad
-const getCardColor = (label: string) => {
-  return cardColors[label] || 'grey'; // Si no existe el color para una propiedad, usar 'grey'
+const getCardColor = (label: keyof typeof cardColors | string) => {
+  return (cardColors as Record<string, string>)[label] || 'grey'; // Si no existe el color para una propiedad, usar 'grey'
 }
 </script>
 

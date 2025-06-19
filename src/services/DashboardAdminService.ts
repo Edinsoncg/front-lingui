@@ -46,6 +46,7 @@ export interface DashboardResponse {
     total_teachers: number
     total_contracts: number
     today_classes: number
+    clases_hoy: any[]
   }
   graficos: {
     attendance_by_month: Record<string, number>

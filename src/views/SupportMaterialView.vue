@@ -100,6 +100,7 @@ interface SupportMaterialForm {
   level_id: number | undefined
   link: string
   description: string
+  level?: { id: number; name: string } // Add this line to support item.level?.name
 }
 
 //Estado del  FORMULARIO
@@ -124,7 +125,7 @@ const headers = ref([
   { title: 'Acciones', key: 'actions', sortable: false }
 ])
 
-const serverItems = ref([])
+const serverItems = ref<SupportMaterialForm[]>([])
 const totalItems = ref(0)
 const loading = ref(false)
 const searchName = ref('')

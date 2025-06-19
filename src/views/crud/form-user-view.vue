@@ -121,8 +121,8 @@ interface UserForm {
   password?: string
   phone_number: string
   workday_id?: number | null
-    role_ids: number[]
-  language_ids: number[]
+  role_ids?: number[]
+  language_ids?: number[]
 }
 
 interface SelectOption {
@@ -193,8 +193,8 @@ const modalMessage = computed(() =>
 )
 
 // 👇 Computados para lógica de campos condicionales
-const isStudent = computed(() => form.value.role_ids.includes(4))
-const includesTeacher = computed(() => form.value.role_ids.includes(3))
+const isStudent = computed(() => (form.value.role_ids ?? []).includes(4))
+const includesTeacher = computed(() => (form.value.role_ids ?? []).includes(3))
 
 // Watch
 watch(() => props.initialData, (data) => {

@@ -1,5 +1,20 @@
 const URL = 'http://localhost:3333/setting/user'
 
+interface UserPayload {
+  first_name: string
+  middle_name?: string
+  first_last_name: string
+  second_last_name: string
+  document_type_id?: number // ← permitir undefined
+  document_number: string
+  email: string
+  password?: string
+  phone_number: string
+  workday_id?: number | null
+  role_ids?: number[]
+  language_ids?: number[]
+}
+
 export default class UserService {
   static async getAll() {
     const token = localStorage.getItem('token')
@@ -25,20 +40,7 @@ export default class UserService {
     return response.json()
   }
 
-  static async create(data: {
-    first_name: string
-    middle_name?: string
-    first_last_name: string
-    second_last_name: string
-    document_type_id: number
-    document_number: string
-    email: string
-    password: string
-    phone_number: string
-    workday_id?: number | null
-    role_ids: number[]
-    language_ids: number[]
-  }) {
+  static async create(data: UserPayload) {
     const token = localStorage.getItem('token')
     const response = await fetch(URL, {
       method: 'POST',
@@ -51,20 +53,7 @@ export default class UserService {
     return response.json()
   }
 
-  static async update(id: number, data: Partial<{
-    first_name: string
-    middle_name?: string
-    first_last_name: string
-    second_last_name: string
-    document_type_id: number
-    document_number: string
-    email: string
-    password?: string
-    phone_number: string
-    workday_id?: number | null
-    role_ids: number[]
-    language_ids: number[]
-  }>) {
+  static async update(id: number, data: UserPayload) {
     const token = localStorage.getItem('token')
     const response = await fetch(`${URL}/${id}`, {
       method: 'PATCH',

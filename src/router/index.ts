@@ -216,7 +216,7 @@ const router = createRouter({
       const allowedRoles = (to.meta.roles as string[]).map((r) => r.toUpperCase())
       const userRolesUpper = userRoles.map((r: string) => r.toUpperCase())
 
-      const hasAccess = userRolesUpper.some((role) => allowedRoles.includes(role))
+      const hasAccess = userRolesUpper.some((role: string) => allowedRoles.includes(role))
       if (!hasAccess) {
         return next('/unauthorized') // Redirige a página de acceso denegado
       }

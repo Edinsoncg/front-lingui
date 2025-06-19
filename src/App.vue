@@ -6,7 +6,7 @@ import WireframeLayout from './layouts/WireframeLayout.vue'
 
 const route = useRoute()
 const layouts = { AuthLayout, WireframeLayout }
-const layout = computed(() => layouts[route.meta.layout] || AuthLayout)
+const layout = computed(() => layouts[(route.meta.layout as keyof typeof layouts)] || AuthLayout)
 </script>
 
 <template>

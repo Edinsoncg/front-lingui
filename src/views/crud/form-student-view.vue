@@ -129,7 +129,7 @@ const props = defineProps<{
   userId: number
 }>()
 
-const emit = defineEmits(['saved'])
+const emit = defineEmits(['saved', 'cancel'])
 
 const form = ref({
   student_code: '',
@@ -210,7 +210,7 @@ const save = async () => {
   }
 
   try {
-    const payload = { ...form.value }
+    const payload = { ...form.value } as Partial<typeof form.value>
     delete payload.level_id
 
     await StudentExtendedService.saveByUserId(props.userId, payload)
