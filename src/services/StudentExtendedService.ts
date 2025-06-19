@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3333/student/extended'
+const BASE_URL = 'http://147.93.114.138:8240/student/extended'
 
 export default class StudentExtendedService {
   /**

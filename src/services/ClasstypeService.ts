@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/classtypes'
+const URL = 'http://147.93.114.138:8240/classtypes'
 
 export default class ClasstypesService {
   static async getAll() {

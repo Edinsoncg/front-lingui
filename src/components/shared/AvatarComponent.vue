@@ -20,7 +20,7 @@ const props = defineProps<{
 const defaultAvatar = '/default-avatar.png'
 const imageKey = ref(Date.now())
 
-const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3333'
+const baseUrl = import.meta.env.VITE_API_URL || 'http://147.93.114.138:8240'
 
 const computedImageUrl = computed(() => {
   if (!props.imagePath) return defaultAvatar

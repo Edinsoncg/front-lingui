@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/levels'
+const URL = 'http://147.93.114.138:8240/levels'
 
 export default class LevelService {
   static async getAll() {

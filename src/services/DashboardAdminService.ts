@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3333/dashboard/admin'
+const API_URL = 'http://147.93.114.138:8240/dashboard/admin'
 
 export interface UserData {
   firstName: string

@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/status'
+const URL = 'http://147.93.114.138:8240/status'
 
 export default class StatusService {
   static async getAll() {

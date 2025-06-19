@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/dashboard/receptionist'
+const URL = 'http://147.93.114.138:8240/dashboard/receptionist'
 
 export interface TodayClass {
   time: string

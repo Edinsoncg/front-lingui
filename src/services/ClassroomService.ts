@@ -1,6 +1,6 @@
 // src/services/ClassroomService.ts
 
-const URL = 'http://localhost:3333/classroom'
+const URL = 'http://147.93.114.138:8240/classroom'
 
 export default class ClassroomService {
 

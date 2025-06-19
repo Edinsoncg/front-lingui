@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/teacher'
+const URL = 'http://147.93.114.138:8240/teacher'
 
 export default class TeacherService {
   static async getAll() {

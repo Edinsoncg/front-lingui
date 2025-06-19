@@ -1,6 +1,6 @@
 // src/services/StudentClassService.ts
 
-const URL = 'http://localhost:3333/agenda/students'
+const URL = 'http://147.93.114.138:8240/agenda/students'
 
 export default class StudentAttendanceService {
 

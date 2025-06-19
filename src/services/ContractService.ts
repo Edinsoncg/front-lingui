@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/contract'
+const URL = 'http://147.93.114.138:8240/contract'
 
 export default class ContractService {
   static async getAll() {

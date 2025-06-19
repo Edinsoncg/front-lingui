@@ -1,5 +1,5 @@
 // src/services/ReportStudentService.ts
-const URL = 'http://localhost:3333/report/student'
+const URL = 'http://147.93.114.138:8240/report/student'
 
 export default class ReportStudentService {
   static async getAll(params: {

@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3333/setting/inactive-user'
+const BASE_URL = 'http://147.93.114.138:8240/setting/inactive-user'
 
 export default class InactiveUserService {
   static async getPaginated({

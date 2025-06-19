@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/unit'
+const URL = 'http://147.93.114.138:8240/unit'
 
 export default class UnitService {
   static async getAll() {

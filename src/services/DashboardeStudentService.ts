@@ -1,6 +1,6 @@
 // src/services/DashboardStudentService.ts
 
-const URL = 'http://localhost:3333/dashboard/student'
+const URL = 'http://147.93.114.138:8240/dashboard/student'
 
 export default class DashboardStudentService {
   static async getDashboard() {

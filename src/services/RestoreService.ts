@@ -1,5 +1,5 @@
 // src/services/RestoreService.ts
-const URL = 'http://localhost:3333/forgot-password'
+const URL = 'http://147.93.114.138:8240/forgot-password'
 
 export default class RestoreService {
   static async requestPasswordReset(email: string) {

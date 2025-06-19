@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/dashboard/teacher'
+const URL = 'http://147.93.114.138:8240/dashboard/teacher'
 
 export default class DashboardTeacherService {
   static async getDashboard() {

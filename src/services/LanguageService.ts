@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/language'
+const URL = 'http://147.93.114.138:8240/language'
 
 export default class LanguageService {
   static async getAll() {

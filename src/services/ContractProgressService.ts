@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3333/progress/contract'
+const BASE_URL = 'http://147.93.114.138:8240/progress/contract'
 
 export default class ContractProgressService {
   static async list(codigo: string) {

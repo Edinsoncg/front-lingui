@@ -10,7 +10,7 @@ const authStore = authSetStore()
 const userImage = computed(() => {
   const image = authStore.user?.profile_picture
   return image
-    ? `http://localhost:3333/${image}`
+    ? `http://147.93.114.138:8240/${image}`
     : guiDefault
 })
 

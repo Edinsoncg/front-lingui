@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/document-type'
+const URL = 'http://147.93.114.138:8240/document-type'
 
 export default class DocumentoTypeService {
   static async getAll() {

@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/profile/password'
+const URL = 'http://147.93.114.138:8240/profile/password'
 
 export default class ProfilePasswordService {
   static async updatePassword(data: {

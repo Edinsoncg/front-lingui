@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3333/progress/academic'
+const BASE_URL = 'http://147.93.114.138:8240/progress/academic'
 
 export default class AcademyProgressService {
   /**

@@ -1,6 +1,6 @@
 // src/services/AgendaService.ts
 
-const BASE_URL = 'http://localhost:3333/agenda'
+const BASE_URL = 'http://147.93.114.138:8240/agenda'
 
 export default class AgendaService {
   static async getAll(date: string) {

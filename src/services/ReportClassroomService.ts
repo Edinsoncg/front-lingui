@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3333/report/classroom'
+const BASE_URL = 'http://147.93.114.138:8240/report/classroom'
 
 export default class ReportClassroomService {
   static async getAll({ page = 1, limit = 10, search = '' }) {

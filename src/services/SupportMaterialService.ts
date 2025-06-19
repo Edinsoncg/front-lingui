@@ -1,6 +1,6 @@
 // src/services/SupportMaterialService.ts
 
-const URL = 'http://localhost:3333/support-material'
+const URL = 'http://147.93.114.138:8240/support-material'
 
 export default class SupportMaterialService {
 

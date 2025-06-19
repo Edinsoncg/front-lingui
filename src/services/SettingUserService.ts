@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/setting/user'
+const URL = 'http://147.93.114.138:8240/setting/user'
 
 interface UserPayload {
   first_name: string

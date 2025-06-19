@@ -106,7 +106,7 @@ async function handleSubmit() {
 
   loading.value = true
   try {
-    const response = await fetch('http://localhost:3333/reset-password', {
+    const response = await fetch('http://147.93.114.138:8240/reset-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

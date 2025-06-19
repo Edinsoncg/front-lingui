@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/profile'
+const URL = 'http://147.93.114.138:8240/profile'
 
 export default class ProfileService {
 

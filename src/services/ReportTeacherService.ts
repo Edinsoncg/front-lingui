@@ -1,5 +1,5 @@
 // src/services/ReportTeacherService.ts
-const BASE_URL = 'http://localhost:3333/report/teacher'
+const BASE_URL = 'http://147.93.114.138:8240/report/teacher'
 
 export default class ReportTeacherService {
   static async getAll({ page = 1, limit = 10, search = '' }) {

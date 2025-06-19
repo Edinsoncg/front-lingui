@@ -1,4 +1,4 @@
-const URL = 'http://localhost:3333/modality'
+const URL = 'http://147.93.114.138:8240/modality'
 
 export default class ModalityService {
   static async getAll() {
