@@ -15,7 +15,22 @@
     </v-row>
 
     <!-- SEGUIMIENTO -->
-    <v-row justify="center" v-if="student">
+    <v-row justify="center" align="stretch" v-if="student">
+  <!-- Avatar + Nombre -->
+      <v-col cols="12" md="3" class="d-flex">
+        <v-card class="pa-4 d-flex flex-column align-center justify-center w-100" elevation="4" color="#fff">
+          <AvatarComponent :imagePath="student.profile_picture" size="180" color="blue-grey-lighten-5"/>
+      <v-card
+        class="mt-6 transition-all hover-scale"
+        color="blue-grey-lighten-5"
+        elevation="2"
+        width="100%"
+      >
+        <v-card-title class="text-center justify-center">{{ student.name }}</v-card-title>
+      </v-card>
+        </v-card>
+      </v-col>
+      <!-- Progreso -->
       <v-col cols="12" md="8">
         <v-card class="pa-6" elevation="4">
           <h2 class="text-h5 font-weight-bold mb-6">PROGRESO</h2>
@@ -27,38 +42,36 @@
                 :model-value="current?.level || '......'"
                 readonly
                 outlined
-                class="mr-4"
               />
             </v-col>
           </v-row>
 
           <v-row class="mb-4">
             <v-col cols="12" md="6">
-              <div class="d-flex align-center">
-                <v-text-field
-                  label="UNIDAD"
-                  :model-value="current?.unit || '......'"
-                  readonly
-                  outlined
-                  class="mr-4"
-                />
-              </div>
+              <v-text-field
+                label="UNIDAD"
+                :model-value="current?.unit || '......'"
+                readonly
+                outlined
+              />
             </v-col>
 
             <v-col cols="12" md="6">
-                <v-progress-linear
-                  v-if="current?.progressPercentage != null"
-                  :model-value="current.progressPercentage"
-                  color="cyan"
-                  height="40"
-                  rounded=""
-                >
-                  <template v-slot:default="{ value }">
-                    <strong>{{ Math.ceil(value) }}%</strong>
-                  </template>
-                </v-progress-linear>
+              <v-progress-linear
+                v-if="current?.progressPercentage != null"
+                :model-value="current.progressPercentage"
+                color="cyan"
+                height="40"
+                class="mt-2"
+                rounded
+              >
+                <template v-slot:default="{ value }">
+                  <strong>{{ Math.ceil(value) }}%</strong>
+                </template>
+              </v-progress-linear>
             </v-col>
           </v-row>
+
           <div>
             <p class="text-subtitle-1 font-weight-medium mb-2">COMPONENTE:</p>
             <v-row class="ml-1">
@@ -105,10 +118,11 @@
 import { ref } from 'vue'
 import AcademyProgressService from '@/services/AcademyProgressService'
 import ModalComponent from '@/components/ModalComponent.vue'
+import AvatarComponent from '@/components/shared/AvatarComponent.vue'
 
 const studentCode = ref('')
-const student = ref(null)
-const current = ref(null)
+const student = ref<any>(null)
+const current = ref<any>(null)
 const progress = ref([])
 const showModal = ref(false)
 const isSaving = ref(false)
@@ -124,7 +138,7 @@ function showSnackbar(message: string, color: string = 'success') {
 }
 
 const fetchProgress = async () => {
-const code = studentCode.value.trim()
+  const code = studentCode.value.trim()
   if (!code) {
     showSnackbar('Student code is required.', 'warning')
     return
@@ -153,10 +167,10 @@ const saveProgress = async () => {
   if (!current.value || !current.value.components?.length) return
 
   isSaving.value = true
-  showModal.value = false // ✅ cerrar modal
+  showModal.value = false
 
   try {
-    const changes = current.value.components.map((c) => ({
+    const changes = current.value.components.map((c: any) => ({
       unit_component_id: c.id,
       completed: c.completed,
     }))
@@ -166,9 +180,8 @@ const saveProgress = async () => {
       changes,
     })
 
-    await fetchProgress() // ✅ recargar datos tras guardar
-
-    showSnackbar(result.message || 'Progreso guardado correctamente', 'success') // ✅ mensaje dinámico
+    await fetchProgress()
+    showSnackbar(result.message || 'Progreso guardado correctamente', 'success')
   } catch (error) {
     console.error('Error al guardar progreso:', error)
     showSnackbar('Error al guardar progreso', 'error')
